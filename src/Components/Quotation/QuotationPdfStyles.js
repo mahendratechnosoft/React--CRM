@@ -44,13 +44,15 @@ export const QuotationPdfStyles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#000',
+        textDecoration: 'underline',
+        marginBottom: 4,
     },
     companyAddress: {
         fontSize: 9,
+        marginBottom: 4,
     },
     companyContact: {
         fontSize: 9,
-        marginTop: 4,
     },
     // "QUOTATION" title section
     quotationTitleContainer: {
@@ -66,7 +68,9 @@ export const QuotationPdfStyles = StyleSheet.create({
     quotationTitle: {
         fontSize: 12,
         fontWeight: 'bold',
-        letterSpacing: 2,
+        letterSpacing: 1,
+        textDecoration: 'underline',
+
     },
     detailsContainer: {
         flexDirection: 'row',
@@ -168,6 +172,11 @@ export const QuotationPdfStyles = StyleSheet.create({
     },
     cellText: {
         textAlign: 'center',
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 2,
+        paddingRight: 2,
+        lineHeight:0.7,
     },
     partViewImg: {
         width: '100%',
@@ -273,9 +282,13 @@ export const QuotationPdfStyles = StyleSheet.create({
         backgroundColor: '#fbd4b4',
     },
     considerationsTable: {
-        borderStyle: 'solid',
-        borderColor: '#000',
+        display: "table",
+        width: "auto",
+        borderStyle: "solid",
         borderWidth: 1,
+        borderRightWidth: 0,
+        borderBottomWidth: 0,
+        marginTop: 5,
     },
     considerationsTableRow: {
         flexDirection: 'row',
@@ -283,27 +296,33 @@ export const QuotationPdfStyles = StyleSheet.create({
         borderColor: '#000',
     },
     considerationsNumberCell: {
-        flex: 0.4, 
+        flex: 0.4,
         borderRightWidth: 1,
         borderColor: '#000',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding:2
+        padding: 2
     },
     considerationsTitleCell: {
-        flex: 2, // Wider column for the title
+        flex: 2,
         borderRightWidth: 1,
         borderColor: '#000',
         display: 'flex',
         justifyContent: 'center',
-        padding:2
+        padding: 2
     },
     considerationsDescriptionCell: {
-        flex: 8, // Largest column for the description
-        display: 'flex',
-        justifyContent: 'center',
-        padding:2
+        flex: 8,
+        flexDirection: 'column',
+    },
+    descriptionItem: {
+        padding: 1,
+        textAlign: 'left',
+    },
+    descriptionItemBorder: {
+        borderBottomColor: '#cccccc',
+        borderBottomWidth: 1,
     },
     closingContainer: {
         marginTop: 'auto', // Pushes this section to the bottom of the content flow
@@ -318,6 +337,10 @@ export const QuotationPdfStyles = StyleSheet.create({
         width: 80,
         height: 30,
         objectFit: 'contain', // Ensures the image scales correctly
+    },
+    otherCompanyAddress:{
+        marginTop:4,
+        lineHeight:0.7
     },
     body: {
     }

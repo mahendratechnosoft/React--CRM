@@ -10,6 +10,8 @@ const MyDocument = ({ data }) => {
     return <Document><Page style={styles.page}><Text>Loading document...</Text></Page></Document>;
   }
 
+
+
   const { quotationInfo, partsAndProcess, consideration } = data;
   const grandTotal = (partsAndProcess || []).reduce((total, part) => {
     const partSubTotal = (part.partProcess || []).reduce((subTotal, process) => {
@@ -19,6 +21,21 @@ const MyDocument = ({ data }) => {
     return total + partSubTotal;
   }, 0);
   console.log("Quotation data:", quotationInfo);
+
+  const groupedConsiderations = (consideration || []).reduce((acc, current) => {
+    const title = current.titel; // Handle typo from backend
+    if (!acc[title]) {
+      acc[title] = {
+        title: title,
+        descriptions: [],
+      };
+    }
+    acc[title].descriptions.push(current.description);
+    return acc;
+  }, {});
+
+  const considerationGroups = Object.values(groupedConsiderations);
+
 
   return (
     <Document>
@@ -52,9 +69,19 @@ const MyDocument = ({ data }) => {
               <View style={styles.tableRow}>
                 {/* Column 1 (Left) */}
                 <View style={[styles.tableCol, styles.leftCell, { flex: 3 }]}>
-                  <Text style={styles.boldText}>M/S. {quotationInfo.companyName || "N/A"}</Text>
-                  <Text>{quotationInfo.address + ", " + quotationInfo.city + ", " + quotationInfo.state || "N/A"}</Text>
-                  <Text>{quotationInfo.country + " - " + quotationInfo.zip || "N/A"}</Text>
+                  <Text
+                    style={styles.boldText}
+                    hyphenationCallback={(word) => [word]} // Add this to prevent breaking long company names
+                  >
+                    M/S. {quotationInfo.companyName || "N/A"}
+                  </Text>
+                  <Text
+                    style={styles.otherCompanyAddress}
+                    hyphenationCallback={(word) => [word]} // Add this to prevent breaking words in the address
+                  >
+                    {quotationInfo.address + ", " + quotationInfo.city + ", " + quotationInfo.state
+                      + ", " + quotationInfo.country + " - " + quotationInfo.zip || "N/A"}
+                  </Text>
                 </View>
 
                 {/* Column 2 (Center) */}
@@ -68,8 +95,8 @@ const MyDocument = ({ data }) => {
 
                   {/* Row 2 inside the column */}
                   <View>
-                    <Text style={[{ padding: 2 }]}>
-                      Reference :- {quotationInfo.refrence + " " + quotationInfo.projectName || "N/A"}
+                    <Text style={[{ padding: 2 ,lineHeight:0.7}]}>
+                      Reference :- {quotationInfo.refrence || "N/A"}
                     </Text>
                   </View>
                 </View>
@@ -94,7 +121,7 @@ const MyDocument = ({ data }) => {
           <View style={styles.massageSection}>
             <Text style={[{ padding: 2 }]}>Dear Sir/Madam,</Text>
             <Text style={[{ padding: 2 }]}>We thank you for your enquiry and are pleased to quote our lowest quotation for
-              your project <Text style={styles.boldText}>{quotationInfo.projectName || "N/A"}</Text>.</Text>
+              <Text style={styles.boldText}>{" " + quotationInfo.projectName + " Project" || "N/A"}</Text>.</Text>
           </View>
 
           {/* process table section  */}
@@ -152,22 +179,38 @@ const MyDocument = ({ data }) => {
                       <Text style={styles.cellText}>{index + 1}</Text>
                     </View>
 
-                    <View style={[styles.tableProcessCol, { flex: 3 }]}>
+                    <View style={[styles.tableProcessCol, { flex: 2.95 }]}>
                       <Text style={styles.cellText}>
                         {item.partNo || "N/A"}{"\n"}
                         {item.partName || "N/A"}
                       </Text>
                     </View>
 
-                    <View style={[styles.tableProcessCol, { flex: 3 }]}>
+                    <View style={[styles.tableProcessCol, { flex: 2.95 }]}>
                       <Text style={styles.cellText}>
-                        Part Size - {item.partSize || "N/A"}{"\n"}
-                        Matl - {item.material || "N/A"}{"\n"}
-                        Thk - {item.thickness || "N/A"}
+                        {(() => {
+                          const details = [];
+
+                          // Conditionally add Part Size if it's present (and not an empty string)
+                          if (item.partSize != null && item.partSize !== '') {
+                            details.push(`Part Size - ${item.partSize}`);
+                          }
+
+                          // Conditionally add Part Weight if it's present (and not an empty string)
+                          if (item.partWeight != null && item.partWeight !== '') {
+                            details.push(`Part Weight - ${item.partWeight}`);
+                          }
+
+                          // Always add Material and Thickness
+                          details.push(`Matl - ${item.material || "N/A"}`);
+                          details.push(`Thk - ${item.thickness || "N/A"}`);
+
+                          return details.join('\n');
+                        })()}
                       </Text>
                     </View>
 
-                    <View style={[styles.tableProcessCol, { flex: 3, padding: 2, flexDirection: 'column', gap: 3 }]}>
+                    <View style={[styles.tableProcessCol, { flex: 2.77, padding: 2, flexDirection: 'column', gap: 3 }]}>
                       {(item.partImagesWithId || []).length > 0 ? (
                         (item.partImagesWithId || []).map((img, i) => (
                           <Image key={i} src={"data:image/jpeg;base64," + img.base64Image} style={styles.partViewImg} />
@@ -177,12 +220,15 @@ const MyDocument = ({ data }) => {
                       )}
                     </View>
 
-                    <View style={[styles.operationsCol, { flex: 15 }]}>
+                    <View style={[styles.operationsCol, { flex: 15 }]} wrap={true}>
                       {(item.partProcess || []).map((process, i) => (
-                        <View key={"process-" + i} style={styles.opRow}>
+                        <View key={"process-" + i} style={styles.opRow} wrap={false}>
                           <View style={[styles.processOpCell, { flex: 3 }]}>
-                            <Text style={styles.cellText}>{process.toolConstruction || "N/A"}</Text>
+                            <Text style={styles.cellText}>
+                              {process.toolConstruction || "N/A"}
+                            </Text>
                           </View>
+
                           <View style={[styles.processOpCell, { flex: 2 }]}>
                             <Text style={styles.cellText}>{process.oprationNumber || "N/A"}</Text>
                           </View>
@@ -190,9 +236,15 @@ const MyDocument = ({ data }) => {
                             <Text style={styles.cellText}>{process.description || "N/A"}</Text>
                           </View>
                           <View style={[styles.toolSizeDataCell, { flex: 3 }]}>
-                            <View style={styles.toolSizeDataSubCell}><Text style={styles.cellText}>{process.length || "N/A"}</Text></View>
-                            <View style={styles.toolSizeDataSubCell}><Text style={styles.cellText}>{process.width || "N/A"}</Text></View>
-                            <View style={[styles.toolSizeDataSubCell, { borderRightWidth: 0 }]}><Text style={styles.cellText}>{process.height || "N/A"}</Text></View>
+                            <View style={styles.toolSizeDataSubCell}>
+                              <Text style={styles.cellText}>{process.length ?? "-"}</Text>
+                            </View>
+                            <View style={styles.toolSizeDataSubCell}>
+                              <Text style={styles.cellText}>{process.width ?? "-"}</Text>
+                            </View>
+                            <View style={[styles.toolSizeDataSubCell, { borderRightWidth: 0 }]}>
+                              <Text style={styles.cellText}>{process.height ?? "-"}</Text>
+                            </View>
                           </View>
                           <View style={[styles.processOpCell, { flex: 3, borderRightWidth: 0 }]}>
                             {/* Formatting the individual tool cost */}
@@ -238,16 +290,31 @@ const MyDocument = ({ data }) => {
           <View style={styles.considerationsContainer}>
             <Text style={styles.considerationsTitle}>QUOTATION CONSIDERATIONS :</Text>
             <View style={styles.considerationsTable}>
-              {(consideration || []).map((item, index) => (
+              {considerationGroups.map((group, index) => (
                 <View key={index} style={styles.considerationsTableRow} wrap={false}>
+                  {/* Column 1: Serial Number (Vertically Centered) */}
                   <View style={styles.considerationsNumberCell}>
                     <Text style={styles.cellText}>{index + 1}</Text>
                   </View>
+
+                  {/* Column 2: Title (Vertically Centered) */}
                   <View style={styles.considerationsTitleCell}>
-                    <Text style={[styles.cellText, { textAlign: 'left' }]}>{item.titel || 'N/A'}</Text>
+                    <Text style={[styles.cellText, { textAlign: 'left' }]}>{group.title || 'N/A'}</Text>
                   </View>
+
+                  {/* Column 3: Descriptions (Container for multiple lines) */}
                   <View style={styles.considerationsDescriptionCell}>
-                    <Text style={[styles.cellText, { textAlign: 'left' }]}>{item.description || 'N/A'}</Text>
+                    {group.descriptions.map((desc, descIndex) => (
+                      <View
+                        key={descIndex}
+                        style={[
+                          styles.descriptionItem,
+                          descIndex < group.descriptions.length - 1 ? styles.descriptionItemBorder : {}
+                        ]}
+                      >
+                        <Text style={[styles.cellText, { textAlign: 'left' }]}>{desc || 'N/A'}</Text>
+                      </View>
+                    ))}
                   </View>
                 </View>
               ))}

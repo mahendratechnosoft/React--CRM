@@ -73,7 +73,7 @@ const CreateQuotation = ({ onCancel, onSave }) => {
     { 
       id: 1, 
       title: '', 
-      description: '' 
+      descriptions: ['']
     }
   ]);
 
@@ -155,23 +155,44 @@ const CreateQuotation = ({ onCancel, onSave }) => {
     }
   };
 
-  const handleConsiderationChange = (index, e) => {
-      const { name, value } = e.target;
-      const newConsiderations = [...considerations];
-      newConsiderations[index][name] = value;
-      setConsiderations(newConsiderations);
+  const handleConsiderationChange = (consIndex, descIndex, e) => {
+    const { name, value } = e.target;
+    const newConsiderations = [...considerations];
+    if (name === 'title') {
+      newConsiderations[consIndex].title = value;
+    } else if (name === 'description') {
+      newConsiderations[consIndex].descriptions[descIndex] = value;
+    }
+    setConsiderations(newConsiderations);
   };
 
+  // Adds a new consideration group (title + one description)
   const addConsideration = () => {
-      setConsiderations([...considerations, { id: Date.now(), name: '', description: '' }]);
+    setConsiderations([...considerations, { id: Date.now(), title: '', descriptions: [''] }]);
   };
 
-  const removeConsideration = (index) => {
-      if (considerations.length > 1) {
-          setConsiderations(considerations.filter((_, i) => i !== index));
-      }
+  // Removes an entire consideration group
+  const removeConsideration = (consIndex) => {
+    if (considerations.length > 1) {
+      setConsiderations(considerations.filter((_, i) => i !== consIndex));
+    }
   };
 
+  // Adds a new description field to an existing consideration
+  const addDescription = (consIndex) => {
+    const newConsiderations = [...considerations];
+    newConsiderations[consIndex].descriptions.push('');
+    setConsiderations(newConsiderations);
+  };
+
+  // Removes a specific description field
+  const removeDescription = (consIndex, descIndex) => {
+    const newConsiderations = [...considerations];
+    if (newConsiderations[consIndex].descriptions.length > 1) {
+      newConsiderations[consIndex].descriptions.splice(descIndex, 1);
+      setConsiderations(newConsiderations);
+    }
+  };
 
   // --- API Handlers for Creatable Selects ---
   const fetchParts = async () => {
@@ -346,10 +367,14 @@ const CreateQuotation = ({ onCancel, onSave }) => {
         })
       );
 
-      const cleanedConsiderations = considerations.map(consideration => ({
-        titel: consideration.title,
-        description: consideration.description
-      }))
+      const cleanedConsiderations = considerations.flatMap(cons =>
+        cons.descriptions
+          .filter(desc => desc.trim() !== '' && cons.title.trim() !== '')
+          .map(desc => ({
+            titel: cons.title,
+            description: desc
+          }))
+      );
 
       const payload = {
         quotationInfo,
@@ -406,9 +431,9 @@ const CreateQuotation = ({ onCancel, onSave }) => {
             <Col md={3}><Form.Group><Form.Label>Phone <span className="text-danger">*</span></Form.Label><Form.Control type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></Form.Group></Col>
           </Row>
           <Row className="mb-3">
-            <Col md={3}><Form.Group><Form.Label>Country <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={city} onChange={(e) => setCity(e.target.value)} /></Form.Group></Col>
+            <Col md={3}><Form.Group><Form.Label>Country <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={country} onChange={(e) => setCountry(e.target.value)} /></Form.Group></Col>
             <Col md={3}><Form.Group><Form.Label>State <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={state} onChange={(e) => setState(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>City <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={country} onChange={(e) => setCountry(e.target.value)} /></Form.Group></Col>
+            <Col md={3}><Form.Group><Form.Label>City <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={city} onChange={(e) => setCity(e.target.value)} /></Form.Group></Col>
             <Col md={3}><Form.Group><Form.Label>Zip <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={zip} onChange={(e) => setZip(e.target.value)} /></Form.Group></Col>
           </Row>
           <Row className="mb-3">
@@ -561,58 +586,90 @@ const CreateQuotation = ({ onCancel, onSave }) => {
         </Container>
 
         <Container fluid className="mt-4">
-            <Card>
-                <Card.Header>
-                    <Card.Title as="h5">Quotation Considerations</Card.Title>
-                </Card.Header>
-                <Card.Body>
-                    {considerations.map((item, index) => (
-                        <Row key={item.id} className="mb-3 align-items-center">
-                            <Col xs="auto" className="fw-bold">{index + 1}.</Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label className="d-md-none">Title</Form.Label>
-                                    <Form.Control 
-                                        type="text"
-                                        placeholder="Consideration title"
-                                        name="title"
-                                        value={item.title}
-                                        onChange={(e) => handleConsiderationChange(index, e)}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col>
-                                <Form.Group>
-                                    <Form.Label className="d-md-none">Description</Form.Label>
-                                    <Form.Control 
-                                        as="textarea"
-                                        rows={1}
-                                        placeholder="Description"
-                                        name="description"
-                                        value={item.description}
-                                        onChange={(e) => handleConsiderationChange(index, e)}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col xs="auto">
-                                <Button 
-                                    variant="outline-danger" 
-                                    size="sm" 
-                                    onClick={() => removeConsideration(index)}
-                                    disabled={considerations.length <= 1}
-                                >
-                                    <FaTrash />
-                                </Button>
-                            </Col>
-                        </Row>
-                    ))}
-                    <div className="d-flex justify-content-end">
-                        <Button variant="success" size="sm" onClick={addConsideration}>
-                            <FaPlusCircle className="me-2"/> Add More
+          <Card>
+            <Card.Header>
+              <Card.Title as="h5">Quotation Considerations</Card.Title>
+            </Card.Header>
+            <Card.Body>
+              {considerations.map((item, consIndex) => (
+                <div key={item.id} className="mb-3 p-3" style={{ border: '1px solid #eee', borderRadius: '8px' }}>
+                  <Row className="mb-2">
+                    {/* Title Input */}
+                    <Col>
+                      <Form.Group>
+                        <Form.Label className="fw-bold">Title {consIndex + 1}</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="Consideration title (e.g., Payment Terms)"
+                          name="title"
+                          value={item.title}
+                          onChange={(e) => handleConsiderationChange(consIndex, null, e)}
+                        />
+                      </Form.Group>
+                    </Col>
+                    {/* Remove Entire Consideration Button */}
+                    <Col xs="auto" className="d-flex align-items-end">
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => removeConsideration(consIndex)}
+                        disabled={considerations.length <= 1}
+                      >
+                        <FaTrash /> Remove Title
+                      </Button>
+                    </Col>
+                  </Row>
+
+                  {/* Descriptions Mapping */}
+                  {item.descriptions.map((desc, descIndex) => (
+                    <Row key={descIndex} className="mb-2 align-items-center">
+                      <Col xs="auto" className="ps-4">
+                        <span className="fw-bold">{`•`}</span>
+                      </Col>
+                      <Col>
+                        <Form.Group>
+                          <Form.Label className="d-none">Description</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={1}
+                            placeholder="Description point"
+                            name="description"
+                            value={desc}
+                            onChange={(e) => handleConsiderationChange(consIndex, descIndex, e)}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col xs="auto" className="d-flex gap-2">
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          onClick={() => removeDescription(consIndex, descIndex)}
+                          disabled={item.descriptions.length <= 1}
+                        >
+                          <FaTrash />
                         </Button>
-                    </div>
-                </Card.Body>
-            </Card>
+                        {/* Show Add button only for the last description */}
+                        {descIndex === item.descriptions.length - 1 && (
+                          <Button
+                            variant="outline-success"
+                            size="sm"
+                            onClick={() => addDescription(consIndex)}
+                          >
+                            <FaPlusCircle />
+                          </Button>
+                        )}
+                      </Col>
+                    </Row>
+                  ))}
+                </div>
+              ))}
+              <div className="d-flex justify-content-end">
+                <Button variant="success" size="sm" onClick={addConsideration}>
+                  <FaPlusCircle className="me-2" /> Add Consideration
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
         </Container>
 
       </Card.Body>
