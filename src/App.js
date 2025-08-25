@@ -44,7 +44,7 @@ import BOMUpadatePage from "./CompanyComponent/BOM/BOMUpdatePage";
 import BomCategoryList from "./CompanyComponent/BomCategorieSettings/BomCategoryList";
 
 import MomList from "./CompanyComponent/Mom/MomList";
-import QuotationList from "./CompanyComponent/Quotation/QuotationList";
+import QuotationList from "./Components/Quotation/QuotationList";
 
 // Employee Module Url
 import CustomerListEmp from "./EmployeeComponent/Customer/CustomerListEmp";

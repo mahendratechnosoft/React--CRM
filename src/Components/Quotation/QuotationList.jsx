@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import CompanyTopbar from "../CompanyTopbar";
-import CompanySidebar from "../CompanySidebar";
 import PaginationComponent from "../../Pagination/PaginationComponent";
 import "./Quotation.css";
 import CreateQuotation from "./CreateQuotation";
@@ -8,6 +6,8 @@ import axiosInstance from "../../BaseComponet/axiosInstance"; // Assuming this i
 import { toast } from "react-toastify";
 import EditQuotation from "./EditQuotation";
 import QuotationPDFModel from "./QuotationPDFModel";
+import CompanyTopbar from "../../CompanyComponent/CompanyTopbar";
+import CompanySidebar from "../../CompanyComponent/CompanySidebar";
 
 const QuotationList = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
