@@ -12,6 +12,8 @@ import {
   FaTimes,
   FaTimesCircle,
   FaRocket,
+  FaChevronRight,
+  FaChevronDown,
 } from "react-icons/fa";
 import "./CompanySidebar.css";
 
@@ -19,7 +21,7 @@ const CompanySidebar = ({ isCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [settingsOpen, setSettingsOpen] = useState(false);
- const [kickoffOpen, setKickoffOpen] = useState(false);
+  const [kickoffOpen, setKickoffOpen] = useState(false);
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
@@ -29,9 +31,9 @@ const CompanySidebar = ({ isCollapsed }) => {
     setSettingsOpen(!settingsOpen);
   };
 
-    const toggleKickoff = () => {
-      setKickoffOpen(!kickoffOpen);
-    };
+  const toggleKickoff = () => {
+    setKickoffOpen(!kickoffOpen);
+  };
   return (
     <div className={`company-sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="company-sidebar__brand">{!isCollapsed && "CRM-Tech"}</div>
@@ -142,7 +144,17 @@ const CompanySidebar = ({ isCollapsed }) => {
             className="company-sidebar__settings-toggle"
           >
             <FaRocket />
-            {!isCollapsed && <span>Kickoff</span>}
+            {!isCollapsed && (
+              <>
+                <span className="flex-grow mx-2">Kickoff</span>
+                {/* Arrow Toggle */}
+                {kickoffOpen ? (
+                  <FaChevronDown className="dropdown-arrow" />
+                ) : (
+                  <FaChevronRight className="dropdown-arrow" />
+                )}
+              </>
+            )}
           </button>
 
           {kickoffOpen && (
@@ -198,7 +210,18 @@ const CompanySidebar = ({ isCollapsed }) => {
             className="company-sidebar__settings-toggle"
           >
             <FaCog />
-            {!isCollapsed && <span>Settings</span>}
+
+            {!isCollapsed && (
+              <>
+                <span className="flex-grow mx-2">Settings</span>
+                {/* Arrow Toggle */}
+                {settingsOpen ? (
+                  <FaChevronDown className="dropdown-arrow" />
+                ) : (
+                  <FaChevronRight className="dropdown-arrow" />
+                )}
+              </>
+            )}
           </button>
 
           {settingsOpen && (
@@ -249,4 +272,3 @@ const CompanySidebar = ({ isCollapsed }) => {
 };
 
 export default CompanySidebar;
-
