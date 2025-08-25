@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an instance of Axios
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:9090", // Replace with your API base URL
+  baseURL: "http://147.93.19.18:9090", // Replace with your API base URL
 });
 
 // Add a request interceptor to attach the token
