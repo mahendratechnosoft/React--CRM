@@ -1,0 +1,84 @@
+/* Accordion header (blue) */
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2f6fb3; /* blue */
+  color: #fff;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid #235e95;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 6px;
+}
+
+/* left part */
+.accordion-header .header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.accordion-header .header-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.accordion-header .header-icon {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.accordion-header.open .header-icon {
+  transform: rotate(180deg);
+}
+
+/* right part */
+.accordion-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.accordion-header input {
+  min-width: 200px;
+}
+
+.accordion-header button {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+/* body */
+.accordion-body {
+  background: #fff;
+  border: 1px solid #dfe7ef;
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+  padding: 12px 14px;
+}
+
+.table-responsive {
+  margin-top: 6px;
+}
+
+/* 🔒 Fix table layout so columns don't resize */
+.table-fixed {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Inputs inside table cells */
+.table-fixed td input {
+  width: 100%;
+  max-width: 100%;
+  font-size: 14px;
+  padding: 4px 6px;
+}
+
+/* Prevent buttons from stretching */
+.table-fixed td button {
+  white-space: nowrap;
+}

@@ -9,6 +9,7 @@ import CreateCustomer from "./CreateCustomer";
 import "./CustomerList.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 const CustomerList = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [customers, setCustomer] = useState([]);
@@ -19,6 +20,7 @@ const CustomerList = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
+  const navigate = useNavigate();
 
     useEffect(() => {
         fetchCustomers(page, size);
@@ -179,6 +181,17 @@ const handleToggleStatus = async (customerId, newStatus) => {
                               onClick={() => handleEditClick(customer)}
                             >
                               <i className="bi bi-pencil-square"></i>
+                            </button>
+
+                            <button
+                              className="btn btn-outline-primary btn-sm mx-2"
+                              onClick={() =>
+                                navigate("/CustomerContact", {
+                                  state: { customerId: customer.id },
+                                })
+                              }
+                            >
+                              <i className="fa-regular fa-address-book"></i>
                             </button>
                           </td>
                         </tr>

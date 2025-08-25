@@ -19,7 +19,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Department from "./CompanyComponent/Department";
-
+import CustomerContact from "./CompanyComponent/Customer/CustomerContact";
 
 
 import CompanyProject from "./CompanyComponent/Project/CompanyProject";
@@ -186,9 +186,14 @@ const App = () => {
           }
         />
 
-    
-        
-    
+        <Route
+          path="/CustomerContact"
+          element={
+            <ProtectedRoute>
+              <CustomerContact />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/CompanyBankDetailsSetting"
@@ -260,7 +265,7 @@ const App = () => {
           }
         />
 
-          <Route
+        <Route
           path="/BOMList"
           element={
             <ProtectedRoute>
@@ -269,7 +274,7 @@ const App = () => {
           }
         />
 
-            <Route
+        <Route
           path="/CreateBOM"
           element={
             <ProtectedRoute>
@@ -290,7 +295,7 @@ const App = () => {
           path="/ChecklistSheet"
           element={
             <ProtectedRoute>
-              <ChecklistSheetList/>
+              <ChecklistSheetList />
             </ProtectedRoute>
           }
         />
@@ -299,7 +304,7 @@ const App = () => {
           path="/MomList"
           element={
             <ProtectedRoute>
-              <MomList/>
+              <MomList />
             </ProtectedRoute>
           }
         />
@@ -322,7 +327,7 @@ const App = () => {
           }
         />
 
-         <Route
+        <Route
           path="/employee/cutomerList"
           element={
             <ProtectedRoute>
@@ -331,7 +336,7 @@ const App = () => {
           }
         />
 
-          <Route
+        <Route
           path="/employee/projectList"
           element={
             <ProtectedRoute>
@@ -340,7 +345,7 @@ const App = () => {
           }
         />
 
-         <Route
+        <Route
           path="/employee/timeSheet"
           element={
             <ProtectedRoute>
@@ -349,7 +354,7 @@ const App = () => {
           }
         />
 
-         <Route
+        <Route
           path="/employee/lead"
           element={
             <ProtectedRoute>
@@ -357,9 +362,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        
-        <Route path="*" element={<NotFound />} />
 
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
