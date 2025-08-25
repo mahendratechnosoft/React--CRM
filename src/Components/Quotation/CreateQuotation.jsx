@@ -43,7 +43,7 @@ const CreateQuotation = ({ onCancel, onSave }) => {
   const [state, setState] = useState(null);
   const [city, setCity] = useState(null);
   const [zip, setZip] = useState("");
-  const [reference, setReference] = useState("");
+  const [reference, setReference] = useState("As per your mailed enquiry & subseqvent verbal disscussion.");
 
   // --- State for Creatable Dropdowns ---
   const [partNameOptions, setPartNameOptions] = useState([]);
@@ -65,17 +65,56 @@ const CreateQuotation = ({ onCancel, onSave }) => {
       partWeight: '',
       images: [],
       fileInputRef: React.createRef(),
-      processes: [{ id: 1,toolConstruction: '', opNo: '', description: '', l: '', w: '', h: '', factor: '', rate: '', toolCost: '' }]
+      processes: [{ id: 1, toolConstruction: '', opNo: '', description: '', l: '', w: '', h: '', factor: '', rate: '', toolCost: '' }]
     }
   ]);
 
-   const [considerations, setConsiderations] = useState([
-    { 
-      id: 1, 
-      title: '', 
-      descriptions: ['']
-    }
-  ]);
+  const [considerations, setConsiderations] = useState([
+    { id: 1, title: 'PACKAGING', descriptions: ['Included in above costing.'] },
+    { id: 2, title: 'TRANSPORT', descriptions: ['Prices given are EX WORKS, PUNE.'] },
+    { id: 3, title: 'TAXES', descriptions: ['Extra as applicable.'] },
+    { id: 4, title: 'PAYMENTS', descriptions: ['40% advance with PO,']},
+    { id: 5, title: 'DELIVERY ', descriptions: [
+        'As per Schedule given below after your confirmed PO and Advance Payments.',
+        '4 weeks for Design, 14-16 weeks for T0 samples after DAP, 06 weeks for T1 Samples after T0 samples Approvals.'
+      ]},
+    { id: 6, title: 'DESIGN ', descriptions: [
+      'Input part data, tool design ( 3D & 2D ) & Input Press data with Bolster and Ram Layouts required from you.',
+      'We will do a complete 3D assly tool design Catia V5 / UG-NX format for Parts Process, Die face generation and Process Simulation.',
+      'Tolerance considered = Trimline ±1mm, Surface Profile ±0.5mm, General-purpose hole +0.5/-0.0  and "A" class hole +0.2/-0.0.',
+      'We will submit you detailed Simulation and Feasibility Report after finalisation of order.',
+      'Above Tool cost include Tool Design, Simulation, Tool Manufacturing with Material, Assembly, Tool Trials and part Quality maturation.',
+    ] },
+    { id: 7, title: 'STD ITEMS ', descriptions: [
+      'All STD parts ( MISUMI / FIBRO ) will be as per your approved BOM.',
+      'Other Equivalent standard items / Materials from another supplier will be as per your approval. ',
+      '10% spare items  ( Minimum 1 no ) for standard punches, die buttons, coil springs are considered in above costing. ',
+    ]},
+    { id: 8, title: 'TOOL CONSTRUCTION ', descriptions: [
+      'Tool constructions will be Casting Type & Plate type.',
+      'Materials cutting - D2 IMP FOR DIE STEELS WITH VACCUM HARDENING UP TO 59-61 HRC. We will submit the respective test reports.',
+      'PVD / Hard Chrome coating cost of D2 inserts of Forming / Draw category dies will be extra.',
+      'Tool life considered is 5,00,000 strokes with proper preventive maintainance of tools. ',
+      'At the time of manufacturing any modification in given input data will be on chargeable basis.',
+    ]},
+    { id: 9, title: 'CHECKING FIXTURES ', descriptions: [
+      'Checking fixture cost included. CF construction will be MS plate with CIBA matl as per STD / Guideline.',
+      'Checking fixture CMM will be carried out as per your requirements.',
+    ]},
+    { id: 10, title: 'SAMPLES ', descriptions: [
+      'All part material for tool trials and part submission will be in your scope.',
+      'Cost of parts submission for your welding trials and assly trials will be extra at actual.',
+      'We will retain scrap generated during tryout.'
+    ]},
+    { id: 11, title: 'TOOL BUYOFF ', descriptions: [
+      'Tool buy-off will be at our end, all genuine defects and deviation observed during tool buy-off will be corrected before final dispatch.',
+      'Our one engineer & one die maker will visit at your works for Installations & Homeline trials of dies. ',
+      'Your support will be required for production press availability & other machines or instruments availability for misc correction / repairing work. ',
+    ]},
+    { id: 12, title: 'QTN VALIDITY ', descriptions: [
+      '30 DAYS.',
+    ]}
+  ]);
 
   // --- Handlers for Parts (Sections) and Processes (Entries) ---
   const handlePartDataChange = (partIndex, field, value) => {
@@ -144,7 +183,7 @@ const CreateQuotation = ({ onCancel, onSave }) => {
         partWeight: '',
         images: [],
         fileInputRef: React.createRef(),
-        processes: [{ id: 1,toolConstruction: '', opNo: '', description: '', l: '', w: '', h: '', factor: '', rate: '', toolCost: '' }]
+        processes: [{ id: 1, toolConstruction: '', opNo: '', description: '', l: '', w: '', h: '', factor: '', rate: '', toolCost: '' }]
       }
     ]);
   };
@@ -292,20 +331,20 @@ const CreateQuotation = ({ onCancel, onSave }) => {
   // --- Payload Generation and Save Handler ---
 
   const fileToBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    // This check is important. If it's not a file/blob, it might be an already converted string.
-    if (!(file instanceof Blob)) {
-      resolve(file);
-      return;
-    }
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64String = reader.result.split(",")[1]; // Get only the base64 part
-      resolve(base64String);
-    };
-    reader.onerror = (error) => reject(error);
-  });
+    new Promise((resolve, reject) => {
+      // This check is important. If it's not a file/blob, it might be an already converted string.
+      if (!(file instanceof Blob)) {
+        resolve(file);
+        return;
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.split(",")[1]; // Get only the base64 part
+        resolve(base64String);
+      };
+      reader.onerror = (error) => reject(error);
+    });
 
   const handleSave = async () => {
     try {
@@ -362,7 +401,7 @@ const CreateQuotation = ({ onCancel, onSave }) => {
             partSize: part.partSize,
             partWeight: part.partWeight,
             partProcess: cleanedProcesses,
-            partImagesWithId: partImagesWithIdArray, 
+            partImagesWithId: partImagesWithIdArray,
           };
         })
       );
@@ -392,7 +431,7 @@ const CreateQuotation = ({ onCancel, onSave }) => {
 
       toast.success("Quotation saved successfully.");
       console.log("Backend Response:", response.data);
-      if(onSave) onSave();
+      if (onSave) onSave();
 
     } catch (error) {
       console.error("Error saving quotation:", error.response ? error.response.data : error.message);
@@ -408,36 +447,66 @@ const CreateQuotation = ({ onCancel, onSave }) => {
       </Card.Header>
       <Card.Body className="quotation-body">
         <Container fluid>
-          {/* --- Top Level Form Details --- */}
-          <Row className="mb-3">
-            <Col md={4}><Form.Group><Form.Label>Company Name <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} /></Form.Group></Col>
-            <Col md={4}><Form.Group><Form.Label>Project Name <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} /></Form.Group></Col>
-            <Col md={4}><Form.Group><Form.Label>Contact Person <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={3}><Form.Group><Form.Label>Quotation No <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={quotationNo} onChange={(e) => setQuotationNo(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Supplier Code</Form.Label><Form.Control type="text" value={supplierCode} onChange={(e) => setSupplierCode(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Quotation Date <span className="text-danger">*</span></Form.Label><Form.Control type="date" value={quotationDate} onChange={(e) => setQuotationDate(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Open Till</Form.Label><Form.Control type="date" value={openTill} onChange={(e) => setOpenTill(e.target.value)} /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={4}><Form.Group><Form.Label>Currency</Form.Label><Select options={currencyOptions} value={currency} onChange={setCurrency} placeholder="Select Currency" /></Form.Group></Col>
-            <Col md={4}><Form.Group><Form.Label>Status <span className="text-danger">*</span></Form.Label><Select options={statusOptions} value={status} onChange={setStatus} placeholder="Select Status" /></Form.Group></Col>
-            <Col md={4}><Form.Group><Form.Label>Assigned <span className="text-danger">*</span></Form.Label><Select options={assignedOptions} value={assigned} onChange={setAssigned} placeholder="Select Assigned" /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={6}><Form.Group><Form.Label>Address <span className="text-danger">*</span></Form.Label><Form.Control as="textarea" rows={1} value={address} onChange={(e) => setAddress(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Email <span className="text-danger">*</span></Form.Label><Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Phone <span className="text-danger">*</span></Form.Label><Form.Control type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={3}><Form.Group><Form.Label>Country <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={country} onChange={(e) => setCountry(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>State <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={state} onChange={(e) => setState(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>City <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={city} onChange={(e) => setCity(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Zip <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={zip} onChange={(e) => setZip(e.target.value)} /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={12}><Form.Group><Form.Label>Reference</Form.Label><Form.Control as="textarea" rows={1} value={reference} onChange={(e) => setReference(e.target.value)} /></Form.Group></Col>
+          <Row>
+            {/* --- Left Partition: Customer Information --- */}
+            <Col md={6} className="mb-3 mb-md-0">
+              <Card>
+                <Card.Header as="h5">Customer Information</Card.Header>
+                <Card.Body>
+                  <Row className="mb-3">
+                    <Col><Form.Group><Form.Label>Company Name <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Contact Person <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Phone <span className="text-danger">*</span></Form.Label><Form.Control type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col><Form.Group><Form.Label>Email <span className="text-danger">*</span></Form.Label><Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col><Form.Group><Form.Label>Address <span className="text-danger">*</span></Form.Label><Form.Control as="textarea" rows={2} value={address} onChange={(e) => setAddress(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>City <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={city} onChange={(e) => setCity(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>State <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={state} onChange={(e) => setState(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row>
+                    <Col md={6}><Form.Group><Form.Label>Country <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={country} onChange={(e) => setCountry(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Zip <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={zip} onChange={(e) => setZip(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* --- Right Partition: Quotation Details --- */}
+            <Col md={6}>
+              <Card>
+                <Card.Header as="h5">Quotation Details</Card.Header>
+                <Card.Body>
+                  <Row className="mb-3">
+                    <Col><Form.Group><Form.Label>Project Name <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Quotation No <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={quotationNo} onChange={(e) => setQuotationNo(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Quotation Date <span className="text-danger">*</span></Form.Label><Form.Control type="date" value={quotationDate} onChange={(e) => setQuotationDate(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Supplier Code</Form.Label><Form.Control type="text" value={supplierCode} onChange={(e) => setSupplierCode(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Open Till</Form.Label><Form.Control type="date" value={openTill} onChange={(e) => setOpenTill(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Status <span className="text-danger">*</span></Form.Label><Select options={statusOptions} value={status} onChange={setStatus} placeholder="Select Status" /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Assigned <span className="text-danger">*</span></Form.Label><Select options={assignedOptions} value={assigned} onChange={setAssigned} placeholder="Select Assigned" /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Currency</Form.Label><Select options={currencyOptions} value={currency} onChange={setCurrency} placeholder="Select Currency" /></Form.Group></Col>
+                  </Row>
+                  <Row>
+                    <Col><Form.Group><Form.Label>Reference</Form.Label><Form.Control as="textarea" rows={2} value={reference} onChange={(e) => setReference(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
           </Row>
         </Container>
         <hr />

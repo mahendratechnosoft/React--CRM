@@ -7,6 +7,7 @@ import axiosInstance from "../../BaseComponet/axiosInstance";
 import { toast } from "react-toastify";
 import CreatableSelect from "react-select/creatable";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
     const fileInputRef = useRef(null);
     const [images, setImages] = useState([]);
@@ -35,7 +36,7 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
     const [processesSuggestionsOptions, setProcessesSuggestionsOptions] = useState([]);
     const [processesSuggestionsLoading, setProcessesSuggestionsLoading] = useState();
     const [itemsToDelete, setItemsToDelete] = useState([]);
-    const [imagesToDelete, setImagesToDelete] = useState([]); 
+    const [imagesToDelete, setImagesToDelete] = useState([]);
 
     const [formData, setFormData] = useState({
         partName: '',
@@ -155,7 +156,7 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
             setIsItemNoUnique(true);
             setSelectedCustomer(workOrder.customerId || '');
             setExistingImages(workImages || []);
-            
+
             const finalProcesses = [];
             const finalTableData = {};
             const selectedFromDropdown = [];
@@ -165,9 +166,9 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
             workOrderItems.forEach(item => {
                 const isSelectType = item.operationNumber === 0;
                 const id = isSelectType ? item.workOrderNo.replace(/^.*?PT-\d+/, '').trim() : `manual-${nextId.current++}`;
-                
+
                 woNoToIdMap[item.workOrderNo] = id;
-                
+
                 let parentId = null;
                 if (item.parentWorkOrderNo && item.parentWorkOrderNo !== 'XX') {
                     parentId = woNoToIdMap[item.parentWorkOrderNo];
@@ -222,8 +223,8 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
     };
 
     const handleUpdate = async () => {
-        const { partName, customer, project, thickness, material,partNumber } = formData;
-        
+        const { partName, customer, project, thickness, material, partNumber } = formData;
+
         let hasError = false;
 
         if (!customer || customer === '-- Select a customer --') { toast.error("Please select a customer"); hasError = true; }
@@ -231,37 +232,37 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
         if (!partName.trim()) { toast.error("Please enter part name"); hasError = true; }
         if (!String(thickness).trim()) { toast.error("Please enter thickness"); hasError = true; }
         if (!material.trim()) { toast.error("Please enter material"); hasError = true; }
-        if(!partNumber.trim()){ toast.error("Please enter part number"); hasError = true; }
-        if (!itemNo) { toast.error("Item Number cannot be empty."); hasError = true; } 
+        if (!partNumber.trim()) { toast.error("Please enter part number"); hasError = true; }
+        if (!itemNo) { toast.error("Item Number cannot be empty."); hasError = true; }
         else if (!isItemNoUnique) { toast.error("The entered Item Number is already in use by another work order."); hasError = true; }
-        
+
         if (hasError) return;
 
         if (imagesToDelete.length > 0) {
-        try {
-            for (const imageId of imagesToDelete) {
-                await axiosInstance.delete(`/work/deleteWorkOrderImage/${imageId}`);
+            try {
+                for (const imageId of imagesToDelete) {
+                    await axiosInstance.delete(`/work/deleteWorkOrderImage/${imageId}`);
+                }
+                console.log("Successfully deleted all staged images one by one.");
+
+            } catch (error) {
+                console.error("❌ Failed to delete one of the images:", error);
+                toast.error("Could not complete image deletion. Please try again.");
+                return;
             }
-            console.log("Successfully deleted all staged images one by one.");
-            
-        } catch (error) {
-            console.error("❌ Failed to delete one of the images:", error);
-            toast.error("Could not complete image deletion. Please try again.");
-            return;
         }
-    }
 
         if (itemsToDelete.length > 0) {
             try {
-                await axiosInstance.delete("/work/deleteWorkOrderItems", { 
-                    data: itemsToDelete 
+                await axiosInstance.delete("/work/deleteWorkOrderItems", {
+                    data: itemsToDelete
                 });
                 console.log("Successfully deleted staged items:", itemsToDelete);
 
             } catch (error) {
                 console.error("❌ Failed to delete processes:", error);
                 toast.error("Could not delete the removed processes. Please try again.");
-                return; 
+                return;
             }
         }
 
@@ -269,103 +270,103 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
         const visibleManualParents = processes.filter(p => p.type === 'manual' && !p.sub && !tableData[p.id]?.scope);
 
         processes.forEach((p, index) => {
-        const rowData = tableData[p.id] || {};
+            const rowData = tableData[p.id] || {};
 
-        
-        if (p.isOrphan) {
-            processDetails.push({
-                sequence: index + 1,
-                workOrderNo: 'XX',
-                parentWorkOrderNo: 'XX',
-                itemNo: itemNo,
-                cancel: rowData.cancel || false,
-                scope: rowData.scope || false,
-                operationNumber: rowData.opNo && rowData.opNo !== '' ? parseInt(rowData.opNo, 10) : -1,
-                proceess: rowData.process || '',
-                length: parseFloat(rowData.l || '0'),
-                width: parseFloat(rowData.w || '0'),
-                height: parseFloat(rowData.h || '0'),
-                remark: rowData.remarks || '',
-                itemId: rowData.itemId || null,
-            });
-            return;
-        }
-        
-       
-        const parentExists = p.sub && processes.some(parent => parent.id === p.parentId);
-        if (p.sub && !parentExists) {
-            processDetails.push({
-                sequence: index + 1,
-                workOrderNo: 'XX',
-                parentWorkOrderNo: 'XX',
-                itemNo: itemNo,
-                cancel: rowData.cancel || false,
-                scope: rowData.scope || false,
-                operationNumber: rowData.opNo && rowData.opNo !== '' ? parseInt(rowData.opNo, 10) : -1,
-                proceess: rowData.process || '',
-                length: parseFloat(rowData.l || '0'),
-                width: parseFloat(rowData.w || '0'),
-                height: parseFloat(rowData.h || '0'),
-                remark: rowData.remarks || '',
-                itemId: rowData.itemId || null,
-            });
-            return; 
-        }
-        
-        let woNo = "";
-        let isScoped = rowData.scope || false;
-        let parentWorkOrderNoForPayload = null;
 
-        if (p.sub) {
-
-            const parentIndex = visibleManualParents.findIndex(parent => parent.id === p.parentId);
-            if (parentIndex >= 0) {
-                const parentWoNo = `PT-${itemNo}${String.fromCharCode(65 + parentIndex)}`;
-                parentWorkOrderNoForPayload = parentWoNo;
+            if (p.isOrphan) {
+                processDetails.push({
+                    sequence: index + 1,
+                    workOrderNo: 'XX',
+                    parentWorkOrderNo: 'XX',
+                    itemNo: itemNo,
+                    cancel: rowData.cancel || false,
+                    scope: rowData.scope || false,
+                    operationNumber: rowData.opNo && rowData.opNo !== '' ? parseInt(rowData.opNo, 10) : -1,
+                    proceess: rowData.process || '',
+                    length: parseFloat(rowData.l || '0'),
+                    width: parseFloat(rowData.w || '0'),
+                    height: parseFloat(rowData.h || '0'),
+                    remark: rowData.remarks || '',
+                    itemId: rowData.itemId || null,
+                });
+                return;
             }
-        }
 
-        if (isScoped) {
-            woNo = "XX";
-        } else if (p.type === "select") {
-            woNo = p.woNo;
-        } else if (p.sub) {
-            if (parentWorkOrderNoForPayload) {
-                const visibleSiblings = processes.filter(s => s.parentId === p.parentId && !tableData[s.id]?.scope);
-                const subIndex = visibleSiblings.findIndex(s => s.id === p.id);
-                woNo = (subIndex >= 0) ? `${parentWorkOrderNoForPayload}${subIndex + 1}` : 'XX';
-            } else {
+
+            const parentExists = p.sub && processes.some(parent => parent.id === p.parentId);
+            if (p.sub && !parentExists) {
+                processDetails.push({
+                    sequence: index + 1,
+                    workOrderNo: 'XX',
+                    parentWorkOrderNo: 'XX',
+                    itemNo: itemNo,
+                    cancel: rowData.cancel || false,
+                    scope: rowData.scope || false,
+                    operationNumber: rowData.opNo && rowData.opNo !== '' ? parseInt(rowData.opNo, 10) : -1,
+                    proceess: rowData.process || '',
+                    length: parseFloat(rowData.l || '0'),
+                    width: parseFloat(rowData.w || '0'),
+                    height: parseFloat(rowData.h || '0'),
+                    remark: rowData.remarks || '',
+                    itemId: rowData.itemId || null,
+                });
+                return;
+            }
+
+            let woNo = "";
+            let isScoped = rowData.scope || false;
+            let parentWorkOrderNoForPayload = null;
+
+            if (p.sub) {
+
+                const parentIndex = visibleManualParents.findIndex(parent => parent.id === p.parentId);
+                if (parentIndex >= 0) {
+                    const parentWoNo = `PT-${itemNo}${String.fromCharCode(65 + parentIndex)}`;
+                    parentWorkOrderNoForPayload = parentWoNo;
+                }
+            }
+
+            if (isScoped) {
                 woNo = "XX";
-                parentWorkOrderNoForPayload = "XX"; 
+            } else if (p.type === "select") {
+                woNo = p.woNo;
+            } else if (p.sub) {
+                if (parentWorkOrderNoForPayload) {
+                    const visibleSiblings = processes.filter(s => s.parentId === p.parentId && !tableData[s.id]?.scope);
+                    const subIndex = visibleSiblings.findIndex(s => s.id === p.id);
+                    woNo = (subIndex >= 0) ? `${parentWorkOrderNoForPayload}${subIndex + 1}` : 'XX';
+                } else {
+                    woNo = "XX";
+                    parentWorkOrderNoForPayload = "XX";
+                }
+            } else {
+                const manualIndex = visibleManualParents.findIndex(proc => proc.id === p.id);
+                woNo = `PT-${itemNo}${String.fromCharCode(65 + manualIndex)}`;
             }
-        } else {
-            const manualIndex = visibleManualParents.findIndex(proc => proc.id === p.id);
-            woNo = `PT-${itemNo}${String.fromCharCode(65 + manualIndex)}`;
-        }
-        
-        let operationNumberValue;
-        if (p.type === 'select') {
-            operationNumberValue = 0;
-        } else {
-            operationNumberValue = rowData.opNo && rowData.opNo !== '' ? parseInt(rowData.opNo, 10) : -1;
-        }
 
-        processDetails.push({
-            sequence: index + 1,
-            itemNo: itemNo,
-            workOrderNo: woNo,
-            cancel: rowData.cancel || false,
-            scope: rowData.scope || false,
-            operationNumber: operationNumberValue,
-            proceess: rowData.process || '',
-            length: parseFloat(rowData.l || '0'),
-            width: parseFloat(rowData.w || '0'),
-            height: parseFloat(rowData.h || '0'),
-            remark: rowData.remarks || '',
-            parentWorkOrderNo: parentWorkOrderNoForPayload,
-            itemId: rowData.itemId || null,
+            let operationNumberValue;
+            if (p.type === 'select') {
+                operationNumberValue = 0;
+            } else {
+                operationNumberValue = rowData.opNo && rowData.opNo !== '' ? parseInt(rowData.opNo, 10) : -1;
+            }
+
+            processDetails.push({
+                sequence: index + 1,
+                itemNo: itemNo,
+                workOrderNo: woNo,
+                cancel: rowData.cancel || false,
+                scope: rowData.scope || false,
+                operationNumber: operationNumberValue,
+                proceess: rowData.process || '',
+                length: parseFloat(rowData.l || '0'),
+                width: parseFloat(rowData.w || '0'),
+                height: parseFloat(rowData.h || '0'),
+                remark: rowData.remarks || '',
+                parentWorkOrderNo: parentWorkOrderNoForPayload,
+                itemId: rowData.itemId || null,
+            });
         });
-    });
 
         const payload = {
             partName: formData.partName,
@@ -421,63 +422,91 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
     };
 
     const fetchProcesses = async () => {
-    setProcessLoading(true);
-    try {
-      const res = await axiosInstance.get("/work/getAllWorkOrderProcesses");
-      const data = res.data;
+        setProcessLoading(true);
+        try {
+            const res = await axiosInstance.get("/work/getAllWorkOrderProcesses");
+            const data = res.data;
 
-      const options = data.map((process) => ({
-        value: process.processName,
-        label: process.processName
-      }));
+            const options = data.map((process) => ({
+                value: process.processName,
+                label: process.processName
+            }));
 
-      setProcessOptions(options);
-      return options;
-    } catch (error) {
-      toast.error("Failed to load processes");
-      console.error(error);
-      return null;
-    } finally {
-      setProcessLoading(false);
-    }
-  };
+            setProcessOptions(options);
+            return options;
+        } catch (error) {
+            toast.error("Failed to load processes");
+            console.error(error);
+            return null;
+        } finally {
+            setProcessLoading(false);
+        }
+    };
 
-  const fetchProcessesSuggestions = async () => {
-      setProcessesSuggestionsLoading(true);
-      try {
-        const res = await axiosInstance.get("/work/getAllProcesses");
-        const data = res.data;
-  
-        const option = data.map((process)=>({
-          value:process.processName,
-          label:process.processName
-        }))
-  
-        setProcessesSuggestionsOptions(option);
-        return option;
-      } catch (error) {
-        toast.error("Failed to load processes");
-        console.error(error);
-        return null;
-      } finally {
-        setProcessesSuggestionsLoading(false);
-      }
-    };
+    const fetchProcessesSuggestions = async () => {
+        setProcessesSuggestionsLoading(true);
+        try {
+            const res = await axiosInstance.get("/work/getAllProcesses");
+            const data = res.data;
 
-    const handleFormChange = (e) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({ ...prev, [name]: value }));
-    };
+            const option = data.map((process) => ({
+                value: process.processName,
+                label: process.processName
+            }))
 
-    const handleUploadClick = () => fileInputRef.current?.click();
+            setProcessesSuggestionsOptions(option);
+            return option;
+        } catch (error) {
+            toast.error("Failed to load processes");
+            console.error(error);
+            return null;
+        } finally {
+            setProcessesSuggestionsLoading(false);
+        }
+    };
 
-    const handleFileChange = (e) => {
-      const files = Array.from(e.target.files);
-      const newImages = files.map(file => ({ file, url: URL.createObjectURL(file) }));
-      setImages(prev => [...prev, ...newImages]);
-    };
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
-    const handleDeleteImage = (idx, isExisting, imgId) => {
+    const handleUploadClick = () => fileInputRef.current?.click();
+
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        const validImages = []; // To store files that pass validation
+
+        for (const file of files) {
+            // 1. Validate File Type
+            if (!file.type.startsWith("image/")) {
+                toast.error(`'${file.name}' is not an image file and was ignored.`);
+                continue; // Skip to the next file
+            }
+
+            // 2. Validate File Size
+            if (file.size > MAX_FILE_SIZE) {
+                toast.error(`'${file.name}' is larger than 5 MB and was ignored.`);
+                continue; // Skip to the next file
+            }
+
+            // If both checks pass, add the file to the valid list
+            validImages.push(file);
+        }
+
+        // Only process the files that passed validation
+        if (validImages.length > 0) {
+            const newImages = validImages.map((file) => ({
+                file,
+                url: URL.createObjectURL(file),
+            }));
+            setImages((prev) => [...prev, ...newImages]);
+        }
+
+        // Reset the input value to allow re-selecting the same file if needed
+        e.target.value = null;
+    };
+
+    const handleDeleteImage = (idx, isExisting, imgId) => {
         if (isExisting) {
             setImagesToDelete(prev => [...prev, imgId]);
             setExistingImages(prev => prev.filter((_, i) => i !== idx));
@@ -486,300 +515,300 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
         }
     };
 
-    const handleTableInputChange = (id, field, value) => {
-      setTableData(prevData => {
-        const currentRow = prevData[id] || {};
-        const updated = { ...currentRow, [field]: value };
+    const handleTableInputChange = (id, field, value) => {
+        setTableData(prevData => {
+            const currentRow = prevData[id] || {};
+            const updated = { ...currentRow, [field]: value };
 
-        if (field === 'cancel' && value === true) {
-          updated.scope = false;
-        }
+            if (field === 'cancel' && value === true) {
+                updated.scope = false;
+            }
 
-        if (field === 'scope' && value === true) {
-          updated.cancel = false;
-        }
+            if (field === 'scope' && value === true) {
+                updated.cancel = false;
+            }
 
-        return {
-          ...prevData,
-          [id]: updated
-        };
-      });
-    };
-
-
-    const handleAddManualProcess = () => {
-      const newId = `manual-${nextId.current++}`;
-      setProcesses(prev => {
-        const newManual = { id: newId, type: 'manual', sub: false, parentId: null };
-        const manual = [...prev.filter(p => p.type === 'manual'), newManual];
-        const select = prev.filter(p => p.type === 'select');
-        return [...manual, ...select];
-      });
-
-    };
-
-    const handleDeleteRow = async (id, itemId) => {
-      const deletedProcess = processes.find(p => p.id === id);
-      setProcesses(prev => prev.filter(p => p.id !== id));
-      
-      setTableData(prev => {
-        const updated = { ...prev };
-        delete updated[id];
-        return updated;
-      });
-
-      if (deletedProcess?.type === 'select') {
-        const suffix = deletedProcess.woNo.replace(/^.*?PT-\d+/, '').trim();
-        setSelectedProcesses(prev => prev.filter(p => p.value !== suffix));
-        setDisabledProcessValues(prev => prev.filter(val => val !== suffix));
-      }
-      if (itemId) {
-        setItemsToDelete(prev => [...prev, itemId]);
-    }
-      
+            return {
+                ...prevData,
+                [id]: updated
+            };
+        });
     };
 
 
-    const handleItemNoChange = (e) => {
-      const value = e.target.value;
-      if (/^\d*$/.test(value)) {
-        setItemNo(value);
-        setHasUserEditedItemNo(true);
-      }
-    };
+    const handleAddManualProcess = () => {
+        const newId = `manual-${nextId.current++}`;
+        setProcesses(prev => {
+            const newManual = { id: newId, type: 'manual', sub: false, parentId: null };
+            const manual = [...prev.filter(p => p.type === 'manual'), newManual];
+            const select = prev.filter(p => p.type === 'select');
+            return [...manual, ...select];
+        });
 
-    const checkItemNoUniqueness = async (number) => {
-      if (!number) {
-          setIsItemNoUnique(true);
-          return;
-      }
-      setIsCheckingItemNo(true);
-      setIsItemNoUnique(true);
-      try {
-          const response = await axiosInstance.get(`/work/checkItemNo/${number}`);
-          console.log(response);
-          setIsItemNoUnique(response.data.isUnique);
-  
-      } catch (error) {
-          toast.error("Could not verify Item Number. Please try again.");
-          setIsItemNoUnique(false); 
-          console.error("Error checking item number uniqueness:", error);
-      } finally {
-          setIsCheckingItemNo(false);
-      }
-    };
+    };
 
-    useEffect(() => {
-        if (!hasUserEditedItemNo) {
-            return;
-        }
-        if (String(itemNo) === String(originalItemNo)) {
-            setIsItemNoUnique(true);
-            return;
-        }
+    const handleDeleteRow = async (id, itemId) => {
+        const deletedProcess = processes.find(p => p.id === id);
+        setProcesses(prev => prev.filter(p => p.id !== id));
 
-      const handler = setTimeout(() => {
-          if (itemNo) {
-              checkItemNoUniqueness(itemNo);
-          } else {
-              setIsItemNoUnique(true);
-          }
-      }, 500); 
-      return () => {
-          clearTimeout(handler);
-      };
-    }, [itemNo, originalItemNo, hasUserEditedItemNo]); 
+        setTableData(prev => {
+            const updated = { ...prev };
+            delete updated[id];
+            return updated;
+        });
 
-      const fetchProjects = async () => {
-        if (!selectedCustomer) {
-          toast.error("Please select a customer first");
-          return;
-        }
-        try {
-          setProjectLoading(true); 
-    
-          const response = await axiosInstance.get(`/project/getProjectByCustomerId/${selectedCustomer}`);
-          const options = response.data.map(project => ({
-            label: project.projectName,
-            value: project.projectName,
-            id:project.projectId
-          }));
-          setProjectOptions(options);
-        } catch (error) {
-          console.error("Error fetching projects:", error);
-          toast.error("Failed to load projects");
-        } finally {
-          setProjectLoading(false);
-        }
-      };
+        if (deletedProcess?.type === 'select') {
+            const suffix = deletedProcess.woNo.replace(/^.*?PT-\d+/, '').trim();
+            setSelectedProcesses(prev => prev.filter(p => p.value !== suffix));
+            setDisabledProcessValues(prev => prev.filter(val => val !== suffix));
+        }
+        if (itemId) {
+            setItemsToDelete(prev => [...prev, itemId]);
+        }
 
-      const fetchParts = async () => {
-          try {
-            setLoadingPart(true);
-      
-            const res = await axiosInstance.get("/work/getAllParts");
-            const options = res.data.map(p => ({
-              label: p.partName,
-              value: p.partId,
-            }));
-            setPartOptions(options);
-          } catch (err) {
-            toast.error("Failed to load parts");
-          } finally {
-            setLoadingPart(false);
-          }
-        };
-      
-      
-        const handlePartsSelect = (selectedOption) => {
-          if (!selectedOption) {
-            setFormData(prev => ({ ...prev, partName: "" }));
-          } else {
-            setFormData(prev => ({ ...prev, partName: selectedOption.label }));
-          }
-        };
-      
-        const handlePartsCreateOption = async (inputValue) => {
-          setLoadingPart(true);
-          try {
-            const res = await axiosInstance.post(`/work/addPart/${inputValue}`);
-            const newOption = {
-              label: res.data.partName,
-              value: res.data.partId,
-            };
-            setPartOptions(prev => [...prev, newOption]);
-            setFormData(prev => ({ ...prev, partName: newOption.label }));
-            toast.success(`Added "${newOption.label}"`);
-          } catch (err) {
-            toast.error("Failed to add part");
-          } finally {
-            setLoadingPart(false);
-          }
-        };
-      
-        const fetchMaterial = async () => {
-          try {
-            setLoadingMaterial(true);
-      
-            const res = await axiosInstance.get("/work/getAllMaterials");
-            const options = res.data.map(p => ({
-              label: p.materialName,
-              value: p.materialId,
-            }));
-            setMaterialOptions(options);
-          } catch (err) {
-            toast.error("Failed to load materials");
-          } finally {
-            setLoadingMaterial(false);
-          }
-        };
-      
-      
-        const handleMaterialSelect = (selectedOption) => {
-          if (!selectedOption) {
-            setFormData(prev => ({ ...prev, material: "" }));
-          } else {
-            setFormData(prev => ({ ...prev, material: selectedOption.label }));
-          }
-        };
-      
-        const handleMaterialCreateOption = async (inputValue) => {
-          setLoadingMaterial(true);
-          try {
-            const res = await axiosInstance.post(`/work/addMaterial/${inputValue}`);
-            const newOption = {
-              label: res.data.materialName,
-              value: res.data.materialId,
-            };
-            setPartOptions(prev => [...prev, newOption]);
-            setFormData(prev => ({ ...prev, material: newOption.label }));
-            toast.success(`Added "${newOption.label}"`);
-          } catch (err) {
-            toast.error("Failed to add part");
-          } finally {
-            setLoadingMaterial(false);
-          }
-        };
-      
-        const fetchThickness = async () => {
-          try {
-            setLoadingThickness(true); 
-      
-            const res = await axiosInstance.get("/work/getAllThicknesses");
-            const options = res.data.map(p => ({
-              label: p.thicknessName,
-              value: p.thicknessId,
-            }));
-            setThicknessOptions(options);
-          } catch (err) {
-            toast.error("Failed to load thicknesses");
-          } finally {
-            setLoadingThickness(false);
-          }
-        };
-      
-      
-        const handleThicknessSelect = (selectedOption) => {
-          if (!selectedOption) {
-            setFormData(prev => ({ ...prev, thickness: "" }));
-          } else {
-            setFormData(prev => ({ ...prev, thickness: selectedOption.label }));
-          }
-        };
-      
-        const handleThicknessCreateOption = async (inputValue) => {
-          setLoadingThickness(true);
-          try {
-            const res = await axiosInstance.post(`/work/addThickness/${inputValue}`);
-            const newOption = {
-              label: res.data.thicknessName,
-              value: res.data.thicknessId,
-            };
-            setThicknessOptions(prev => [...prev, newOption]);
-            setFormData(prev => ({ ...prev, thickness: newOption.label }));
-            toast.success(`Added "${newOption.label}"`);
-          } catch (err) {
-            toast.error("Failed to add part");
-          } finally {
-            setLoadingThickness(false);
-          }
-        };
+    };
 
-        const fetchCustomers = async () => {
-          if (customerOptions.length > 0) {
-            return;
-          }
-          
-          try {
-            const response = await axiosInstance.get("/customer/getCustomerList");  
-            const formattedOptions = response.data.map(customer => ({
-              value: customer.companyName,
-              label: customer.companyName,
-              id: customer.id
-            }));
-            setCustomerOptions(formattedOptions);
-          } catch (error) {
-            console.error("Failed to fetch customers:", error);
-          } finally {
-            setIsCustomerLoading(false);
-          }
-        };
-    
-  const handleProcessSelectionChange = async (newlySelectedOptions) => {
-      const newSelection = newlySelectedOptions || [];
-      const newSelectedIds = new Set(newSelection.map(opt => opt.value));
-      const removedProcess = selectedProcesses.find(oldOpt => !newSelectedIds.has(oldOpt.value));
 
-      if (removedProcess) {
-          const processIdToRemove = removedProcess.value;
-          const itemData = tableData[processIdToRemove];
-        
+    const handleItemNoChange = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+            setItemNo(value);
+            setHasUserEditedItemNo(true);
+        }
+    };
+
+    const checkItemNoUniqueness = async (number) => {
+        if (!number) {
+            setIsItemNoUnique(true);
+            return;
+        }
+        setIsCheckingItemNo(true);
+        setIsItemNoUnique(true);
+        try {
+            const response = await axiosInstance.get(`/work/checkItemNo/${number}`);
+            console.log(response);
+            setIsItemNoUnique(response.data.isUnique);
+
+        } catch (error) {
+            toast.error("Could not verify Item Number. Please try again.");
+            setIsItemNoUnique(false);
+            console.error("Error checking item number uniqueness:", error);
+        } finally {
+            setIsCheckingItemNo(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!hasUserEditedItemNo) {
+            return;
+        }
+        if (String(itemNo) === String(originalItemNo)) {
+            setIsItemNoUnique(true);
+            return;
+        }
+
+        const handler = setTimeout(() => {
+            if (itemNo) {
+                checkItemNoUniqueness(itemNo);
+            } else {
+                setIsItemNoUnique(true);
+            }
+        }, 500);
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [itemNo, originalItemNo, hasUserEditedItemNo]);
+
+    const fetchProjects = async () => {
+        if (!selectedCustomer) {
+            toast.error("Please select a customer first");
+            return;
+        }
+        try {
+            setProjectLoading(true);
+
+            const response = await axiosInstance.get(`/project/getProjectByCustomerId/${selectedCustomer}`);
+            const options = response.data.map(project => ({
+                label: project.projectName,
+                value: project.projectName,
+                id: project.projectId
+            }));
+            setProjectOptions(options);
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+            toast.error("Failed to load projects");
+        } finally {
+            setProjectLoading(false);
+        }
+    };
+
+    const fetchParts = async () => {
+        try {
+            setLoadingPart(true);
+
+            const res = await axiosInstance.get("/work/getAllParts");
+            const options = res.data.map(p => ({
+                label: p.partName,
+                value: p.partId,
+            }));
+            setPartOptions(options);
+        } catch (err) {
+            toast.error("Failed to load parts");
+        } finally {
+            setLoadingPart(false);
+        }
+    };
+
+
+    const handlePartsSelect = (selectedOption) => {
+        if (!selectedOption) {
+            setFormData(prev => ({ ...prev, partName: "" }));
+        } else {
+            setFormData(prev => ({ ...prev, partName: selectedOption.label }));
+        }
+    };
+
+    const handlePartsCreateOption = async (inputValue) => {
+        setLoadingPart(true);
+        try {
+            const res = await axiosInstance.post(`/work/addPart/${inputValue}`);
+            const newOption = {
+                label: res.data.partName,
+                value: res.data.partId,
+            };
+            setPartOptions(prev => [...prev, newOption]);
+            setFormData(prev => ({ ...prev, partName: newOption.label }));
+            toast.success(`Added "${newOption.label}"`);
+        } catch (err) {
+            toast.error("Failed to add part");
+        } finally {
+            setLoadingPart(false);
+        }
+    };
+
+    const fetchMaterial = async () => {
+        try {
+            setLoadingMaterial(true);
+
+            const res = await axiosInstance.get("/work/getAllMaterials");
+            const options = res.data.map(p => ({
+                label: p.materialName,
+                value: p.materialId,
+            }));
+            setMaterialOptions(options);
+        } catch (err) {
+            toast.error("Failed to load materials");
+        } finally {
+            setLoadingMaterial(false);
+        }
+    };
+
+
+    const handleMaterialSelect = (selectedOption) => {
+        if (!selectedOption) {
+            setFormData(prev => ({ ...prev, material: "" }));
+        } else {
+            setFormData(prev => ({ ...prev, material: selectedOption.label }));
+        }
+    };
+
+    const handleMaterialCreateOption = async (inputValue) => {
+        setLoadingMaterial(true);
+        try {
+            const res = await axiosInstance.post(`/work/addMaterial/${inputValue}`);
+            const newOption = {
+                label: res.data.materialName,
+                value: res.data.materialId,
+            };
+            setPartOptions(prev => [...prev, newOption]);
+            setFormData(prev => ({ ...prev, material: newOption.label }));
+            toast.success(`Added "${newOption.label}"`);
+        } catch (err) {
+            toast.error("Failed to add part");
+        } finally {
+            setLoadingMaterial(false);
+        }
+    };
+
+    const fetchThickness = async () => {
+        try {
+            setLoadingThickness(true);
+
+            const res = await axiosInstance.get("/work/getAllThicknesses");
+            const options = res.data.map(p => ({
+                label: p.thicknessName,
+                value: p.thicknessId,
+            }));
+            setThicknessOptions(options);
+        } catch (err) {
+            toast.error("Failed to load thicknesses");
+        } finally {
+            setLoadingThickness(false);
+        }
+    };
+
+
+    const handleThicknessSelect = (selectedOption) => {
+        if (!selectedOption) {
+            setFormData(prev => ({ ...prev, thickness: "" }));
+        } else {
+            setFormData(prev => ({ ...prev, thickness: selectedOption.label }));
+        }
+    };
+
+    const handleThicknessCreateOption = async (inputValue) => {
+        setLoadingThickness(true);
+        try {
+            const res = await axiosInstance.post(`/work/addThickness/${inputValue}`);
+            const newOption = {
+                label: res.data.thicknessName,
+                value: res.data.thicknessId,
+            };
+            setThicknessOptions(prev => [...prev, newOption]);
+            setFormData(prev => ({ ...prev, thickness: newOption.label }));
+            toast.success(`Added "${newOption.label}"`);
+        } catch (err) {
+            toast.error("Failed to add part");
+        } finally {
+            setLoadingThickness(false);
+        }
+    };
+
+    const fetchCustomers = async () => {
+        if (customerOptions.length > 0) {
+            return;
+        }
+
+        try {
+            const response = await axiosInstance.get("/customer/getCustomerList");
+            const formattedOptions = response.data.map(customer => ({
+                value: customer.companyName,
+                label: customer.companyName,
+                id: customer.id
+            }));
+            setCustomerOptions(formattedOptions);
+        } catch (error) {
+            console.error("Failed to fetch customers:", error);
+        } finally {
+            setIsCustomerLoading(false);
+        }
+    };
+
+    const handleProcessSelectionChange = async (newlySelectedOptions) => {
+        const newSelection = newlySelectedOptions || [];
+        const newSelectedIds = new Set(newSelection.map(opt => opt.value));
+        const removedProcess = selectedProcesses.find(oldOpt => !newSelectedIds.has(oldOpt.value));
+
+        if (removedProcess) {
+            const processIdToRemove = removedProcess.value;
+            const itemData = tableData[processIdToRemove];
+
             if (itemData && itemData.itemId) {
                 setItemsToDelete(prev => [...prev, itemData.itemId]);
             }
-      }
-      setSelectedProcesses(newSelection);
-  };
+        }
+        setSelectedProcesses(newSelection);
+    };
 
 
     return (
@@ -789,190 +818,190 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                  <div className="mb-4">
-                    <Form.Label>Part Image</Form.Label>
-                      <div className="d-flex flex-wrap gap-2">
-                        <div className="upload-box text-center d-flex flex-column align-items-center justify-content-center" 
-                          onClick={handleUploadClick}
-                        >
-                          <div className="plus_sysmbol" style={{ fontSize: "2rem" }}>+</div>
-                          <strong>Click to upload</strong>
-                          <small>PNG, JPG, GIF</small>
+                    <div className="mb-4">
+                        <Form.Label>Part Image</Form.Label>
+                        <div className="d-flex flex-wrap gap-2">
+                            <div className="upload-box text-center d-flex flex-column align-items-center justify-content-center"
+                                onClick={handleUploadClick}
+                            >
+                                <div className="plus_sysmbol" style={{ fontSize: "2rem" }}>+</div>
+                                <strong>Click to upload</strong>
+                                <small>PNG, JPG, GIF</small>
+                            </div>
+                            {[...existingImages.map((img, index) => (
+                                <div key={index} style={{ height: "200px", width: "200px", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", position: "relative" }}>
+                                    <img src={`data:image/jpeg;base64,${img.image}`} alt={`Preview ${index}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => handleDeleteImage(index, true, img.workOrderImageId)}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '5px',
+                                            right: '5px',
+                                            borderRadius: '50%',
+                                            width: '24px',
+                                            height: '24px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            padding: 0,
+                                            lineHeight: 1,
+                                        }}
+                                    >
+                                        &times;
+                                    </Button>
+                                </div>
+                            )),
+                            ...images.map((img, index) => (
+                                <div key={index} style={{ height: "200px", width: "200px", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", position: "relative" }}>
+                                    <img src={img.url} alt={`Preview ${index}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => handleDeleteImage(index)}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '5px',
+                                            right: '5px',
+                                            borderRadius: '50%',
+                                            width: '24px',
+                                            height: '24px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            padding: 0,
+                                            lineHeight: 1,
+                                        }}
+                                    >
+                                        &times;
+                                    </Button>
+                                </div>
+                            ))]}
+                            <Form.Control type="file" ref={fileInputRef} onChange={handleFileChange} multiple style={{ display: "none" }} />
                         </div>
-                      {[...existingImages.map((img,index) => (
-                        <div key={index} style={{ height: "200px", width: "200px", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", position: "relative"}}>
-                            <img src={`data:image/jpeg;base64,${img.image}`} alt={`Preview ${index}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            <Button 
-                              variant="danger"
-                              size="sm"
-                              onClick={() => handleDeleteImage(index,true,img.workOrderImageId)}
-                              style={{
-                                position: 'absolute',
-                                top: '5px',
-                                right: '5px',
-                                borderRadius: '50%',
-                                width: '24px',
-                                height: '24px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: 0,
-                                lineHeight: 1,
-                              }}
-                            >
-                              &times;
-                            </Button>
-                          </div>
-                      )),
-                      ...images.map((img, index) => (
-                        <div key={index} style={{ height: "200px", width: "200px", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", position: "relative"}}>
-                            <img src={img.url} alt={`Preview ${index}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            <Button 
-                              variant="danger"
-                              size="sm"
-                              onClick={() => handleDeleteImage(index)}
-                              style={{
-                                position: 'absolute',
-                                top: '5px',
-                                right: '5px',
-                                borderRadius: '50%',
-                                width: '24px',
-                                height: '24px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: 0,
-                                lineHeight: 1,
-                              }}
-                            >
-                              &times;
-                            </Button>
-                          </div>
-                      ))]}
-                      <Form.Control type="file" ref={fileInputRef} onChange={handleFileChange} multiple style={{ display: "none" }} />
                     </div>
-                  </div>
 
-                  <div className="row">
-                    
-                    <Form.Group className="col-md-4 mb-3">
-                      <Form.Label>Customer <span className="text-danger">*</span></Form.Label>
-                      <Select
-                        options={customerOptions}
-                        value={customerOptions.find(opt => opt.value === formData.customer) || { label: formData.customer, value: formData.customer }}
-                        onChange={selected =>{
-                          setSelectedCustomer(selected ? selected.id : '');  
-                          setFormData(prev => ({
-                              ...prev,
-                              customer: selected ? selected.value : '',
-                              customerId: selected ? selected.id : ''
-                            }))
-                          }
-                        }
-                        placeholder="Select a customer..."
-                        isClearable
-                        onMenuOpen={fetchCustomers}
-                        isLoading={isCustomerLoading}
-                      />
-                    </Form.Group>
+                    <div className="row">
 
-                    <Form.Group className="col-md-4 mb-3">
-                      <Form.Label>Project <span className="text-danger">*</span></Form.Label>
-                      <Select
-                        options={projectOptions}
-                        value={projectOptions.find(opt => opt.value === formData.project) || { label: formData.project, value: formData.project }}
-                        onChange={(selected) =>
-                          setFormData(prev => ({
-                            ...prev,
-                            project: selected ? selected.value : "",
-                            projectId: selected ? selected.id : ''
-                          }))
-                        }
-                        onMenuOpen={fetchProjects}
-                        placeholder="-- Select a project --"
-                        isClearable
-                        isLoading={projectLoading}
-                      />
+                        <Form.Group className="col-md-4 mb-3">
+                            <Form.Label>Customer <span className="text-danger">*</span></Form.Label>
+                            <Select
+                                options={customerOptions}
+                                value={customerOptions.find(opt => opt.value === formData.customer) || { label: formData.customer, value: formData.customer }}
+                                onChange={selected => {
+                                    setSelectedCustomer(selected ? selected.id : '');
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        customer: selected ? selected.value : '',
+                                        customerId: selected ? selected.id : ''
+                                    }))
+                                }
+                                }
+                                placeholder="Select a customer..."
+                                isClearable
+                                onMenuOpen={fetchCustomers}
+                                isLoading={isCustomerLoading}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="col-md-4 mb-3">
+                            <Form.Label>Project <span className="text-danger">*</span></Form.Label>
+                            <Select
+                                options={projectOptions}
+                                value={projectOptions.find(opt => opt.value === formData.project) || { label: formData.project, value: formData.project }}
+                                onChange={(selected) =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        project: selected ? selected.value : "",
+                                        projectId: selected ? selected.id : ''
+                                    }))
+                                }
+                                onMenuOpen={fetchProjects}
+                                placeholder="-- Select a project --"
+                                isClearable
+                                isLoading={projectLoading}
+                            />
 
 
-                    </Form.Group>
-                      
-                    <Form.Group className="col-md-4 mb-3">
-                      <Form.Label>Part Number <span className="text-danger">*</span></Form.Label>
-                        <Form.Control type="text" name="partNumber" value={formData.partNumber} onChange={handleFormChange} />
-                    </Form.Group>
+                        </Form.Group>
 
-                    <Form.Group className="col-md-4 mb-3">
-                      <Form.Label>Part Name <span className="text-danger">*</span></Form.Label>
-                      <div style={{ width: "100%" }}>
-                        <CreatableSelect
-                          styles={{ container: (base) => ({ ...base, width: "100%" }) }}
-                          isClearable
-                          onMenuOpen={fetchParts}
-                          onChange={handlePartsSelect}
-                          onCreateOption={handlePartsCreateOption}
-                          options={partOptions}
-                          isLoading={loadingPart}
-                          placeholder="Search or create part..."
-                          value={
-                            formData.partName
-                              ? { label: formData.partName, value: formData.partName }
-                              : null
-                          }
-                        />
-                      </div>
-                    </Form.Group>
+                        <Form.Group className="col-md-4 mb-3">
+                            <Form.Label>Part Number <span className="text-danger">*</span></Form.Label>
+                            <Form.Control type="text" name="partNumber" value={formData.partNumber} onChange={handleFormChange} />
+                        </Form.Group>
 
-                    <Form.Group className="col-md-4 mb-3">
-                      <Form.Label>Material <span className="text-danger">*</span></Form.Label>
-                      <div style={{ width: "100%" }}>
-                        <CreatableSelect
-                          styles={{ container: (base) => ({ ...base, width: "100%" }) }}
-                          isClearable
-                          onMenuOpen={fetchMaterial}
-                          onChange={handleMaterialSelect}
-                          onCreateOption={handleMaterialCreateOption}
-                          options={materialOptions}
-                          placeholder="Search or create material..."
-                          isLoading={loadingMaterial}
-                          value={
-                            formData.material
-                              ? { label: formData.material, value: formData.material }
-                              : null
-                          }
-                        />
-                      </div>
-                    </Form.Group>
+                        <Form.Group className="col-md-4 mb-3">
+                            <Form.Label>Part Name <span className="text-danger">*</span></Form.Label>
+                            <div style={{ width: "100%" }}>
+                                <CreatableSelect
+                                    styles={{ container: (base) => ({ ...base, width: "100%" }) }}
+                                    isClearable
+                                    onMenuOpen={fetchParts}
+                                    onChange={handlePartsSelect}
+                                    onCreateOption={handlePartsCreateOption}
+                                    options={partOptions}
+                                    isLoading={loadingPart}
+                                    placeholder="Search or create part..."
+                                    value={
+                                        formData.partName
+                                            ? { label: formData.partName, value: formData.partName }
+                                            : null
+                                    }
+                                />
+                            </div>
+                        </Form.Group>
 
-                    <Form.Group className="col-md-4 mb-3">
-                      <Form.Label>Thickness<span className="text-danger">*</span></Form.Label>
-                      <div style={{ width: "100%" }}>
-                        <CreatableSelect
-                          styles={{ container: (base) => ({ ...base, width: "100%" }) }}
-                          isClearable
-                          onMenuOpen={fetchThickness}
-                          onChange={handleThicknessSelect}
-                          onCreateOption={handleThicknessCreateOption}
-                          options={thicknessOptions}
-                          isLoading={loadingThickness}
-                          placeholder="Search or create thickness..."
-                          value={
-                            formData.thickness
-                              ? { label: formData.thickness, value: formData.thickness }
-                              : null
-                          }
-                        />
-                      </div>
-                    </Form.Group>
+                        <Form.Group className="col-md-4 mb-3">
+                            <Form.Label>Material <span className="text-danger">*</span></Form.Label>
+                            <div style={{ width: "100%" }}>
+                                <CreatableSelect
+                                    styles={{ container: (base) => ({ ...base, width: "100%" }) }}
+                                    isClearable
+                                    onMenuOpen={fetchMaterial}
+                                    onChange={handleMaterialSelect}
+                                    onCreateOption={handleMaterialCreateOption}
+                                    options={materialOptions}
+                                    placeholder="Search or create material..."
+                                    isLoading={loadingMaterial}
+                                    value={
+                                        formData.material
+                                            ? { label: formData.material, value: formData.material }
+                                            : null
+                                    }
+                                />
+                            </div>
+                        </Form.Group>
 
-                    <Form.Group className="col-md-4 mb-3">
-                      <Form.Label>Part Size</Form.Label>
-                      <Form.Control type="text" name="partSize" value={formData.partSize} onChange={handleFormChange} />
-                    </Form.Group>
-                    <Form.Group className="col-md-4 mb-3">
-                      <Form.Label>Part Weight</Form.Label>
-                      <Form.Control type="text" name="partWeight" value={formData.partWeight} onChange={handleFormChange} />
-                    </Form.Group>
+                        <Form.Group className="col-md-4 mb-3">
+                            <Form.Label>Thickness<span className="text-danger">*</span></Form.Label>
+                            <div style={{ width: "100%" }}>
+                                <CreatableSelect
+                                    styles={{ container: (base) => ({ ...base, width: "100%" }) }}
+                                    isClearable
+                                    onMenuOpen={fetchThickness}
+                                    onChange={handleThicknessSelect}
+                                    onCreateOption={handleThicknessCreateOption}
+                                    options={thicknessOptions}
+                                    isLoading={loadingThickness}
+                                    placeholder="Search or create thickness..."
+                                    value={
+                                        formData.thickness
+                                            ? { label: formData.thickness, value: formData.thickness }
+                                            : null
+                                    }
+                                />
+                            </div>
+                        </Form.Group>
+
+                        <Form.Group className="col-md-4 mb-3">
+                            <Form.Label>Part Size</Form.Label>
+                            <Form.Control type="text" name="partSize" value={formData.partSize} onChange={handleFormChange} />
+                        </Form.Group>
+                        <Form.Group className="col-md-4 mb-3">
+                            <Form.Label>Part Weight</Form.Label>
+                            <Form.Control type="text" name="partWeight" value={formData.partWeight} onChange={handleFormChange} />
+                        </Form.Group>
                     </div>
                 </Form>
                 <hr />
@@ -1138,7 +1167,7 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
                                         <Button variant="link" className="text-danger p-0" onClick={() => handleDeleteRow(p.id, data.itemId)}>
                                             <FaTrash />
                                         </Button>
-                                        {p.type === 'manual' && !p.sub && !p.isOrphan &&(
+                                        {p.type === 'manual' && !p.sub && !p.isOrphan && (
                                             <Button variant="link" className="text-success p-0 ms-2" onClick={() => handleAddSubProcess(p.id)} title="Add Sub-Process">
                                                 <FaPlus />
                                             </Button>

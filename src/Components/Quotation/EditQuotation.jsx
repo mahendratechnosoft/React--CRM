@@ -551,36 +551,66 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
       </Card.Header>
       <Card.Body className="quotation-body">
         <Container fluid>
-          {/* Top Level Form Details */}
-          <Row className="mb-3">
-            <Col md={4}><Form.Group><Form.Label>Company Name <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} /></Form.Group></Col>
-            <Col md={4}><Form.Group><Form.Label>Project Name <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} /></Form.Group></Col>
-            <Col md={4}><Form.Group><Form.Label>Contact Person <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={3}><Form.Group><Form.Label>Quotation No <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={quotationNo} onChange={(e) => setQuotationNo(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Supplier Code</Form.Label><Form.Control type="text" value={supplierCode} onChange={(e) => setSupplierCode(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Quotation Date <span className="text-danger">*</span></Form.Label><Form.Control type="date" value={quotationDate} onChange={(e) => setQuotationDate(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Open Till</Form.Label><Form.Control type="date" value={openTill} onChange={(e) => setOpenTill(e.target.value)} /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={4}><Form.Group><Form.Label>Currency</Form.Label><Select options={currencyOptions} value={currency} onChange={setCurrency} placeholder="Select Currency" /></Form.Group></Col>
-            <Col md={4}><Form.Group><Form.Label>Status <span className="text-danger">*</span></Form.Label><Select options={statusOptions} value={status} onChange={setStatus} placeholder="Select Status" /></Form.Group></Col>
-            <Col md={4}><Form.Group><Form.Label>Assigned <span className="text-danger">*</span></Form.Label><Select options={assignedOptions} value={assigned} onChange={setAssigned} placeholder="Select Assigned" /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={6}><Form.Group><Form.Label>Address <span className="text-danger">*</span></Form.Label><Form.Control as="textarea" rows={1} value={address} onChange={(e) => setAddress(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Email <span className="text-danger">*</span></Form.Label><Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Phone <span className="text-danger">*</span></Form.Label><Form.Control type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={3}><Form.Group><Form.Label>Country <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={country} onChange={(e) => setCountry(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>State <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={state} onChange={(e) => setState(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>City <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={city} onChange={(e) => setCity(e.target.value)} /></Form.Group></Col>
-            <Col md={3}><Form.Group><Form.Label>Zip <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={zip} onChange={(e) => setZip(e.target.value)} /></Form.Group></Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={12}><Form.Group><Form.Label>Reference</Form.Label><Form.Control as="textarea" rows={1} value={reference} onChange={(e) => setReference(e.target.value)} /></Form.Group></Col>
+          <Row>
+            {/* --- Left Partition: Customer Information --- */}
+            <Col md={6} className="mb-3 mb-md-0">
+              <Card>
+                <Card.Header as="h5">Customer Information</Card.Header>
+                <Card.Body>
+                  <Row className="mb-3">
+                    <Col><Form.Group><Form.Label>Company Name <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Contact Person <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Phone <span className="text-danger">*</span></Form.Label><Form.Control type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col><Form.Group><Form.Label>Email <span className="text-danger">*</span></Form.Label><Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col><Form.Group><Form.Label>Address <span className="text-danger">*</span></Form.Label><Form.Control as="textarea" rows={2} value={address} onChange={(e) => setAddress(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>City <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={city} onChange={(e) => setCity(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>State <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={state} onChange={(e) => setState(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row>
+                    <Col md={6}><Form.Group><Form.Label>Country <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={country} onChange={(e) => setCountry(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Zip <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={zip} onChange={(e) => setZip(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* --- Right Partition: Quotation Details --- */}
+            <Col md={6}>
+              <Card>
+                <Card.Header as="h5">Quotation Details</Card.Header>
+                <Card.Body>
+                  <Row className="mb-3">
+                    <Col><Form.Group><Form.Label>Project Name <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Quotation No <span className="text-danger">*</span></Form.Label><Form.Control type="text" value={quotationNo} onChange={(e) => setQuotationNo(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Quotation Date <span className="text-danger">*</span></Form.Label><Form.Control type="date" value={quotationDate} onChange={(e) => setQuotationDate(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Supplier Code</Form.Label><Form.Control type="text" value={supplierCode} onChange={(e) => setSupplierCode(e.target.value)} /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Open Till</Form.Label><Form.Control type="date" value={openTill} onChange={(e) => setOpenTill(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Status <span className="text-danger">*</span></Form.Label><Select options={statusOptions} value={status} onChange={setStatus} placeholder="Select Status" /></Form.Group></Col>
+                    <Col md={6}><Form.Group><Form.Label>Assigned <span className="text-danger">*</span></Form.Label><Select options={assignedOptions} value={assigned} onChange={setAssigned} placeholder="Select Assigned" /></Form.Group></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col md={6}><Form.Group><Form.Label>Currency</Form.Label><Select options={currencyOptions} value={currency} onChange={setCurrency} placeholder="Select Currency" /></Form.Group></Col>
+                  </Row>
+                  <Row>
+                    <Col><Form.Group><Form.Label>Reference</Form.Label><Form.Control as="textarea" rows={2} value={reference} onChange={(e) => setReference(e.target.value)} /></Form.Group></Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
           </Row>
         </Container>
         <hr />
