@@ -254,14 +254,14 @@ const CustomerContact = () => {
         customerId={customerId}
         onContactCreated={fetchContacts} // refresh contacts after create
       />
-      // Render modal like
+    
       <CustomerUpdateContact
         show={showUpdateModal}
         handleClose={() => setShowUpdateModal(false)}
         contact={selectedContact}
         onContactUpdated={() => fetchContacts()}
       />
-      ;
+      
       <ToastContainer />
     </>
   );
