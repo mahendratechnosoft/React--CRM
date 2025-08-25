@@ -1,0 +1,29 @@
+/* .Companalist-main-card {
+  background: white;
+  padding: 1% 1% 1% 1%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  min-height: 90%;
+
+     max-height: 70vh;
+  overflow-y: auto;
+} */
+
+.Companalist-main-card {
+  background: white;
+  padding: 1% 0% 1% 0%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  min-height: 83%;
+  max-height: 66vh;
+  overflow-y: auto;
+  max-width: 85vw;
+}
+
+
+.table-main-div{
+  overflow-y: auto;
+  min-height: 83%;
+    max-height: 66vh;
+    max-width: 85vw;
+}
