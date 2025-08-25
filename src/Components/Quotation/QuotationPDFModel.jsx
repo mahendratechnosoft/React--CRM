@@ -95,7 +95,7 @@ const MyDocument = ({ data }) => {
 
                   {/* Row 2 inside the column */}
                   <View>
-                    <Text style={[{ padding: 2 ,lineHeight:0.7}]}>
+                    <Text style={[{ padding: 2, lineHeight: 0.7 }]}>
                       Reference :- {quotationInfo.refrence || "N/A"}
                     </Text>
                   </View>
@@ -148,16 +148,36 @@ const MyDocument = ({ data }) => {
               <View style={[styles.tableProcessCol, styles.tableColHeader, { flex: 4 }]}>
                 <Text style={[styles.boldText, styles.cellText]}>Description</Text>
               </View>
+
+              {/* Main container for the "Tool Size" header cell */}
               <View style={[styles.toolSizeCell, { flex: 3 }]}>
-                <View style={{ borderBottomWidth: 1, borderBottomColor: "black", width: "100%" }}>
+
+                {/* Top part: "Tool Size (mm)" text */}
+                <View style={styles.toolSizeTop}>
                   <Text style={[styles.boldText, { padding: 2 }]}>Tool Size (mm)</Text>
                 </View>
-                <View style={{ flexDirection: "row" }}>
-                  <Text style={[styles.boldText, styles.toolSizeSubCell, { borderRightWidth: 1 }]}>L</Text>
-                  <Text style={[styles.boldText, styles.toolSizeSubCell, { borderRightWidth: 1 }]}>W</Text>
-                  <Text style={[styles.boldText, styles.toolSizeSubCell]}>H</Text>
+
+                {/* Bottom part: The row for "L | W | H" */}
+                <View style={styles.toolSizeBottomRow}>
+
+                  {/* Sub-cell View for 'L'. The border is on this View. */}
+                  <View style={[styles.toolSizeSubCell, { borderRightWidth: 1 }]}>
+                    <Text style={styles.boldText}>L</Text>
+                  </View>
+
+                  {/* Sub-cell View for 'W'. The border is on this View. */}
+                  <View style={[styles.toolSizeSubCell, { borderRightWidth: 1 }]}>
+                    <Text style={styles.boldText}>W</Text>
+                  </View>
+
+                  {/* Sub-cell View for 'H'. No right border needed. */}
+                  <View style={styles.toolSizeSubCell}>
+                    <Text style={styles.boldText}>H</Text>
+                  </View>
+
                 </View>
               </View>
+
               {/* Last cell uses unified style and removes its right border */}
               <View style={[styles.tableProcessCol, styles.tableColHeader, { flex: 3, borderRightWidth: 0 }]}>
                 <Text style={[styles.boldText, styles.cellText]}>Tool Cost</Text>
@@ -221,8 +241,11 @@ const MyDocument = ({ data }) => {
                     </View>
 
                     <View style={[styles.operationsCol, { flex: 15 }]} wrap={true}>
-                      {(item.partProcess || []).map((process, i) => (
-                        <View key={"process-" + i} style={styles.opRow} wrap={false}>
+                      {(item.partProcess || []).map((process, i) => {
+                        const isLastItem = i === (item.partProcess || []).length - 1;
+                        
+                        return(
+                        <View key={"process-" + i} style={[styles.opRow, !isLastItem && styles.opRowBottomBorder]} wrap={false}>
                           <View style={[styles.processOpCell, { flex: 3 }]}>
                             <Text style={styles.cellText}>
                               {process.toolConstruction || "N/A"}
@@ -253,7 +276,8 @@ const MyDocument = ({ data }) => {
                             </Text>
                           </View>
                         </View>
-                      ))}
+                      );
+                      })}
                     </View>
                   </View>
 
@@ -277,7 +301,7 @@ const MyDocument = ({ data }) => {
             <View style={styles.grandTotalRow}>
               <View style={styles.subTotalSpacerCell}></View>
               <View style={styles.grandTotalLabelCell}>
-                <Text style={[styles.boldText, { color: '#c00000' }]}>GRAND TOTAL</Text>
+                <Text style={[styles.boldText, { color: '#c00000' }]}>GRAND TOTAL:</Text>
               </View>
               <View style={styles.grandTotalValueCell}>
                 <Text style={[styles.boldText, { color: '#c00000' }]}>
@@ -291,7 +315,7 @@ const MyDocument = ({ data }) => {
             <Text style={styles.considerationsTitle}>QUOTATION CONSIDERATIONS :</Text>
             <View style={styles.considerationsTable}>
               {considerationGroups.map((group, index) => (
-                <View key={index} style={styles.considerationsTableRow} wrap={false}>
+                <View key={index} style={styles.considerationsTableRow}>
                   {/* Column 1: Serial Number (Vertically Centered) */}
                   <View style={styles.considerationsNumberCell}>
                     <Text style={styles.cellText}>{index + 1}</Text>

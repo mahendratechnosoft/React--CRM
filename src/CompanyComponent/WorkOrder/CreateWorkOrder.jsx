@@ -16,6 +16,8 @@ import CreatableSelect from "react-select/creatable";
 //   { value: 'TL', label: 'TL' },
 // ];
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 const CreateWorkOrder = ({ show, onClose, onSave }) => {
   const fileInputRef = useRef(null);
   const [images, setImages] = useState([]);
@@ -23,7 +25,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
   const [selectedProcesses, setSelectedProcesses] = useState([]);
   const [tableData, setTableData] = useState({});
   const nextId = useRef(1);
-  const [itemNo, setItemNo]=useState(1001);
+  const [itemNo, setItemNo] = useState(1001);
   const [loadingPart, setLoadingPart] = useState(false);
   const [loadingThickness, setLoadingThickness] = useState(false);
   const [loadingMaterial, setLoadingMaterial] = useState(false);
@@ -38,8 +40,8 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
   const [isItemNoUnique, setIsItemNoUnique] = useState(true);
   const [isCheckingItemNo, setIsCheckingItemNo] = useState(false);
 
-  const [processOptions,setProcessOptions] = useState([]);
-  const [processLoading,setProcessLoading] = useState();
+  const [processOptions, setProcessOptions] = useState([]);
+  const [processLoading, setProcessLoading] = useState();
 
   const [processesSuggestionsOptions, setProcessesSuggestionsOptions] = useState([]);
   const [processesSuggestionsLoading, setProcessesSuggestionsLoading] = useState();
@@ -55,7 +57,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
     material: '',
     partSize: '',
     partWeight: '',
-    partNumber:'',
+    partNumber: '',
   });
 
   const [projectOptions, setProjectOptions] = useState([]);
@@ -75,35 +77,35 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
 
   const checkItemNoUniqueness = async (number) => {
     if (!number) {
-        setIsItemNoUnique(true);
-        return;
+      setIsItemNoUnique(true);
+      return;
     }
     setIsCheckingItemNo(true);
     setIsItemNoUnique(true);
     try {
-        const response = await axiosInstance.get(`/work/checkItemNo/${number}`);
-        console.log(response);
-        setIsItemNoUnique(response.data.isUnique);
+      const response = await axiosInstance.get(`/work/checkItemNo/${number}`);
+      console.log(response);
+      setIsItemNoUnique(response.data.isUnique);
 
     } catch (error) {
-        toast.error("Could not verify Item Number. Please try again.");
-        setIsItemNoUnique(false); 
-        console.error("Error checking item number uniqueness:", error);
+      toast.error("Could not verify Item Number. Please try again.");
+      setIsItemNoUnique(false);
+      console.error("Error checking item number uniqueness:", error);
     } finally {
-        setIsCheckingItemNo(false);
+      setIsCheckingItemNo(false);
     }
   };
 
   useEffect(() => {
     const handler = setTimeout(() => {
-        if (itemNo) {
-            checkItemNoUniqueness(itemNo);
-        } else {
-            setIsItemNoUnique(true);
-        }
-    }, 500); 
+      if (itemNo) {
+        checkItemNoUniqueness(itemNo);
+      } else {
+        setIsItemNoUnique(true);
+      }
+    }, 500);
     return () => {
-        clearTimeout(handler);
+      clearTimeout(handler);
     };
   }, [itemNo]);
 
@@ -121,9 +123,9 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
       const res = await axiosInstance.get("/work/getAllWorkOrderProcesses");
       const data = res.data;
 
-      const option = data.map((process)=>({
-        value:process.processName,
-        label:process.processName
+      const option = data.map((process) => ({
+        value: process.processName,
+        label: process.processName
       }))
 
       setProcessOptions(option);
@@ -141,9 +143,9 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
       const res = await axiosInstance.get("/work/getAllProcesses");
       const data = res.data;
 
-      const option = data.map((process)=>({
-        value:process.processName,
-        label:process.processName
+      const option = data.map((process) => ({
+        value: process.processName,
+        label: process.processName
       }))
 
       setProcessesSuggestionsOptions(option);
@@ -162,8 +164,28 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    const newImages = files.map((file) => ({ file, url: URL.createObjectURL(file) }));
-    setImages((prev) => [...prev, ...newImages]);
+    const validImages = []; // To store files that pass validation
+
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        toast.error(`'${file.name}' is not an image file and was ignored.`);
+        continue;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`'${file.name}' is larger than 5 MB and was ignored.`);
+        continue; 
+      }
+      validImages.push(file);
+    }
+
+    if (validImages.length > 0) {
+      const newImages = validImages.map((file) => ({
+        file,
+        url: URL.createObjectURL(file),
+      }));
+      setImages((prev) => [...prev, ...newImages]);
+    }
+    e.target.value = null;
   };
 
   const handleFormChange = (e) => {
@@ -197,19 +219,19 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
     nextId.current += 1;
 
     setProcesses(prev => {
-        const parentIndex = prev.findIndex(p => p.id === parentId);
-        if (parentIndex === -1) return prev; 
-        let lastChildIndex = parentIndex;
-        for (let i = prev.length - 1; i > parentIndex; i--) {
-            if (prev[i].parentId === parentId) {
-                lastChildIndex = i;
-                break;
-            }
+      const parentIndex = prev.findIndex(p => p.id === parentId);
+      if (parentIndex === -1) return prev;
+      let lastChildIndex = parentIndex;
+      for (let i = prev.length - 1; i > parentIndex; i--) {
+        if (prev[i].parentId === parentId) {
+          lastChildIndex = i;
+          break;
         }
+      }
 
-        const newProcesses = [...prev];
-        newProcesses.splice(lastChildIndex + 1, 0, newSubProcess);
-        return newProcesses;
+      const newProcesses = [...prev];
+      newProcesses.splice(lastChildIndex + 1, 0, newSubProcess);
+      return newProcesses;
     });
   };
 
@@ -242,7 +264,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
   };
 
   const handleSaveClick = async () => {
-    const { partName, customer, project, thickness, material,partNumber } = formData;
+    const { partName, customer, project, thickness, material, partNumber } = formData;
     let hasError = false;
 
     if (!customer || customer === '-- Select a customer --') { toast.error("Please select a customer"); hasError = true; }
@@ -250,68 +272,68 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
     if (!partName.trim()) { toast.error("Please enter part name"); hasError = true; }
     if (!thickness.trim()) { toast.error("Please enter thickness"); hasError = true; }
     if (!material.trim()) { toast.error("Please enter material"); hasError = true; }
-    if (!partNumber.trim()){ toast.error("Please enter part number"); hasError = true; }
-    if (!itemNo) { toast.error("Item Number cannot be empty."); hasError = true; } 
+    if (!partNumber.trim()) { toast.error("Please enter part number"); hasError = true; }
+    if (!itemNo) { toast.error("Item Number cannot be empty."); hasError = true; }
     else if (!isItemNoUnique) { toast.error("The entered Item Number is already in use."); hasError = true; }
     if (hasError) return;
-    
+
     const processDetails = [];
     const visibleManualParents = processes.filter(p => p.type === 'manual' && !p.sub && !tableData[p.id]?.scope);
 
     processes.forEach((p, index) => {
-        const rowData = tableData[p.id] || {};
-        let woNo = "";
-        let isScoped = rowData.scope || false;
-        
-        let parentWorkOrderNoForPayload = null; 
+      const rowData = tableData[p.id] || {};
+      let woNo = "";
+      let isScoped = rowData.scope || false;
 
-        if (p.sub) {
-          const parentIndex = visibleManualParents.findIndex(parent => parent.id === p.parentId);
-          if (parentIndex >= 0) { 
-                const parentWoNo = `PT-${itemNo}${String.fromCharCode(65 + parentIndex)}`;
-                parentWorkOrderNoForPayload = parentWoNo; 
-            }
-        }
+      let parentWorkOrderNoForPayload = null;
 
-        if (isScoped) {
-            woNo = "XX";
-        } else if (p.type === "select") {
-            woNo = p.woNo;
-        } else if (p.sub) {
-            if (parentWorkOrderNoForPayload) {
-                const visibleSiblings = processes.filter(s => s.parentId === p.parentId && !tableData[s.id]?.scope);
-                const subIndex = visibleSiblings.findIndex(s => s.id === p.id);
-                woNo = `${parentWorkOrderNoForPayload}${subIndex + 1}`;
-            } else {
-                woNo = "XX";
-                parentWorkOrderNoForPayload = "XX";
-            }
-        } else {
-            const manualIndex = visibleManualParents.findIndex(proc => proc.id === p.id);
-            woNo = `PT-${itemNo}${String.fromCharCode(65 + manualIndex)}`;
+      if (p.sub) {
+        const parentIndex = visibleManualParents.findIndex(parent => parent.id === p.parentId);
+        if (parentIndex >= 0) {
+          const parentWoNo = `PT-${itemNo}${String.fromCharCode(65 + parentIndex)}`;
+          parentWorkOrderNoForPayload = parentWoNo;
         }
+      }
 
-        let operationNumberValue;
-        if (p.type === 'select') {
-            operationNumberValue = 0;
+      if (isScoped) {
+        woNo = "XX";
+      } else if (p.type === "select") {
+        woNo = p.woNo;
+      } else if (p.sub) {
+        if (parentWorkOrderNoForPayload) {
+          const visibleSiblings = processes.filter(s => s.parentId === p.parentId && !tableData[s.id]?.scope);
+          const subIndex = visibleSiblings.findIndex(s => s.id === p.id);
+          woNo = `${parentWorkOrderNoForPayload}${subIndex + 1}`;
         } else {
-            operationNumberValue = rowData.opNo ? parseInt(rowData.opNo, 10) : -1;
+          woNo = "XX";
+          parentWorkOrderNoForPayload = "XX";
         }
+      } else {
+        const manualIndex = visibleManualParents.findIndex(proc => proc.id === p.id);
+        woNo = `PT-${itemNo}${String.fromCharCode(65 + manualIndex)}`;
+      }
 
-        processDetails.push({
-            sequence: index + 1,
-            itemNo: itemNo,
-            workOrderNo: woNo,
-            cancel: rowData.cancel || false,
-            scope: rowData.scope || false,
-            operationNumber: operationNumberValue,
-            proceess: rowData.process,
-            length: parseFloat(rowData.l || '0'),
-            width: parseFloat(rowData.w || '0'),
-            height: parseFloat(rowData.h || '0'),
-            remark: rowData.remarks || '',
-            parentWorkOrderNo: parentWorkOrderNoForPayload,
-        });
+      let operationNumberValue;
+      if (p.type === 'select') {
+        operationNumberValue = 0;
+      } else {
+        operationNumberValue = rowData.opNo ? parseInt(rowData.opNo, 10) : -1;
+      }
+
+      processDetails.push({
+        sequence: index + 1,
+        itemNo: itemNo,
+        workOrderNo: woNo,
+        cancel: rowData.cancel || false,
+        scope: rowData.scope || false,
+        operationNumber: operationNumberValue,
+        proceess: rowData.process,
+        length: parseFloat(rowData.l || '0'),
+        width: parseFloat(rowData.w || '0'),
+        height: parseFloat(rowData.h || '0'),
+        remark: rowData.remarks || '',
+        parentWorkOrderNo: parentWorkOrderNoForPayload,
+      });
     });
 
     const workOrderPayload = {
@@ -325,24 +347,24 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
       partSize: formData.partSize,
       partWeight: formData.partWeight,
       itemNo: itemNo,
-      partNumber:formData.partNumber,
+      partNumber: formData.partNumber,
     };
 
     const formDataToSend = new FormData();
     formDataToSend.append("workOrder", JSON.stringify(workOrderPayload));
     formDataToSend.append("workOrderItems", JSON.stringify(processDetails));
     images.forEach(img => {
-      formDataToSend.append("images", img.file); 
+      formDataToSend.append("images", img.file);
     });
 
     try {
       const response = await axiosInstance.post("/work/createWorkOrder", formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      if(response.data){
+      if (response.data) {
         toast.success("Work Order created successfully.");
         resetForm();
-        if(onSave){ onSave(); }
+        if (onSave) { onSave(); }
       }
     } catch (error) {
       console.error("❌ Submission failed:", error);
@@ -359,7 +381,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
     }
 
     try {
-      setProjectLoading(true); 
+      setProjectLoading(true);
 
       const response = await axiosInstance.get(`/project/getProjectByCustomerId/${selectedCustomer}`);
       const options = response.data.map(proj => ({
@@ -386,7 +408,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
       material: '',
       partSize: '',
       partWeight: '',
-      partNumber:'',
+      partNumber: '',
     });
     setImages([]);
     setProcesses([]);
@@ -487,7 +509,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
 
   const fetchThickness = async () => {
     try {
-      setLoadingThickness(true); 
+      setLoadingThickness(true);
 
       const res = await axiosInstance.get("/work/getAllThicknesses");
       const options = res.data.map(p => ({
@@ -528,12 +550,12 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
       setLoadingThickness(false);
     }
   };
-  
+
   useEffect(() => {
-    if (show) {
-      fetchItemNo();
-    }
-  }, [show]);
+    if (show) {
+      fetchItemNo();
+    }
+  }, [show]);
 
   const fetchItemNo = async () => {
     try {
@@ -551,9 +573,9 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
     if (customerOptions.length > 0) {
       return;
     }
-    
+
     try {
-      const response = await axiosInstance.get("/customer/getCustomerList");  
+      const response = await axiosInstance.get("/customer/getCustomerList");
       const formattedOptions = response.data.map(customer => ({
         value: customer.companyName,
         label: customer.companyName,
@@ -570,7 +592,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
   const handleItemNoChange = (e) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
-        setItemNo(value);
+      setItemNo(value);
     }
   };
 
@@ -587,8 +609,8 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
             <Form.Group>
               <Form.Label>Part Image</Form.Label>
               <div className="d-flex flex-wrap gap-2">
-                <div 
-                  className="upload-box text-center d-flex flex-column align-items-center justify-content-center" 
+                <div
+                  className="upload-box text-center d-flex flex-column align-items-center justify-content-center"
                   onClick={handleUploadClick}
                 >
                   <div className="plus_sysmbol" style={{ fontSize: "2rem" }}>+</div>
@@ -596,9 +618,9 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
                   <small>PNG, JPG, GIF</small>
                 </div>
                 {images.map((img, index) => (
-                  <div key={index} style={{ height: "200px", width: "200px", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", position: "relative"}}>
+                  <div key={index} style={{ height: "200px", width: "200px", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", position: "relative" }}>
                     <img src={img.url} alt={`Preview ${index}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <Button 
+                    <Button
                       variant="danger"
                       size="sm"
                       onClick={() => handleDeleteImage(index)}
@@ -624,22 +646,23 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
               </div>
             </Form.Group>
           </div>
-          
+
           {/* Work Order Details Section */}
           <div className="row">
-            
+
             <Form.Group className="col-md-4 mb-3">
               <Form.Label>Customer <span className="text-danger">*</span></Form.Label>
               <Select
                 options={customerOptions}
-                value={customerOptions.find(opt => opt.value === formData.customer) ||null}
-                onChange={selected =>{
+                value={customerOptions.find(opt => opt.value === formData.customer) || null}
+                onChange={selected => {
                   setSelectedCustomer(selected ? selected.id : '');
                   setFormData(prev => ({
                     ...prev,
                     customer: selected ? selected.value : '',
                     customerId: selected ? selected.id : ''
-                  }))}
+                  }))
+                }
                 }
                 placeholder="Select a customer..."
                 isClearable
@@ -647,7 +670,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
                 isLoading={isCustomerLoading}
               />
             </Form.Group>
-            
+
             <Form.Group className="col-md-4 mb-3">
               <Form.Label>Project <span className="text-danger">*</span></Form.Label>
               <Select
@@ -669,7 +692,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
 
             <Form.Group className="col-md-4 mb-3">
               <Form.Label>Part Number <span className="text-danger">*</span></Form.Label>
-                <Form.Control type="text" name="partNumber" value={formData.partNumber} onChange={handleFormChange} />
+              <Form.Control type="text" name="partNumber" value={formData.partNumber} onChange={handleFormChange} />
             </Form.Group>
 
             <Form.Group className="col-md-4 mb-3">
@@ -751,17 +774,17 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
         {/* Workorder Process Section */}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <Form.Group style={{ maxWidth: '200px' }}>
-              <Form.Label><strong>Item No.</strong></Form.Label>
-              <Form.Control 
-                type="text" 
-                value={itemNo} 
-                onChange={handleItemNoChange}
-                isInvalid={!isItemNoUnique} // Turns the field red if not unique
-              />
-              {isCheckingItemNo && <Form.Text className="text-muted">Checking...</Form.Text>}
-              <Form.Control.Feedback type="invalid">
-                Item number is already in use.
-              </Form.Control.Feedback>
+            <Form.Label><strong>Item No.</strong></Form.Label>
+            <Form.Control
+              type="text"
+              value={itemNo}
+              onChange={handleItemNoChange}
+              isInvalid={!isItemNoUnique} // Turns the field red if not unique
+            />
+            {isCheckingItemNo && <Form.Text className="text-muted">Checking...</Form.Text>}
+            <Form.Control.Feedback type="invalid">
+              Item number is already in use.
+            </Form.Control.Feedback>
           </Form.Group>
 
           <div className="d-flex align-items-center gap-2">
@@ -792,7 +815,7 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
               <th style={{ width: "10%" }}>WO No</th>
               <th style={{ width: "8%" }}>Op No</th>
               <th>Process</th>
-              <th colSpan="3"style={{ width: "23%" }}>Quoted Die Sizes (mm)</th>
+              <th colSpan="3" style={{ width: "23%" }}>Quoted Die Sizes (mm)</th>
               <th style={{ width: "15%" }}>Remarks</th>
               <th>Actions</th>
             </tr>
@@ -810,51 +833,51 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
             </tr>
           </thead>
           <tbody className="text-center">
-             {processes.map((p) => {
-                const isScoped = tableData[p.id]?.scope || false;
-                let displayWoNo = '';
+            {processes.map((p) => {
+              const isScoped = tableData[p.id]?.scope || false;
+              let displayWoNo = '';
 
-                if (isScoped) {
+              if (isScoped) {
+                displayWoNo = 'XX';
+              } else if (p.type === 'select') {
+                displayWoNo = p.woNo;
+              } else if (p.sub) {
+                const parentExists = processes.some(parent => parent.id === p.parentId);
+
+                if (!parentExists) {
                   displayWoNo = 'XX';
-                } else if (p.type === 'select') {
-                  displayWoNo = p.woNo;
-                } else if (p.sub) { 
-                  const parentExists = processes.some(parent => parent.id === p.parentId);
-
-                  if (!parentExists) {
-                    displayWoNo = 'XX';
-                  } else {
-                    const visibleManualParents = processes.filter(proc => proc.type === 'manual' && !proc.sub && !tableData[proc.id]?.scope);
-                    const parentIndex = visibleManualParents.findIndex(parent => parent.id === p.parentId);
-                    
-                    if (parentIndex >= 0) {
-                        const parentWoNo = `PT-${itemNo}${String.fromCharCode(65 + parentIndex)}`;
-                        const visibleSiblings = processes.filter(s => s.parentId === p.parentId && !tableData[s.id]?.scope);
-                        const subIndex = visibleSiblings.findIndex(s => s.id === p.id);
-                        displayWoNo = `${parentWoNo}${subIndex + 1}`;
-                    } else {
-                        displayWoNo = 'XX';
-                    }
-                  }
-                } else { 
+                } else {
                   const visibleManualParents = processes.filter(proc => proc.type === 'manual' && !proc.sub && !tableData[proc.id]?.scope);
-                  const manualIndex = visibleManualParents.findIndex(proc => proc.id === p.id);
-                  displayWoNo = manualIndex >= 0 ? `PT-${itemNo}${String.fromCharCode(65 + manualIndex)}` : '';
+                  const parentIndex = visibleManualParents.findIndex(parent => parent.id === p.parentId);
+
+                  if (parentIndex >= 0) {
+                    const parentWoNo = `PT-${itemNo}${String.fromCharCode(65 + parentIndex)}`;
+                    const visibleSiblings = processes.filter(s => s.parentId === p.parentId && !tableData[s.id]?.scope);
+                    const subIndex = visibleSiblings.findIndex(s => s.id === p.id);
+                    displayWoNo = `${parentWoNo}${subIndex + 1}`;
+                  } else {
+                    displayWoNo = 'XX';
+                  }
                 }
-              
+              } else {
+                const visibleManualParents = processes.filter(proc => proc.type === 'manual' && !proc.sub && !tableData[proc.id]?.scope);
+                const manualIndex = visibleManualParents.findIndex(proc => proc.id === p.id);
+                displayWoNo = manualIndex >= 0 ? `PT-${itemNo}${String.fromCharCode(65 + manualIndex)}` : '';
+              }
+
               return (
                 <tr key={p.id} className={p.sub ? 'sub-process-row' : ''}>
                   <td className="align-middle">
-                    <Form.Check 
-                      type="checkbox" 
+                    <Form.Check
+                      type="checkbox"
                       checked={tableData[p.id]?.cancel || false}
                       disabled={p.type === 'select' || tableData[p.id]?.scope || false}
                       onChange={e => handleTableInputChange(p.id, 'cancel', e.target.checked)}
                     />
                   </td>
                   <td className="align-middle">
-                    <Form.Check 
-                      type="checkbox" 
+                    <Form.Check
+                      type="checkbox"
                       checked={tableData[p.id]?.scope || false}
                       disabled={p.type === 'select' || tableData[p.id]?.cancel || false}
                       onChange={e => handleTableInputChange(p.id, 'scope', e.target.checked)}
@@ -863,24 +886,24 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
                   <td className="align-middle">{displayWoNo}</td>
                   <td className="align-middle">
                     {p.type === 'select' ? (
-                        'XX'
+                      'XX'
                     ) : (
-                        <select
+                      <select
                         className="form-select modern-dropdown"
                         value={tableData[p.id]?.opNo || ''}
                         onChange={(e) => handleTableInputChange(p.id, 'opNo', e.target.value)}
-                        >
+                      >
                         <option value="">Select</option>
                         {Array.from({ length: 21 }, (_, i) => {
-                            const value = (i === 0) ? 5 : i * 10;
-                            const displayValue = String(value).padStart(2, '0');
-                            return (
+                          const value = (i === 0) ? 5 : i * 10;
+                          const displayValue = String(value).padStart(2, '0');
+                          return (
                             <option key={value} value={value}>
-                                {displayValue}
+                              {displayValue}
                             </option>
-                            );
+                          );
                         })}
-                        </select>
+                      </select>
                     )}
                   </td>
 
@@ -897,42 +920,42 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
                         menuPosition="fixed"
                         styles={{
                           control: base => ({ ...base, minHeight: '31px', height: '31px' }),
-                          indicatorsContainer: base => ({...base, height: '31px'}),
-                          valueContainer: base => ({...base, top: '-2px'}),
-                          singleValue: base => ({...base, top: '-2px'})
+                          indicatorsContainer: base => ({ ...base, height: '31px' }),
+                          valueContainer: base => ({ ...base, top: '-2px' }),
+                          singleValue: base => ({ ...base, top: '-2px' })
                         }}
                         isClearable={true}
                       />
                     ) : (
-                      <Form.Control 
-                          size="sm" 
-                          type="text" 
-                          value={tableData[p.id]?.process || ''} 
-                          onChange={e => handleTableInputChange(p.id, 'process', e.target.value)}
-                          placeholder="Enter Manual Process"
+                      <Form.Control
+                        size="sm"
+                        type="text"
+                        value={tableData[p.id]?.process || ''}
+                        onChange={e => handleTableInputChange(p.id, 'process', e.target.value)}
+                        placeholder="Enter Manual Process"
                       />
                     )}
                   </td>
                   <td className="align-middle">
-                    <Form.Control size="sm" type="number" step="any" min="0" value={tableData[p.id]?.l || ''} onChange={e => handleTableInputChange(p.id, 'l', e.target.value)}/>
+                    <Form.Control size="sm" type="number" step="any" min="0" value={tableData[p.id]?.l || ''} onChange={e => handleTableInputChange(p.id, 'l', e.target.value)} />
                   </td>
                   <td className="align-middle">
-                    <Form.Control size="sm" type="number" step="any" min="0" value={tableData[p.id]?.w || ''} onChange={e => handleTableInputChange(p.id, 'w', e.target.value)}/>
+                    <Form.Control size="sm" type="number" step="any" min="0" value={tableData[p.id]?.w || ''} onChange={e => handleTableInputChange(p.id, 'w', e.target.value)} />
                   </td>
                   <td className="align-middle">
-                    <Form.Control size="sm" type="number" step="any" min="0" value={tableData[p.id]?.h || ''} onChange={e => handleTableInputChange(p.id, 'h', e.target.value)}/>
+                    <Form.Control size="sm" type="number" step="any" min="0" value={tableData[p.id]?.h || ''} onChange={e => handleTableInputChange(p.id, 'h', e.target.value)} />
                   </td>
                   <td className="align-middle">
-                    <Form.Control size="sm" type="text" value={tableData[p.id]?.remarks || ''} onChange={e => handleTableInputChange(p.id, 'remarks', e.target.value)}/>
+                    <Form.Control size="sm" type="text" value={tableData[p.id]?.remarks || ''} onChange={e => handleTableInputChange(p.id, 'remarks', e.target.value)} />
                   </td>
                   <td className="align-middle">
                     <Button variant="link" className="text-danger" onClick={() => handleDeleteRow(p.id, p.type)}>
                       <FaTrash />
                     </Button>
                     {p.type === 'manual' && !p.sub && (
-                        <Button variant="link" className="text-success p-0 me-2" onClick={() => handleAddSubProcess(p.id)} title="Add Sub-Process">
-                            <FaPlus />
-                        </Button>
+                      <Button variant="link" className="text-success p-0 me-2" onClick={() => handleAddSubProcess(p.id)} title="Add Sub-Process">
+                        <FaPlus />
+                      </Button>
                     )}
                   </td>
                 </tr>
@@ -944,11 +967,11 @@ const CreateWorkOrder = ({ show, onClose, onSave }) => {
       <Modal.Footer>
         <Button variant="outline-secondary" onClick={onClose}>Close</Button>
         <Button variant="danger"
-            onClick={() => {
-              resetForm(); 
-              onClose(); 
-            }}
-          >
+          onClick={() => {
+            resetForm();
+            onClose();
+          }}
+        >
           Discard
         </Button>
         <Button variant="primary" onClick={handleSaveClick}>Save</Button>
