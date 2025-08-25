@@ -17,7 +17,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/auth/register", formData);
+      await axios.post("http://localhost:9090/auth/register", formData);
       setSuccess("Registration successful!");
       setError("");
     } catch (err) {
