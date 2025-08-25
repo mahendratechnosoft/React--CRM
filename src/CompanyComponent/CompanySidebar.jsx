@@ -11,6 +11,7 @@ import {
   FaRandom,
   FaTimes,
   FaTimesCircle,
+  FaRocket,
 } from "react-icons/fa";
 import "./CompanySidebar.css";
 
@@ -18,7 +19,7 @@ const CompanySidebar = ({ isCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [settingsOpen, setSettingsOpen] = useState(false);
-
+ const [kickoffOpen, setKickoffOpen] = useState(false);
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
@@ -28,6 +29,9 @@ const CompanySidebar = ({ isCollapsed }) => {
     setSettingsOpen(!settingsOpen);
   };
 
+    const toggleKickoff = () => {
+      setKickoffOpen(!kickoffOpen);
+    };
   return (
     <div className={`company-sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="company-sidebar__brand">{!isCollapsed && "CRM-Tech"}</div>
@@ -81,12 +85,12 @@ const CompanySidebar = ({ isCollapsed }) => {
             {!isCollapsed && <span>Project</span>}
           </Link>
         </li>
-        <li className={location.pathname === "/Staffmember" ? "active" : ""}>
+        {/* <li className={location.pathname === "/Staffmember" ? "active" : ""}>
           <Link to="/Staffmember">
             <FaUsers />
             {!isCollapsed && <span>Staff</span>}
           </Link>
-        </li>
+        </li> */}
         <li
           className={
             location.pathname === "/CompanyTimeSheetList" ? "active" : ""
@@ -98,7 +102,7 @@ const CompanySidebar = ({ isCollapsed }) => {
           </Link>
         </li>
 
-        <li className={location.pathname === "/KickOffList" ? "active" : ""}>
+        {/* <li className={location.pathname === "/KickOffList" ? "active" : ""}>
           <Link to="/KickOffList">
             <FaTimesCircle />
             {!isCollapsed && <span>KickOffList</span>}
@@ -124,6 +128,55 @@ const CompanySidebar = ({ isCollapsed }) => {
             <FaTimesCircle />
             {!isCollapsed && <span>MOM</span>}
           </Link>
+        </li> */}
+
+        {/* Kickoff Dropdown */}
+        <li
+          className={`company-sidebar__settings-dropdown ${
+            kickoffOpen ? "open" : ""
+          }`}
+        >
+          <button
+            type="button"
+            onClick={toggleKickoff}
+            className="company-sidebar__settings-toggle"
+          >
+            <FaRocket />
+            {!isCollapsed && <span>Kickoff</span>}
+          </button>
+
+          {kickoffOpen && (
+            <ul className="company-sidebar__dropdown-menu">
+              <li
+                className={`p-0 ${
+                  location.pathname === "/KickOffList" ? "active" : ""
+                }`}
+              >
+                <Link to="/KickOffList">KickOffList</Link>
+              </li>
+              <li
+                className={`p-0 ${
+                  location.pathname === "/ChecklistSheet" ? "active" : ""
+                }`}
+              >
+                <Link to="/ChecklistSheet">Checklist-Sheet</Link>
+              </li>
+              <li
+                className={`p-0 ${
+                  location.pathname === "/BOMList" ? "active" : ""
+                }`}
+              >
+                <Link to="/BOMList">BOM</Link>
+              </li>
+              <li
+                className={`p-0 ${
+                  location.pathname === "/MomList" ? "active" : ""
+                }`}
+              >
+                <Link to="/MomList">MOM</Link>
+              </li>
+            </ul>
+          )}
         </li>
 
         <li className={location.pathname === "/QuotationList" ? "active" : ""}>
@@ -168,18 +221,14 @@ const CompanySidebar = ({ isCollapsed }) => {
               </li>
               <li
                 className={`p-0 ${
-                  location.pathname === "/CheckListItemSetting"
-                    ? "active"
-                    : ""
+                  location.pathname === "/CheckListItemSetting" ? "active" : ""
                 }`}
               >
                 <Link to="/CheckListItemSetting">Checklist-Item</Link>
               </li>
               <li
                 className={`p-0 ${
-                  location.pathname === "/BomCategorySetting"
-                    ? "active"
-                    : ""
+                  location.pathname === "/BomCategorySetting" ? "active" : ""
                 }`}
               >
                 <Link to="/BomCategorySetting">BOM Categories</Link>
@@ -189,12 +238,12 @@ const CompanySidebar = ({ isCollapsed }) => {
         </li>
       </ul>
 
-      <div className="company-sidebar__logout-link">
+      {/* <div className="company-sidebar__logout-link">
         <button onClick={handleLogout}>
           <FaSignOutAlt />
           {!isCollapsed && <span>Logout</span>}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
