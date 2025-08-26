@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Button, Container, Row, Col, Form, Card, Spinner } from "react-bootstrap";
-import { FaPlusCircle, FaTrash } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { Button, Container, Row, Col, Form, Card, Spinner, Collapse } from "react-bootstrap";
+import { FaChevronDown, FaChevronUp, FaPlusCircle, FaTrash } from "react-icons/fa";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import { toast } from "react-toastify";
@@ -67,6 +67,14 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
   const [deletedImageIds, setDeletedImageIds] = useState([]);
   const [deletedConsiderationIds, setDeletedConsiderationIds] = useState([]);
 
+  const [isConsiderationsOpen, setIsConsiderationsOpen] = useState(true);
+  const [openParts, setOpenParts] = useState({}); // Initialized as empty, will be populated after data fetch
+
+  // --- NEW: Handler to toggle part visibility ---
+  const togglePartOpen = (partId) => {
+    setOpenParts(prev => ({ ...prev, [partId]: !prev[partId] }));
+  };
+
   // --- Fetch existing quotation data ---
   useEffect(() => {
     const fetchQuotationData = async () => {
@@ -100,7 +108,7 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
         setStatus(statusOptions.find(opt => opt.value === info.status) || null);
         setCurrency(currencyOptions.find(opt => opt.value === info.currency) || null);
         setAssigned(assignedOptions.find(opt => opt.value === info.assigned) || null);
-        setCreatedDateTime(info.createdDateTime||null);
+        setCreatedDateTime(info.createdDateTime || null);
 
 
         // --- Transform and populate parts data ---
@@ -136,6 +144,12 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
           }))
         }));
         setPartsData(transformedParts);
+
+        const initialOpenState = transformedParts.reduce((acc, part) => {
+          acc[part.id] = true;
+          return acc;
+        }, {});
+        setOpenParts(initialOpenState);
 
         // --- Transform and populate considerations data ---
         const groupedConsiderations = data.consideration.reduce((acc, current) => {
@@ -250,6 +264,7 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
         processes: [{ id: Date.now(), partProcessId: null, toolConstruction: '', opNo: '', description: '', l: '', w: '', h: '', factor: '', rate: '', toolCost: '', quotationPartId: null }]
       }
     ]);
+    setOpenParts(prev => ({ ...prev, [newPartId]: true }));
   };
 
   const removePart = (partIndex) => {
@@ -461,7 +476,7 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
         currency: currency ? currency.value : null,
         status: status ? status.value : null,
         assigned: assigned ? assigned.value : null,
-        createdDateTime:createdDateTime
+        createdDateTime: createdDateTime
       };
       await axiosInstance.put(`/sales/updateQuotationInfo`, quotationInfoPayload);
 
@@ -476,7 +491,7 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
             quotationId: desc.quotationId || quotationId
           }))
       );
-      
+
       if (considerationsPayload.length > 0) {
         await axiosInstance.put(`/sales/updateQuotationConsideration`, considerationsPayload);
       }
@@ -615,114 +630,142 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
         </Container>
         <hr />
 
-        {partsData.map((part, partIndex) => (
-          <Card key={part.id} className="mb-4 section-card-shadow">
-            <Card.Header className="d-flex justify-content-between align-items-center section-cart-header">
-              <Button variant="danger" onClick={() => removePart(partIndex)} disabled={partsData.length <= 1} className="ms-auto">
-                <FaTrash />
-              </Button>
-            </Card.Header>
-            <Card.Body>
-              <Container fluid>
-                <Row className="mb-3 align-items-center">
-                  <Col md={4}><Form.Group><Form.Label className="fw-bold">Part Number</Form.Label><Form.Control type="text" name="partNumber" value={part.partNumber} onChange={(e) => handlePartDataChange(partIndex, 'partNumber', e.target.value)} /></Form.Group></Col>
-                  <Col md={4}><Form.Group><Form.Label className="fw-bold">Part Name</Form.Label><CreatableSelect name="partName" isClearable onMenuOpen={fetchParts} onChange={(s, a) => handlePartSelectChange(partIndex, s, a)} onCreateOption={handlePartNameCreate} options={partNameOptions} isLoading={loadingPartName} placeholder="Search or create..." value={part.partName} /></Form.Group></Col>
-                  <Col md={4}><Form.Group><Form.Label className="fw-bold">Material</Form.Label><CreatableSelect name="material" isClearable onMenuOpen={fetchMaterials} onChange={(s, a) => handlePartSelectChange(partIndex, s, a)} onCreateOption={handleMaterialCreate} options={materialOptions} isLoading={loadingMaterial} placeholder="Search or create..." value={part.material} /></Form.Group></Col>
-                </Row>
+        {partsData.map((part, partIndex) => {
+          const isOpen = !!openParts[part.id];
+          return (
+            <Card key={part.id} className="mb-4 section-card-shadow">
+              <Card.Header
+                onClick={() => togglePartOpen(part.id)}
+                aria-controls={`collapse-part-${part.id}`}
+                aria-expanded={isOpen}
+                className="d-flex justify-content-between align-items-center section-cart-header"
+                style={{ cursor: "pointer" }}
+              >
+                <h5 className="mb-0">
+                  Part {partIndex + 1}: {part.partName?.label || part.partNumber || 'New Part'}
+                </h5>
+                <div className="d-flex align-items-center">
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removePart(partIndex);
+                    }}
+                    disabled={partsData.length <= 1}
+                    className="me-3"
+                  >
+                    <FaTrash />
+                  </Button>
+                  {isOpen ? <FaChevronUp /> : <FaChevronDown />}
+                </div>
+              </Card.Header>
+              <Collapse in={isOpen}>
+                <div id={`collapse-part-${part.id}`}>
+                  <Card.Body>
+                    <Container fluid>
+                      <Row className="mb-3 align-items-center">
+                        <Col md={4}><Form.Group><Form.Label className="fw-bold">Part Number</Form.Label><Form.Control type="text" name="partNumber" value={part.partNumber} onChange={(e) => handlePartDataChange(partIndex, 'partNumber', e.target.value)} /></Form.Group></Col>
+                        <Col md={4}><Form.Group><Form.Label className="fw-bold">Part Name</Form.Label><CreatableSelect name="partName" isClearable onMenuOpen={fetchParts} onChange={(s, a) => handlePartSelectChange(partIndex, s, a)} onCreateOption={handlePartNameCreate} options={partNameOptions} isLoading={loadingPartName} placeholder="Search or create..." value={part.partName} /></Form.Group></Col>
+                        <Col md={4}><Form.Group><Form.Label className="fw-bold">Material</Form.Label><CreatableSelect name="material" isClearable onMenuOpen={fetchMaterials} onChange={(s, a) => handlePartSelectChange(partIndex, s, a)} onCreateOption={handleMaterialCreate} options={materialOptions} isLoading={loadingMaterial} placeholder="Search or create..." value={part.material} /></Form.Group></Col>
+                      </Row>
 
-                <Row className="mb-3 align-items-center">
-                  <Col md={4}><Form.Group><Form.Label className="fw-bold">Thickness</Form.Label><CreatableSelect name="thickness" isClearable onMenuOpen={fetchThicknesses} onChange={(s, a) => handlePartSelectChange(partIndex, s, a)} onCreateOption={handleThicknessCreate} options={thicknessOptions} isLoading={loadingThickness} placeholder="Search or create..." value={part.thickness} /></Form.Group></Col>
-                  <Col md={4}><Form.Group><Form.Label className="fw-bold">Part Size</Form.Label><Form.Control type="text" name="partSize" value={part.partSize} onChange={(e) => handlePartDataChange(partIndex, 'partSize', e.target.value)} /></Form.Group></Col>
-                  <Col md={4}><Form.Group><Form.Label className="fw-bold">Part Weight</Form.Label><Form.Control type="text" name="partWeight" value={part.partWeight} onChange={(e) => handlePartDataChange(partIndex, 'partWeight', e.target.value)} /></Form.Group></Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">Part View</Form.Label>
-                      <div className="d-flex flex-wrap gap-3">
-                        <div className="upload-box-qut" onClick={() => handleImageUploadClick(partIndex)}>
-                          <div className="plus_symbol">+</div>
-                          <p>Click to upload</p>
-                        </div>
-                        {part.images.map((img, imgIndex) => (
-                          <div key={img.id || imgIndex} style={{ height: "120px", width: "120px", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", position: "relative" }}>
-                            <img src={img.url} alt={`Preview ${imgIndex}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            <Button variant="danger" size="sm" onClick={() => handleDeleteImage(partIndex, imgIndex)} style={{ position: 'absolute', top: '5px', right: '5px', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
-                              &times;
-                            </Button>
-                          </div>
-                        ))}
-                        <Form.Control type="file" ref={part.fileInputRef} onChange={(e) => handleFileChange(partIndex, e)} multiple style={{ display: "none" }} accept="image/*" />
-                      </div>
-                    </Form.Group>
-                  </Col>
-                </Row>
-              </Container>
-              <Container fluid>
-                <Row className="mb-2 d-none d-md-flex text-center fw-bold fs-6">
-                  <Col md={2}>Tool Construction</Col>
-                  <Col md={1}>OP No</Col>
-                  <Col md={2}>Description</Col>
-                  <Col md={1}>L</Col>
-                  <Col md={1}>W</Col>
-                  <Col md={1}>H</Col>
-                  <Col md={1}>Factor</Col>
-                  <Col md={1}>Rate</Col>
-                  <Col md={1}>Tool Cost</Col>
-                  <Col md={1}>Action</Col>
-                </Row>
+                      <Row className="mb-3 align-items-center">
+                        <Col md={4}><Form.Group><Form.Label className="fw-bold">Thickness</Form.Label><CreatableSelect name="thickness" isClearable onMenuOpen={fetchThicknesses} onChange={(s, a) => handlePartSelectChange(partIndex, s, a)} onCreateOption={handleThicknessCreate} options={thicknessOptions} isLoading={loadingThickness} placeholder="Search or create..." value={part.thickness} /></Form.Group></Col>
+                        <Col md={4}><Form.Group><Form.Label className="fw-bold">Part Size</Form.Label><Form.Control type="text" name="partSize" value={part.partSize} onChange={(e) => handlePartDataChange(partIndex, 'partSize', e.target.value)} /></Form.Group></Col>
+                        <Col md={4}><Form.Group><Form.Label className="fw-bold">Part Weight</Form.Label><Form.Control type="text" name="partWeight" value={part.partWeight} onChange={(e) => handlePartDataChange(partIndex, 'partWeight', e.target.value)} /></Form.Group></Col>
+                      </Row>
+                      <Row className="mb-3">
+                        <Col>
+                          <Form.Group>
+                            <Form.Label className="fw-bold">Part View</Form.Label>
+                            <div className="d-flex flex-wrap gap-3">
+                              <div className="upload-box-qut" onClick={() => handleImageUploadClick(partIndex)}>
+                                <div className="plus_symbol">+</div>
+                                <p>Click to upload</p>
+                              </div>
+                              {part.images.map((img, imgIndex) => (
+                                <div key={img.id || imgIndex} style={{ height: "120px", width: "120px", border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", position: "relative" }}>
+                                  <img src={img.url} alt={`Preview ${imgIndex}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                  <Button variant="danger" size="sm" onClick={() => handleDeleteImage(partIndex, imgIndex)} style={{ position: 'absolute', top: '5px', right: '5px', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
+                                    &times;
+                                  </Button>
+                                </div>
+                              ))}
+                              <Form.Control type="file" ref={part.fileInputRef} onChange={(e) => handleFileChange(partIndex, e)} multiple style={{ display: "none" }} accept="image/*" />
+                            </div>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    </Container>
+                    <Container fluid>
+                      <Row className="mb-2 d-none d-md-flex text-center fw-bold fs-6">
+                        <Col md={2}>Tool Construction</Col>
+                        <Col md={1}>OP No</Col>
+                        <Col md={2}>Description</Col>
+                        <Col md={1}>L</Col>
+                        <Col md={1}>W</Col>
+                        <Col md={1}>H</Col>
+                        <Col md={1}>Factor</Col>
+                        <Col md={1}>Rate</Col>
+                        <Col md={1}>Tool Cost</Col>
+                        <Col md={1}>Action</Col>
+                      </Row>
 
-                {part.processes.map((process, processIndex) => (
-                  <Card key={process.id} className="mb-1">
-                    <Card.Body className="p-3">
+                      {part.processes.map((process, processIndex) => (
+                        <Card key={process.id} className="mb-1">
+                          <Card.Body className="p-3">
+                            <Row className="align-items-center">
+                              <Col xs={6} md={2}><Form.Group><Form.Label className="d-md-none fw-bold">Tool Construction</Form.Label><Form.Control type="text" name="toolConstruction" value={process.toolConstruction} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">OP No</Form.Label><Form.Control type="text" name="opNo" value={process.opNo} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col xs={12} md={2}><Form.Group><Form.Label className="d-md-none fw-bold">Description</Form.Label><Form.Control as="textarea" rows={1} name="description" value={process.description} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">L</Form.Label><Form.Control type="number" name="l" value={process.l} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">W</Form.Label><Form.Control type="number" name="w" value={process.w} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">H</Form.Label><Form.Control type="number" name="h" value={process.h} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">Factor</Form.Label><Form.Control type="number" name="factor" value={process.factor} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">Rate</Form.Label><Form.Control type="number" name="rate" value={process.rate} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">Tool Cost</Form.Label><Form.Control type="number" name="toolCost" value={process.toolCost} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
+                              <Col className="text-center">
+                                <Button variant="outline-danger" size="sm" onClick={() => removeProcess(partIndex, processIndex)} disabled={part.processes.length <= 1}>
+                                  <FaTrash />
+                                </Button>
+                              </Col>
+                            </Row>
+                          </Card.Body>
+                        </Card>
+                      ))}
                       <Row className="align-items-center">
-                        <Col xs={6} md={2}><Form.Group><Form.Label className="d-md-none fw-bold">Tool Construction</Form.Label><Form.Control type="text" name="toolConstruction" value={process.toolConstruction} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">OP No</Form.Label><Form.Control type="text" name="opNo" value={process.opNo} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col xs={12} md={2}><Form.Group><Form.Label className="d-md-none fw-bold">Description</Form.Label><Form.Control as="textarea" rows={1} name="description" value={process.description} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">L</Form.Label><Form.Control type="number" name="l" value={process.l} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">W</Form.Label><Form.Control type="number" name="w" value={process.w} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">H</Form.Label><Form.Control type="number" name="h" value={process.h} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">Factor</Form.Label><Form.Control type="number" name="factor" value={process.factor} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">Rate</Form.Label><Form.Control type="number" name="rate" value={process.rate} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col xs={6} md={1}><Form.Group><Form.Label className="d-md-none fw-bold">Tool Cost</Form.Label><Form.Control type="number" name="toolCost" value={process.toolCost} onChange={(e) => handleProcessChange(partIndex, processIndex, e)} /></Form.Group></Col>
-                        <Col className="text-center">
-                          <Button variant="outline-danger" size="sm" onClick={() => removeProcess(partIndex, processIndex)} disabled={part.processes.length <= 1}>
-                            <FaTrash />
+                        {/* Spacer columns to push content to the right */}
+                        <Col md={9} style={{ paddingLeft: '55px' }} className="text-end">
+                          <strong style={{ fontSize: '1.1rem' }}>Sub Total:</strong>
+                        </Col>
+                        <Col md={3}>
+                          <Form.Control
+                            readOnly
+                            disabled
+                            className="fw-bold"
+                            value={
+                              part.processes.reduce((total, currentProcess) => {
+                                return total + (parseFloat(currentProcess.toolCost) || 0);
+                              }, 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                            }
+                          />
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col className="text-end mt-2">
+                          <Button variant="success" size="sm" onClick={() => addProcess(partIndex)}>
+                            <FaPlusCircle /> Add Process
                           </Button>
                         </Col>
                       </Row>
-                    </Card.Body>
-                  </Card>
-                ))}
-                <Row className="align-items-center">
-                  {/* Spacer columns to push content to the right */}
-                  <Col md={9} style={{ paddingLeft: '55px' }} className="text-end">
-                    <strong style={{ fontSize: '1.1rem' }}>Sub Total:</strong>
-                  </Col>
-                  <Col md={3}>
-                    <Form.Control
-                      readOnly
-                      disabled
-                      className="fw-bold"
-                      value={
-                        part.processes.reduce((total, currentProcess) => {
-                          return total + (parseFloat(currentProcess.toolCost) || 0);
-                        }, 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-                      }
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col className="text-end mt-2">
-                    <Button variant="success" size="sm" onClick={() => addProcess(partIndex)}>
-                      <FaPlusCircle /> Add Process
-                    </Button>
-                  </Col>
-                </Row>
-              </Container>
-            </Card.Body>
-          </Card>
-        ))}
+                    </Container>
+                  </Card.Body>
+                </div>
+              </Collapse>
+            </Card>
+          );
+        })}
 
         <Container fluid className="text-end">
           <Button variant="success" size="sm" onClick={addPart}>
@@ -758,90 +801,100 @@ const EditQuotation = ({ quotationId, onCancel, onSave }) => {
 
         <Container fluid className="mt-4">
           <Card>
-            <Card.Header>
-              <Card.Title as="h5">Quotation Considerations</Card.Title>
+            <Card.Header
+              onClick={() => setIsConsiderationsOpen(!isConsiderationsOpen)}
+              aria-controls="collapse-considerations"
+              aria-expanded={isConsiderationsOpen}
+              className="d-flex justify-content-between align-items-center"
+              style={{ cursor: 'pointer' }}
+            >
+              <Card.Title as="h5" className="mb-0">Quotation Considerations</Card.Title>
+              {isConsiderationsOpen ? <FaChevronUp /> : <FaChevronDown />}
             </Card.Header>
-            <Card.Body>
-              {considerations.map((item, consIndex) => (
-                <div key={item.id} className="mb-3 p-3" style={{ border: '1px solid #eee', borderRadius: '8px' }}>
-                  <Row className="mb-2">
-                    {/* Title Input */}
-                    <Col>
-                      <Form.Group>
-                         <Form.Label className="fw-bold">Title {consIndex + 1}</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="Consideration title (e.g., Payment Terms)"
-                          name="title"
-                          value={item.title}
-                          onChange={(e) => handleConsiderationChange(consIndex, null, e)}
-                        />
-                      </Form.Group>
-                    </Col>
-                     {/* Remove Entire Consideration Button */}
-                    <Col xs="auto" className="d-flex align-items-end">
-                       <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => removeConsideration(consIndex)}
-                      >
-                        <FaTrash /> Remove Title
-                      </Button>
-                    </Col>
-                  </Row>
-
-                  {/* Descriptions Mapping */}
-                  {item.descriptions.map((desc, descIndex) => (
-                    <Row key={desc.id || `new-desc-${descIndex}`} className="mb-2 align-items-center">
-                      <Col xs="auto" className="ps-4">
-                        <span className="fw-bold">{`•`}</span>
-                      </Col>
-                      <Col>
-                        <Form.Group>
-                           <Form.Label className="d-none">Description</Form.Label>
-                          <Form.Control
-                            as="textarea"
-                            rows={1}
-                            placeholder="Description point"
-                            name="description"
-                            value={desc.text}
-                            onChange={(e) => handleConsiderationChange(consIndex, descIndex, e)}
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col xs="auto" className="d-flex gap-2">
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => removeDescription(consIndex, descIndex)}
-                          disabled={item.descriptions.length <= 1}
-                        >
-                          <FaTrash />
-                        </Button>
-                        {/* Show Add button only for the last description */}
-                        {descIndex === item.descriptions.length - 1 && (
+            <Collapse in={isConsiderationsOpen}>
+              <div id="collapse-considerations">
+                <Card.Body>
+                  {considerations.map((item, consIndex) => (
+                    <div key={item.id} className="mb-3 p-3" style={{ border: '1px solid #eee', borderRadius: '8px' }}>
+                      <Row className="mb-2">
+                        {/* Title Input */}
+                        <Col>
+                          <Form.Group>
+                            <Form.Label className="fw-bold">Title {consIndex + 1}</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="Consideration title (e.g., Payment Terms)"
+                              name="title"
+                              value={item.title}
+                              onChange={(e) => handleConsiderationChange(consIndex, null, e)}
+                            />
+                          </Form.Group>
+                        </Col>
+                        {/* Remove Entire Consideration Button */}
+                        <Col xs="auto" className="d-flex align-items-end">
                           <Button
-                            variant="outline-success"
+                            variant="danger"
                             size="sm"
-                            onClick={() => addDescription(consIndex)}
+                            onClick={() => removeConsideration(consIndex)}
                           >
-                            <FaPlusCircle />
+                            <FaTrash /> Remove Title
                           </Button>
-                        )}
-                      </Col>
-                    </Row>
+                        </Col>
+                      </Row>
+
+                      {/* Descriptions Mapping */}
+                      {item.descriptions.map((desc, descIndex) => (
+                        <Row key={desc.id || `new-desc-${descIndex}`} className="mb-2 align-items-center">
+                          <Col xs="auto" className="ps-4">
+                            <span className="fw-bold">{`•`}</span>
+                          </Col>
+                          <Col>
+                            <Form.Group>
+                              <Form.Label className="d-none">Description</Form.Label>
+                              <Form.Control
+                                as="textarea"
+                                rows={1}
+                                placeholder="Description point"
+                                name="description"
+                                value={desc.text}
+                                onChange={(e) => handleConsiderationChange(consIndex, descIndex, e)}
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col xs="auto" className="d-flex gap-2">
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() => removeDescription(consIndex, descIndex)}
+                              disabled={item.descriptions.length <= 1}
+                            >
+                              <FaTrash />
+                            </Button>
+                            {/* Show Add button only for the last description */}
+                            {descIndex === item.descriptions.length - 1 && (
+                              <Button
+                                variant="outline-success"
+                                size="sm"
+                                onClick={() => addDescription(consIndex)}
+                              >
+                                <FaPlusCircle />
+                              </Button>
+                            )}
+                          </Col>
+                        </Row>
+                      ))}
+                    </div>
                   ))}
-                </div>
-              ))}
-              <div className="d-flex justify-content-end">
-                <Button variant="success" size="sm" onClick={addConsideration}>
-                  <FaPlusCircle className="me-2" /> Add Consideration
-                </Button>
+                  <div className="d-flex justify-content-end">
+                    <Button variant="success" size="sm" onClick={addConsideration}>
+                      <FaPlusCircle className="me-2" /> Add Consideration
+                    </Button>
+                  </div>
+                </Card.Body>
               </div>
-            </Card.Body>
+            </Collapse>
           </Card>
         </Container>
-
       </Card.Body>
       <Card.Footer className="text-end quotation-footer">
         <Button variant="outline-secondary" onClick={onCancel} className="me-2">Cancel</Button>
