@@ -240,27 +240,29 @@ const CompanyUpdateKickoffSheetCustomerData = ({
             {/* Save Button */}
             <div className="d-flex justify-content-between">
               <h5>Customer Details</h5>
-              {isEditing ? (
-                <>
-                  <Button variant="success" onClick={handleSaveClick}>
-                    Save
-                  </Button>
+              <div>
+                {isEditing ? (
+                  <>
+                    <Button variant="success" onClick={handleSaveClick}>
+                      Save
+                    </Button>
+                    <Button
+                      onClick={handleCancelClick}
+                      variant="btn btn-outline-secondary btn-sm"
+                      className="ms-2"
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
                   <Button
-                    onClick={handleCancelClick}
-                    variant="btn btn-outline-secondary btn-sm"
-                    className="ms-2"
+                    variant="btn btn-outline-dark btn-sm"
+                    onClick={handleEditClick}
                   >
-                    Cancel
+                    Edit
                   </Button>
-                </>
-              ) : (
-                <Button
-                  variant="btn btn-outline-dark btn-sm"
-                  onClick={handleEditClick}
-                >
-                  Edit
-                </Button>
-              )}
+                )}
+              </div>
             </div>
 
             <Row>

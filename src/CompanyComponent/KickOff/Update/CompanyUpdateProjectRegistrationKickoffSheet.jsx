@@ -136,7 +136,6 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
             isNewForWorkOrder: false,
             isEditing: false,
             parentWorkOrderNo: proc.parentWorkOrderNo || "",
-         
           });
         });
         setProcessesByPart(grouped);
@@ -805,59 +804,59 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
 
   // ================RENAME CODE======================
   // Utility: reassigns WO NOs for parents A,B,C... and their children A1,A2...
- function reNumberProcesses(processes, activePartItemNo) {
-  if (!Array.isArray(processes)) return [];
+  function reNumberProcesses(processes, activePartItemNo) {
+    if (!Array.isArray(processes)) return [];
 
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-  // 1. Orphan children
-  const orphanChildren = processes.filter(
-    (p) => p.woNo === "XX" && !p.parentWorkOrderNo
-  );
+    // 1. Orphan children
+    const orphanChildren = processes.filter(
+      (p) => p.woNo === "XX" && !p.parentWorkOrderNo
+    );
 
-  // 2. Manual processes (exclude dropdown + orphans)
-  const manualProcesses = processes.filter(
-    (p) => !p.isFromPartProcess && !(p.woNo === "XX" && !p.parentWorkOrderNo)
-  );
+    // 2. Manual processes (exclude dropdown + orphans)
+    const manualProcesses = processes.filter(
+      (p) => !p.isFromPartProcess && !(p.woNo === "XX" && !p.parentWorkOrderNo)
+    );
 
-  // 3. Dropdown processes (unchanged)
-  const dropdownProcesses = processes.filter((p) => p.isFromPartProcess);
+    // 3. Dropdown processes (unchanged)
+    const dropdownProcesses = processes.filter((p) => p.isFromPartProcess);
 
-  // 4. Manual parents only
-  const manualParents = manualProcesses.filter((p) => !p.parentWorkOrderNo);
+    // 4. Manual parents only
+    const manualParents = manualProcesses.filter((p) => !p.parentWorkOrderNo);
 
-  let renamedProcesses = [];
+    let renamedProcesses = [];
 
-  manualParents.forEach((parent, i) => {
-    const letter = letters[i]; // assign A, B, C...
-    const newParentWoNo = `${activePartItemNo}${letter}`;
+    manualParents.forEach((parent, i) => {
+      const letter = letters[i]; // assign A, B, C...
+      const newParentWoNo = `${activePartItemNo}${letter}`;
 
-    // Children remap
-    const children = manualProcesses
-      .filter((c) => c.parentWorkOrderNo === parent.woNo)
-      .sort((a, b) => {
-        const anum = parseInt(a.woNo.replace(parent.woNo, ""), 10) || 0;
-        const bnum = parseInt(b.woNo.replace(parent.woNo, ""), 10) || 0;
-        return anum - bnum;
+      // Children remap
+      const children = manualProcesses
+        .filter((c) => c.parentWorkOrderNo === parent.woNo)
+        .sort((a, b) => {
+          const anum = parseInt(a.woNo.replace(parent.woNo, ""), 10) || 0;
+          const bnum = parseInt(b.woNo.replace(parent.woNo, ""), 10) || 0;
+          return anum - bnum;
+        });
+
+      const renamedChildren = children.map((child, idx) => ({
+        ...child,
+        parentWorkOrderNo: newParentWoNo,
+        woNo: `${newParentWoNo}${idx + 1}`,
+      }));
+
+      renamedProcesses.push({
+        ...parent,
+        woNo: newParentWoNo,
       });
 
-    const renamedChildren = children.map((child, idx) => ({
-      ...child,
-      parentWorkOrderNo: newParentWoNo,
-      woNo: `${newParentWoNo}${idx + 1}`,
-    }));
-
-    renamedProcesses.push({
-      ...parent,
-      woNo: newParentWoNo,
+      renamedProcesses = renamedProcesses.concat(renamedChildren);
     });
 
-    renamedProcesses = renamedProcesses.concat(renamedChildren);
-  });
-
-  // Final set = renamed + orphans + dropdown
-  return [...renamedProcesses, ...orphanChildren, ...dropdownProcesses];
-}
+    // Final set = renamed + orphans + dropdown
+    return [...renamedProcesses, ...orphanChildren, ...dropdownProcesses];
+  }
 
   // =====================SAVE DATA CODE===========================
   const handleSaveOrUpdatePart = async (partToSave) => {
@@ -949,10 +948,10 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
         );
         await axiosInstance.put("/kickoff/updateItem", kickoffUpdatePayload);
 
-         toast.success("Part updated successfully!");
+        toast.success("Part updated successfully!");
       } catch (error) {
         console.error("Failed to update part:", error.response || error);
-          toast.success("Failed to update part.");
+        toast.success("Failed to update part.");
       }
     }
   };
@@ -1031,24 +1030,35 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
     try {
       const allProcessesForKickoff = Object.values(processesByPart)
         .flat()
-        .map((proc) => ({
-          partProcessId: proc.partProcessId || null,
-          kickOffId: id,
-          itemNo:
+        .map((proc) => {
+          const itemNo =
             typeof proc.itemNo === "string"
               ? parseInt(proc.itemNo.replace(/^PT-/, ""), 10)
-              : proc.itemNo,
-          workOrderNumber: proc.woNo,
-          designerName:
-            employeeList.find((e) => e.employeeId === proc.designer)?.name ||
-            "",
-          employeeId: proc.designer,
-          process: proc.processName,
-          length: parseFloat(proc.length) || 0,
-          height: parseFloat(proc.height) || 0,
-          width: parseFloat(proc.width) || 0,
-          remarks: proc.remarks || "",
-        }));
+              : proc.itemNo;
+
+          return {
+            partProcessId: proc.partProcessId || null,
+            kickOffId: id,
+            itemNo,
+            workOrderNumber: proc.woNo || "",
+            designerName: proc.designer
+              ? employeeList.find((e) => e.employeeId === proc.designer)
+                  ?.name || ""
+              : "",
+            employeeId: proc.designer || null, // Ensure null instead of ""
+            operationNumber: proc.opNo?.toString() || "",
+            process: proc.processName || proc.process || "",
+            length: proc.length ? parseFloat(proc.length) : null,
+            width: proc.width ? parseFloat(proc.width) : null,
+            height: proc.height ? parseFloat(proc.height) : null,
+            remarks: proc.remarks || "",
+            parentWorkOrderNo: proc.parentWorkOrderNo || null,
+            cancel: proc.cancel || false,
+            scope: proc.scope || false,
+            sequence: proc.sequence || 0,
+          };
+        });
+
       console.log(
         "kick off itemsssssssssssssssssssssss",
         allProcessesForKickoff
@@ -1069,38 +1079,34 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
     }
   };
 
+  const handleSaveAll = async () => {
+    try {
+      // First save/update all parts
+      for (const part of parts) {
+        await handleSaveOrUpdatePart(part);
+      }
 
-const handleSaveAll = async () => {
-  try {
-    // First save/update all parts
-    for (const part of parts) {
-      await handleSaveOrUpdatePart(part);
+      // Then save/update their processes
+      await handleUpdateProcesses();
+
+      toast.success("All Parts & Processes saved successfully!");
+      setIsEditingGlobally(false);
+    } catch (error) {
+      console.error("Save all failed:", error);
+      toast.error("Failed to save parts or processes. Check console.");
     }
 
-    // Then save/update their processes
-    await handleUpdateProcesses();
-
-    toast.success("All Parts & Processes saved successfully!");
-     setIsEditingGlobally(false); 
-  } catch (error) {
-    console.error("Save all failed:", error);
-    toast.error("Failed to save parts or processes. Check console.");
-  }
-
-
-  setProcessesByPart((prev) => {
-    const newState = {};
-    for (const [itemNo, processList] of Object.entries(prev)) {
-      newState[itemNo] = processList.map((p) => ({
-        ...p,
-        isEditing: false,
-      }));
-    }
-    return newState;
-  });
-
-};
-
+    setProcessesByPart((prev) => {
+      const newState = {};
+      for (const [itemNo, processList] of Object.entries(prev)) {
+        newState[itemNo] = processList.map((p) => ({
+          ...p,
+          isEditing: false,
+        }));
+      }
+      return newState;
+    });
+  };
 
   const fetchMaxItemNumber = async () => {
     try {
@@ -1506,7 +1512,7 @@ const handleSaveAll = async () => {
                       <Button
                         onClick={() => removePart(part.id)}
                         variant="btn btn-outline-danger btn-sm mt-2"
-                        isDisabled={!isEditingGlobally}
+                        disabled={!isEditingGlobally}
                       >
                         delete
                       </Button>
@@ -1518,7 +1524,11 @@ const handleSaveAll = async () => {
           </Table>
 
           <div className="d-flex justify-content-end mt-3 gap-2  mb-5">
-            <Button onClick={addPart} variant="btn btn-outline-primary btn-sm">
+            <Button
+              onClick={addPart}
+              variant="btn btn-outline-primary btn-sm"
+              disabled={!isEditingGlobally}
+            >
               <FaPlusCircle className="me-2 ms-2" /> Add Part
             </Button>
           </div>
@@ -1549,7 +1559,6 @@ const handleSaveAll = async () => {
                   </div>
                 ))}
               </div>
-
               {/* Processes Table */}
               <Table bordered responsive>
                 <thead style={{ backgroundColor: "#002855", color: "white" }}>
@@ -1624,11 +1633,11 @@ const handleSaveAll = async () => {
                             }
                             className="KickoffPrtProcessInpt"
                             // disabled={proc.opNo === "0"} // ✅ fixed
-                            disabled={!proc.isEditing || proc.opNo === "0"}
+                            disabled={!isEditingGlobally || proc.opNo === "0"}
                           >
                             <option value="">Select</option>
                             {[
-                              "05",
+                              "5",
                               "10",
                               "20",
                               "30",
@@ -1768,6 +1777,7 @@ const handleSaveAll = async () => {
                                   variant="link"
                                   onClick={() => addChildProcess(proc.woNo)}
                                   className="text-success me-2"
+                                  disabled={!isEditingGlobally}
                                 >
                                   <FaPlusCircle /> {proc.opNO}
                                 </Button>
@@ -1779,7 +1789,7 @@ const handleSaveAll = async () => {
                             <Button
                               variant="btn btn-outline-danger btn-sm"
                               onClick={() => removeProcess(proc.id)}
-                              isDisabled={!isEditingGlobally}
+                              disabled={!isEditingGlobally}
                             >
                               <FaTrash />
                             </Button>
@@ -1796,8 +1806,8 @@ const handleSaveAll = async () => {
                   )}
                 </tbody>
               </Table>
-
               {/* Multi-select for Workorder Process */}
+
               {activePartItemNo && (
                 <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
                   <strong className="me-2">Workorder Process</strong>
@@ -1815,9 +1825,11 @@ const handleSaveAll = async () => {
                     styles={{
                       container: (base) => ({ ...base, width: "300px" }),
                     }}
+                    isDisabled={!isEditingGlobally}
                   />
                   <Button
                     onClick={addProcess}
+                    disabled={!isEditingGlobally}
                     variant="btn btn-outline-primary btn-sm"
                   >
                     <FaPlusCircle className="me-2" /> Add Another Process

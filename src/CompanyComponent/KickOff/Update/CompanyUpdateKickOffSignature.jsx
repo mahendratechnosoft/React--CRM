@@ -141,7 +141,7 @@ const CompanyUpdateKickOffSignature = ({
               </Col>
 
               {/* Head Name Dropdown/Text */}
-              <Col md={5}>
+              <Col md={6}>
                 <Form.Group controlId={`headName-${idx}`}>
                   <Form.Label>Head Name</Form.Label>
                   {!isEditable ? (
@@ -178,7 +178,7 @@ const CompanyUpdateKickOffSignature = ({
               </Col>
 
               {/* Delete Button */}
-              <Col md={2} className="d-flex align-items-end p-0">
+              <Col md={1} className="d-flex align-items-end p-0">
                 <Button
                   variant="btn btn-outline-danger btn-sm"
                   onClick={() => handleRemoveSignature(idx)}
