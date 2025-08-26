@@ -169,6 +169,13 @@ const CompanySidebar = ({ isCollapsed }) => {
           </Link>
         </li>
 
+        <li className={location.pathname === "/SalesOrder" ? "active" : ""}>
+          <Link to="/SalesOrder">
+            <FaTimesCircle />
+            {!isCollapsed && <span>Sales Order</span>}
+          </Link>
+        </li>
+
         {/* Settings Dropdown */}
         {/* <li
           className={`company-sidebar__settings-dropdown ${

@@ -44,7 +44,6 @@ import BOMUpadatePage from "./CompanyComponent/BOM/BOMUpdatePage";
 import BomCategoryList from "./CompanyComponent/BomCategorieSettings/BomCategoryList";
 
 import MomList from "./CompanyComponent/Mom/MomList";
-import QuotationList from "./Components/Quotation/QuotationList";
 
 // Employee Module Url
 import CustomerListEmp from "./EmployeeComponent/Customer/CustomerListEmp";
@@ -53,7 +52,12 @@ import TimeSheetEmp from "./EmployeeComponent/TimeSheet/TimeSheetEmp";
 import LeadListEmp from "./EmployeeComponent/Lead/LeadListEmp"; 
 
 
+
 import SettingParent from "./Components/Settings/SettingParent";
+
+import Quotation from "./CompanyComponent/Quotation/Quotation";
+import SalesOrder from "./CompanyComponent/SalesOrder/SalesOrder";
+
 const App = () => {
   const role = localStorage.getItem("role"); // ✅ Get user role from localStorage
 
@@ -310,7 +314,7 @@ const App = () => {
           path="/QuotationList"
           element={
             <ProtectedRoute>
-              <QuotationList />
+              <Quotation />
             </ProtectedRoute>
           }
         />
@@ -351,6 +355,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <SettingParent />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/SalesOrder"
+          element={
+            <ProtectedRoute>
+              <SalesOrder />
             </ProtectedRoute>
           }
         />

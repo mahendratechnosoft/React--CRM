@@ -19,7 +19,7 @@ const CompanyUpdateTimesheet = ({
   const [workOrderNumberList, setWorkOrderNumberList] = useState([])
   const [selectedWorkorder, setSelectedWorkOrde] = useState("")
   const [access,setAccess]=useState({})
-
+  const[role,setRole]=useState("ROLE_COMPANY")
   const fetchItems = async () => {
       setSelectedWorkOrde("");
       const response = await axiosInstance.get("/work/getItemList");
@@ -115,8 +115,10 @@ const CompanyUpdateTimesheet = ({
             toTime: data.endTime?.slice(0, 5) || "",
             remarks: data.remarks || "",
           });
-
-          setSelectedItem(data.itemNumber);
+        
+          setSelectedItem({value: data.itemNumber, label:data.itemNumber});
+          setSelectedWorkOrde({value: data.workOrderNo, label:data.workOrderNo})
+          setRole(localStorage.getItem("role"))
      
         })
         .catch(() => toast.error("Failed to fetch timesheet."));
@@ -213,7 +215,7 @@ const CompanyUpdateTimesheet = ({
 
         <Modal.Body className="px-4 pt-3 pb-0">
           <Form>
-            <fieldset disabled={!access?.timeSheetEdit}>
+            <fieldset disabled={role === "ROLE_EMP" &&!access?.timeSheetEdit}>
             <Row className="gy-3">
               <Col md={4}>
                 <Form.Group>

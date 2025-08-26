@@ -1,88 +1,71 @@
 import React, { useEffect, useState } from "react";
-import PaginationComponent from "../../Pagination/PaginationComponent";
-import "./Quotation.css";
-import CreateQuotation from "./CreateQuotation";
-import axiosInstance from "../../BaseComponet/axiosInstance"; // Assuming this is your configured axios
+import { Dropdown } from "react-bootstrap";
 import { toast } from "react-toastify";
-import EditQuotation from "./EditQuotation";
-import QuotationPDFModel from "./QuotationPDFModel";
+import axiosInstance from "../../BaseComponet/axiosInstance";
+import PaginationComponent from "../../Pagination/PaginationComponent";
+import CreateSalesOrder from "./CreateSalesOrder";
+import EditSalesOrder from "./EditSalesOrder";
 
-
-const QuotationList = () => {
+const SalesOrderList = () => {
+    const [salesOrders, setSalesOrders] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [view, setView] = useState('list');
-
-    // State for the list, loading, and search
-    const [quotations, setQuotations] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
 
-    const [selectedQuotationId, setSelectedQuotationId] = useState(null);
-
-    const [showPdfModal, setShowPdfModal] = useState(false);
-    const [selectedQuotationIdForPdf, setSelectedQuotationIdForPdf] = useState(null);
-
-
-    // Function to fetch quotations from the API
-    const fetchQuotations = async () => {
-        setIsLoading(true);
+    const fetchSalesOrders = async () => {
+        setLoading(true);
         try {
-            const companyName = searchTerm || "";
-            const response = await axiosInstance.get(`/sales/getAllQuotation/${page}/${size}?companyName=${companyName}`);
-
-            // The API response nests the list under "projectList"
-            setQuotations(response.data.projectList || []);
-            setTotalPages(response.data.totalPages || 0);
-
+            const response = await axiosInstance.get(
+                `/sales/getAllSaleOrder/${page}/${size}?customerName=${searchTerm}`
+            );
+            const data = response.data;
+            setSalesOrders(data.salesOrderList || []);
+            setTotalPages(data.totalPages || 0);
         } catch (error) {
-            console.error("Failed to fetch quotations:", error);
-            toast.error("Failed to load quotations. Please try again.");
+            console.error("Error fetching sales orders:", error);
+            toast.error("Failed to fetch sales orders.");
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         if (view === 'list') {
-            fetchQuotations();
+            const delayDebounceFn = setTimeout(() => {
+                fetchSalesOrders();
+            }, 500); // Debounce time of 500ms
+            return () => clearTimeout(delayDebounceFn);
         }
-    }, [page, size, view]);
+    }, [page, size, view, searchTerm]);
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
-        setPage(0);
+        setPage(0); // Reset to first page on new search
     };
-
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
-            if (view === 'list') {
-                fetchQuotations();
-            }
-        }, 500);
-        return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm]);
 
     const handleSave = () => {
         console.log("Save action triggered");
         setView('list');
-        fetchQuotations();
+        fetchSalesOrders(); // Refresh the list after saving
     };
 
     const handleEditClick = (id) => {
-        setSelectedQuotationId(id);
+        setSelectedOrderId(id);
         setView('edit');
     };
 
     const handleCancel = () => {
         setView('list');
-        setSelectedQuotationId(null);
+        setSelectedOrderId(null);
     }
 
-    const handlePreviewClick = (quotationId) => {
-        setSelectedQuotationIdForPdf(quotationId);
-        setShowPdfModal(true);
+    const handlePreviewClick = (id) => {
+        console.log("Preview for:", id);
+        // setShowPdfModal(true);
     };
 
     // Helper function to format dates
@@ -101,21 +84,16 @@ const QuotationList = () => {
             case 'create':
                 return (
                     <div className="p-4">
-                        <CreateQuotation
-                            onCancel={() => setView('list')}
-                            onSave={handleSave}
-                        />
+                        <CreateSalesOrder onSave={handleSave} onCancel={handleCancel} />
                     </div>
                 );
 
             case 'edit':
                 return (
                     <div className="p-4">
-                        <EditQuotation
-                            quotationId={selectedQuotationId}
-                            onCancel={handleCancel}
-                            onSave={handleSave}
-                        />
+                        {/* In a real app, you would fetch order details by ID and pass them as props */}
+                        {/* For now, we pass the ID to a component that would handle fetching and editing */}
+                        <EditSalesOrder orderId={selectedOrderId} onSave={handleSave} onCancel={handleCancel} />
                     </div>
                 );
 
@@ -126,7 +104,7 @@ const QuotationList = () => {
                         <div className="Companalist-main-card">
                             <div className="row m-0 p-0 w-100 d-flex justify-content-between align-items-center mb-2">
                                 <div className="col-md-3">
-                                    <h4>Quotations</h4>
+                                    <h4>Sales Orders</h4>
                                 </div>
                                 <div className="col-md-4">
                                     <div className="input-group">
@@ -147,7 +125,7 @@ const QuotationList = () => {
                                         className="btn btn-dark me-1"
                                         onClick={() => setView('create')}
                                     >
-                                        + Add Quotation
+                                        + Add Sales Order
                                     </button>
                                 </div>
                             </div>
@@ -155,52 +133,48 @@ const QuotationList = () => {
                                 <table className="table table-hover align-middle">
                                     <thead className="table-light">
                                         <tr>
-                                            <th>Quotation #</th>
-                                            <th>Customer Name</th>
-                                            <th>Project Name</th>
+                                            <th>Sales Order #</th>
+                                            <th>Company Name</th>
+                                            <th>Voucher No</th>
+                                            <th>Order No</th>
                                             <th>Date</th>
-                                            <th>Open Till</th>
-                                            <th>Date Created</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
+                                            <th>Created Date</th>
+                                            <th className="text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {isLoading ? (
+                                        {loading ? (
                                             <tr>
-                                                <td colSpan="9" className="text-center">Loading...</td>
+                                                <td colSpan="7" className="text-center">Loading...</td>
                                             </tr>
-                                        ) : quotations.length > 0 ? (
-                                            quotations.map(q => (
-                                                <tr key={q.quotationId}>
-                                                    <td>{q.quotationNumber || '-'}</td>
-                                                    <td>{q.companyName || '-'}</td>
-                                                    <td>{q.projectName || '-'}</td>
-                                                    <td>{formatDate(q.quotationDate)}</td>
-                                                    <td>{formatDate(q.validDate)}</td>
-                                                    <td>{formatDate(q.createdDateTime)}</td>
-                                                    <td className="text-capitalize">
-                                                        <span className="badge bg-secondary">{'Draft'}</span> {/* Not in API response */}
-                                                    </td>
-                                                    <td>
+                                        ) : salesOrders.length > 0 ? (
+                                            salesOrders.map((order,idx) => (
+                                                <tr key={order.saleOrderId}>
+                                                    <td>{idx + 1 }</td>
+                                                    <td>{order.customerName || '-'}</td>
+                                                    <td>{order.voucherNo || '-'}</td>
+                                                    <td>{order.orderNo || '-'}</td>
+                                                    <td>{formatDate(order.salesOrderDate)}</td>
+                                                    <td>{formatDate(order.createdDateTime)}</td>
+                                                    <td className="text-center">
                                                         <button
-                                                            className="btn btn-sm btn-outline-primary"
-                                                            onClick={() => handleEditClick(q.quotationId)}
+                                                            className="btn btn-sm btn-primary me-1"
+                                                            onClick={() => handleEditClick(order.saleOrderId)}
                                                         >
                                                             <i className="bi bi-pencil-square me-1"></i>
                                                         </button>
                                                         <button
-                                                            className="btn btn-sm btn-outline-primary ms-2"
-                                                            onClick={() => handlePreviewClick(q.quotationId)}
+                                                            className="btn btn-sm btn-danger text-black"
+                                                            onClick={() => handlePreviewClick(order.saleOrderId)}
                                                         >
-                                                            <i className="bi bi-eye"></i>
+                                                            <i class="fa-solid fa-file-pdf"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan="9" className="text-center">No quotations found.</td>
+                                                <td colSpan="7" className="text-center">No sales orders found.</td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -225,19 +199,10 @@ const QuotationList = () => {
     };
 
     return (
-
         <div className="slidebar-main-div-right-section">
             {renderView()}
-
-            {showPdfModal && (
-                <QuotationPDFModel
-                    show={showPdfModal}
-                    onClose={() => setShowPdfModal(false)}
-                    quotationId={selectedQuotationIdForPdf}
-                />
-            )}
         </div>
     );
 }
 
-export default QuotationList;
+export default SalesOrderList;
