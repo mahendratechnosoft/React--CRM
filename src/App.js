@@ -51,6 +51,9 @@ import CustomerListEmp from "./EmployeeComponent/Customer/CustomerListEmp";
 import ProjectListEmp from "./EmployeeComponent/Project/ProjectListEmp";
 import TimeSheetEmp from "./EmployeeComponent/TimeSheet/TimeSheetEmp";
 import LeadListEmp from "./EmployeeComponent/Lead/LeadListEmp"; 
+
+
+import SettingParent from "./Components/Settings/SettingParent";
 const App = () => {
   const role = localStorage.getItem("role"); // ✅ Get user role from localStorage
 
@@ -151,7 +154,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/department"
           element={
@@ -176,7 +178,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/Customer"
           element={
@@ -185,7 +186,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/CustomerContact"
           element={
@@ -194,7 +194,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/CompanyBankDetailsSetting"
           element={
@@ -211,7 +210,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/CompanyTimeSheetList"
           element={
@@ -220,7 +218,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/WorkOrder"
           element={
@@ -229,7 +226,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/KickOffList"
           element={
@@ -238,7 +234,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/KickOffCreate"
           element={
@@ -255,7 +250,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/CheckListItemSetting"
           element={
@@ -264,7 +258,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/BOMList"
           element={
@@ -273,7 +266,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/CreateBOM"
           element={
@@ -282,7 +274,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/EditBOM"
           element={
@@ -299,7 +290,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/MomList"
           element={
@@ -308,7 +298,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/BomCategorySetting"
           element={
@@ -317,7 +306,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/QuotationList"
           element={
@@ -326,7 +314,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/employee/cutomerList"
           element={
@@ -335,7 +322,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/employee/projectList"
           element={
@@ -344,7 +330,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/employee/timeSheet"
           element={
@@ -353,12 +338,19 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/employee/lead"
           element={
             <ProtectedRoute>
               <LeadListEmp />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/SettingParent"
+          element={
+            <ProtectedRoute>
+              <SettingParent />
             </ProtectedRoute>
           }
         />

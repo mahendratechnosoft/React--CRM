@@ -1,0 +1,87 @@
+.setttings-main-div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.setttings-main-div-left-col {
+  width: 25%;
+
+  padding: 1%;
+
+  background: white;
+
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.setttings-main-div-right-col {
+
+      width: 74%;
+
+  padding: 1%;
+
+  background: white;
+
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+.settings-group {
+  margin-bottom: 30px;
+}
+
+.settings-group-heading {
+  font-weight: 700; /* bolder */
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: #444;
+  user-select: none;
+}
+
+.setttings-main-div-left-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.setttings-main-div-left-col li {
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #595959;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+
+.setttings-main-div-left-col li.active {
+  background: #f0f0f0;
+  color: #222;
+  font-weight: 600;
+  border-left: 3px solid #222;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.setttings-main-div-left-col li:hover:not(.active) {
+  background: #f7f7f7;
+  color: #222;
+}
+
+
+
+.setttings-main-div-right-col .section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #3a3a3a;
+}
+
+@media (max-width: 900px) {
+  .setttings-main-div {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .setttings-main-div-left-col,
+  .setttings-main-div-right-col {
+    width: 100%;
+  }
+}

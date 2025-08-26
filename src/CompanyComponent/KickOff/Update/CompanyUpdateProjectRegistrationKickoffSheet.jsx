@@ -1850,7 +1850,7 @@ const addChildProcess = (parentWoNo) => {
                   <Button
                     onClick={addProcess}
                     disabled={!isEditingGlobally}
-                    variant="btn btn-outline-primary btn-sm"
+                    variant="btn btn-outline-primary btn-sm "
                   >
                     <FaPlusCircle className="me-2" /> Add Another Process
                   </Button>

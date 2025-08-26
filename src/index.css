@@ -41,7 +41,7 @@ code {
   padding: 20px 20px 20px 20px;
   width: 85%;
   /* height: 100%; */
-  background: #f4f4f5;
+  /* background: #f4f4f5;  */
 }
 
 .slidebar-main-div {
@@ -100,4 +100,11 @@ max-width: 95vw;
 .KickoffPrtProcessInpt{
 
   background: transparent !important;
+}
+
+
+
+.Setting-slidebar-main-div-right-section{
+
+  
 }

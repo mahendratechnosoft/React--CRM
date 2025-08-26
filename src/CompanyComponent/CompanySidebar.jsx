@@ -104,35 +104,6 @@ const CompanySidebar = ({ isCollapsed }) => {
           </Link>
         </li>
 
-        {/* <li className={location.pathname === "/KickOffList" ? "active" : ""}>
-          <Link to="/KickOffList">
-            <FaTimesCircle />
-            {!isCollapsed && <span>KickOffList</span>}
-          </Link>
-        </li>
-
-       <li className={location.pathname === "/ChecklistSheet" ? "active" : ""}>
-          <Link to="/ChecklistSheet">
-            <FaTimesCircle />
-            {!isCollapsed && <span>Checklist-sheet</span>}
-          </Link>
-        </li> 
-
-        <li className={location.pathname === "/BOMList" ? "active" : ""}>
-          <Link to="/BOMList">
-            <FaTimesCircle />
-            {!isCollapsed && <span>BOM</span>}
-          </Link>
-        </li>
-
-        <li className={location.pathname === "/MomList" ? "active" : ""}>
-          <Link to="/MomList">
-            <FaTimesCircle />
-            {!isCollapsed && <span>MOM</span>}
-          </Link>
-        </li> */}
-
-        {/* Kickoff Dropdown */}
         <li
           className={`company-sidebar__settings-dropdown ${
             kickoffOpen ? "open" : ""
@@ -199,7 +170,7 @@ const CompanySidebar = ({ isCollapsed }) => {
         </li>
 
         {/* Settings Dropdown */}
-        <li
+        {/* <li
           className={`company-sidebar__settings-dropdown ${
             settingsOpen ? "open" : ""
           }`}
@@ -214,7 +185,7 @@ const CompanySidebar = ({ isCollapsed }) => {
             {!isCollapsed && (
               <>
                 <span className="flex-grow mx-2">Settings</span>
-                {/* Arrow Toggle */}
+
                 {settingsOpen ? (
                   <FaChevronDown className="dropdown-arrow" />
                 ) : (
@@ -258,15 +229,15 @@ const CompanySidebar = ({ isCollapsed }) => {
               </li>
             </ul>
           )}
+        </li> */}
+
+        <li className={location.pathname === "/SettingParent" ? "active" : ""}>
+          <Link to="/SettingParent">
+            <FaTimesCircle />
+            {!isCollapsed && <span>Settings</span>}
+          </Link>
         </li>
       </ul>
-
-      {/* <div className="company-sidebar__logout-link">
-        <button onClick={handleLogout}>
-          <FaSignOutAlt />
-          {!isCollapsed && <span>Logout</span>}
-        </button>
-      </div> */}
     </div>
   );
 };
