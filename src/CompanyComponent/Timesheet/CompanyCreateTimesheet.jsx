@@ -76,23 +76,9 @@ const CompanyCreateTimesheet = ({
 
 
 
-  const handleDesignerChange = (e) => {
-    const selectedDesignerId = e.target.value;
-    const selectedDesigner = employeeList.find(
-      (designer) => designer.id === selectedDesignerId
-    );
-
-    if (selectedDesigner) {
-      setFormData((prevData) => ({
-        ...prevData,
-        designer: selectedDesigner.name, // or selectedDesigner.fullName if you have that
-        employeeId: selectedDesigner.id,
-      }));
-    }
-  };
 
   const [formData, setFormData] = useState({
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     workOrder: "",
     designer: "",
     designerId: "",
@@ -129,7 +115,7 @@ const CompanyCreateTimesheet = ({
 
   const resetForm = () => {
     setFormData({
-      date: "",
+      date: new Date().toISOString().split("T")[0],
       itemNumber: "",
       workOrder: "",
       designer: "",
@@ -152,7 +138,7 @@ const CompanyCreateTimesheet = ({
       remarks,
     } = formData;
 
-    if (!date || !workOrder || !designer || !employeeId || !fromTime || !toTime) {
+    if (!itemNumber|| !designer || !employeeId || !fromTime || !toTime) {
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -254,7 +240,7 @@ const CompanyCreateTimesheet = ({
                   <Form.Control
                     type="date"
                     name="date"
-                    value={formData.date}
+                    value={formData.date || new Date().toISOString().split("T")[0]}
                     onChange={handleChange}
                   />
                 </Form.Group>
