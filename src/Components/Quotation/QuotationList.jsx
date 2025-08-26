@@ -9,6 +9,7 @@ import QuotationPDFModel from "./QuotationPDFModel";
 import CompanyTopbar from "../../CompanyComponent/CompanyTopbar";
 import CompanySidebar from "../../CompanyComponent/CompanySidebar";
 
+
 const QuotationList = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [page, setPage] = useState(0);
