@@ -1243,11 +1243,11 @@ const fetchProcesses = async () => {
                         key={proc.id}
                         style={{
                           backgroundColor: proc.cancel
-                            ? "#ff5b5b"
+                            ? "#ff8e8e"
                             : proc.scope
-                            ? "#ffff6e"
+                            ? "#ffff86"
                             : proc.parentWorkOrderNo
-                            ? "#3bff6f"
+                            ? "#72e190"
                             : "transparent",
                         }}
                       >
