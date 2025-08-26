@@ -760,47 +760,63 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
       })
     ).then((results) => results.filter(Boolean));
 
-  const addChildProcess = (parentWoNo) => {
-    setProcessesByPart((prev) => {
-      const processes = prev[activePartItemNo] || [];
+const addChildProcess = (parentWoNo) => {
+  setProcessesByPart((prev) => {
+    const processes = prev[activePartItemNo] || [];
 
-      // figure out the children for this parent
-      const children = processes.filter(
-        (p) => p.parentWorkOrderNo === parentWoNo
-      );
-      const numbers = children
-        .map((c) => c.woNo.replace(parentWoNo, ""))
-        .filter((s) => /^\d+$/.test(s))
-        .map(Number);
+    // Determine existing children for suffix
+    const children = processes.filter(
+      (p) => p.parentWorkOrderNo === parentWoNo
+    );
+    const numbers = children
+      .map((c) => c.woNo.replace(parentWoNo, ""))
+      .filter((s) => /^\d+$/.test(s))
+      .map(Number);
 
-      const nextChildNum = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+    const nextChildNum = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
 
-      const newProcess = {
-        id: Date.now(),
-        woNo: `${parentWoNo}${nextChildNum}`, // ex PT-91A1
-        itemNo: activePartItemNo,
-        parentWorkOrderNo: parentWoNo,
-        designer: "",
-        opNo: "",
-        processName: "",
-        length: "",
-        width: "",
-        height: "",
-        remarks: "",
-        isNewForWorkOrder: true,
-        isEditing: true,
-      };
+    const newProcess = {
+      id: Date.now(),
+      woNo: `${parentWoNo}${nextChildNum}`,
+      itemNo: activePartItemNo,
+      parentWorkOrderNo: parentWoNo,
+      designer: "",
+      opNo: "",
+      processName: "",
+      length: "",
+      width: "",
+      height: "",
+      remarks: "",
+      isNewForWorkOrder: true,
+      isEditing: true,
+    };
 
-      // Only push child → no splice
-      const updated = [...processes, newProcess];
+    // Find the parent index
+    const parentIndex = processes.findIndex((p) => p.woNo === parentWoNo);
 
-      // 🔑 Important: Now renumber the WHOLE thing once
-      return {
-        ...prev,
-        [activePartItemNo]: reNumberProcesses(updated, activePartItemNo),
-      };
-    });
-  };
+    // Find the last child of this parent (or insert after parent if none)
+    // Scan forward starting from parentIndex+1 for children with matching parentWorkOrderNo
+    let insertIndex = parentIndex + 1;
+    while (
+      insertIndex < processes.length &&
+      processes[insertIndex].parentWorkOrderNo === parentWoNo
+    ) {
+      insertIndex++;
+    }
+
+    // Insert new child at the right position
+    const updated = [...processes];
+    updated.splice(insertIndex, 0, newProcess);
+
+    return {
+      ...prev,
+      [activePartItemNo]: updated,
+    };
+  });
+};
+
+
+
 
   // ================RENAME CODE======================
   // Utility: reassigns WO NOs for parents A,B,C... and their children A1,A2...
@@ -1460,7 +1476,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                                   if (file.size > 1024 * 1024) {
                                     // 1MB
 
-                                    toast.success(
+                                    toast.error(
                                       ` "${file.name}" is larger than 1 MB and will be skipped.`
                                     );
                                     return false;
@@ -1599,7 +1615,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                               updateProcess(proc.id, "woNo", e.target.value)
                             }
                             className="KickoffPrtProcessInpt"
-                            isDisabled={!isEditingGlobally}
+                            disabled
                           />
                         </td>
                         <td className="KickoffPrtProcessInpt-TD">
@@ -1609,7 +1625,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                               updateProcess(proc.id, "designer", e.target.value)
                             }
                             className="KickoffPrtProcessInpt"
-                            isDisabled={!isEditingGlobally}
+                            disabled={!isEditingGlobally}
                           >
                             <option value="">Select Designer</option>
                             {employeeList.map((emp) => (
@@ -1692,7 +1708,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                               placeholder="Select Process..."
                               isClearable={true}
                               menuPosition="fixed"
-                              isDisabled={!isEditingGlobally}
+                              disabled={!isEditingGlobally}
                               styles={{
                                 control: (base) => ({
                                   ...base,
@@ -1724,7 +1740,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                                 )
                               }
                               className="KickoffPrtProcessInpt"
-                              isDisabled={!isEditingGlobally}
+                              disabled={!isEditingGlobally}
                             />
                           )}
                         </td>
@@ -1736,7 +1752,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                               updateProcess(proc.id, "length", e.target.value)
                             }
                             className="KickoffPrtProcessInpt"
-                            isDisabled={!isEditingGlobally}
+                            disabled={!isEditingGlobally}
                           />
                         </td>
                         <td className="KickoffPrtProcessInpt-TD">
@@ -1746,7 +1762,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                               updateProcess(proc.id, "width", e.target.value)
                             }
                             className="KickoffPrtProcessInpt"
-                            isDisabled={!isEditingGlobally}
+                            disabled={!isEditingGlobally}
                           />
                         </td>
                         <td className="KickoffPrtProcessInpt-TD">
@@ -1756,7 +1772,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                               updateProcess(proc.id, "height", e.target.value)
                             }
                             className="KickoffPrtProcessInpt"
-                            isDisabled={!isEditingGlobally}
+                            disabled={!isEditingGlobally}
                           />
                         </td>
                         <td className="KickoffPrtProcessInpt-TD">
@@ -1766,7 +1782,7 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                               updateProcess(proc.id, "remarks", e.target.value)
                             }
                             className="KickoffPrtProcessInpt"
-                            isDisabled={!isEditingGlobally}
+                            disabled={!isEditingGlobally}
                           />
                         </td>
 
@@ -1775,7 +1791,8 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                             {/* ➕ Show only for parent rows */}
                             {!proc.parentWorkOrderNo &&
                               proc.isFromPartProcess !== "0" &&
-                              proc.opNo !== "0" && (
+                              proc.opNo !== "0" &&
+                              proc.woNo !== "XX" && (
                                 <Button
                                   variant="link"
                                   onClick={() => addChildProcess(proc.woNo)}
