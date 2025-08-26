@@ -926,8 +926,9 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
         toast.success("Part saved successfully!");
       } catch (error) {
         console.error("Failed to save new part:", error.response || error);
-        alert(
-          "Error: Could not save the new part. Please check the data and try again."
+
+        toast.error(
+          "Could not save the new part. Please check the data and try again."
         );
       }
     } else {
@@ -1390,7 +1391,8 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                                         "Failed to delete image:",
                                         err
                                       );
-                                      alert(
+
+                                      toast.error(
                                         "Failed to delete image from server"
                                       );
                                     }
@@ -1457,8 +1459,9 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                                 (file) => {
                                   if (file.size > 1024 * 1024) {
                                     // 1MB
-                                    alert(
-                                      `${file.name} is larger than 1 MB and will be skipped.`
+
+                                    toast.success(
+                                      ` "${file.name}" is larger than 1 MB and will be skipped.`
                                     );
                                     return false;
                                   }
@@ -1581,11 +1584,11 @@ const CompanyUpdateProjectRegistrationKickoffSheet = ({
                         key={proc.id}
                         style={{
                           backgroundColor: proc.cancel
-                            ? "#ff5b5b"
+                            ? "#ff8e8e"
                             : proc.scope
-                            ? "#ffff6e"
+                            ? "#ffff86"
                             : proc.parentWorkOrderNo
-                            ? "#3bff6f"
+                            ? "#72e190"
                             : "transparent",
                         }}
                       >
