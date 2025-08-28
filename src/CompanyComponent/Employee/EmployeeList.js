@@ -31,7 +31,7 @@ const EmployeeList = () => {
   const [selectedRoleId, setSelectedRoleId] = useState("");
 
   const [currentPage, setCurrentPage] = useState(0); // page index
-  const [pageSize, setPageSize] = useState(5); // default size
+  const [pageSize, setPageSize] = useState(25); // default size
   const [pageCount, setPageCount] = useState(0);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -76,7 +76,12 @@ const EmployeeList = () => {
     leadViewAll: false,
     leadCreate: false,
     leadDelete: false,
-    leadEdit: false
+    leadEdit: false,
+    workOrderAccess: false,
+    workOrderViewAll: false,
+    workOrderCreate: false,
+    workOrderDelete: false,
+    workOrderEdit: false
   };
 
   const [formData, setFormData] = useState(defaultFormData);
@@ -193,7 +198,12 @@ const EmployeeList = () => {
         leadCreate: data.leadCreate,
         leadDelete: data.leadDelete,
         leadEdit: data.leadEdit,
-     
+        workOrderAccess: data.workOrderAccess,
+        workOrderViewAll: data.workOrderViewAll,
+        workOrderCreate: data.workOrderCreate,
+        workOrderDelete: data.workOrderDelete,
+        workOrderEdit: data.workOrderEdit
+
       }));
     } catch (err) {
       toast.error("Failed to load role access");
@@ -813,7 +823,7 @@ const EmployeeList = () => {
                           </label>
                         </div>
 
-                         <hr></hr>
+                        <hr></hr>
                         <h4>Lead</h4>
                         <div className="col-md-4 form-check ms-2 mb-3">
                           <input
@@ -892,6 +902,90 @@ const EmployeeList = () => {
                           <label
                             className="form-check-label"
                             htmlFor="leadEdit"
+                          >
+                            Edit
+                          </label>
+                        </div>
+
+                         <hr></hr>
+                        <h4>WorkOrder</h4>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="workOrderAccess"
+                            checked={formData.workOrderAccess}
+                            onChange={handleInputChange}
+                            id="workOrderAccess"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="workOrderAccess"
+                          >
+                            Module Access
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="workOrderViewAll"
+                            checked={formData.workOrderViewAll}
+                            onChange={handleInputChange}
+                            id="workOrderViewAll"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="workOrderViewAll"
+                          >
+                            View All
+                          </label>
+                        </div>
+
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="workOrderCreate"
+                            checked={formData.workOrderCreate}
+                            onChange={handleInputChange}
+                            id="workOrderCreate"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="workOrderCreate"
+                          >
+                            Create
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="workOrderDelete"
+                            checked={formData.workOrderDelete}
+                            onChange={handleInputChange}
+                            id="workOrderDelete"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="workOrderDelete"
+                          >
+                            Delete
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="workOrderEdit"
+                            checked={formData.workOrderEdit}
+                            onChange={handleInputChange}
+                            id="workOrderEdit"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="workOrderEdit"
                           >
                             Edit
                           </label>

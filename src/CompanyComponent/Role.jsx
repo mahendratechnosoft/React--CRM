@@ -51,7 +51,12 @@ const RoleModel = () => {
     leadViewAll: false,
     leadCreate: false,
     leadDelete: false,
-    leadEdit: false
+    leadEdit: false,
+    workOrderAccess: false,
+    workOrderViewAll: false,
+    workOrderCreate: false,
+    workOrderDelete: false,
+    workOrderEdit: false
 
 
 
@@ -98,7 +103,12 @@ const RoleModel = () => {
         leadViewAll: false,
         leadCreate: false,
         leadDelete: false,
-        leadEdit: false
+        leadEdit: false,
+        workOrderAccess: false,
+        workOrderViewAll: false,
+        workOrderCreate: false,
+        workOrderDelete: false,
+        workOrderEdit: false
       });
     }
   };
@@ -160,7 +170,12 @@ const RoleModel = () => {
       leadViewAll: e.target.leadViewAll.checked,
       leadCreate: e.target.leadCreate.checked,
       leadDelete: e.target.leadDelete.checked,
-      leadEdit: e.target.leadEdit.checked
+      leadEdit: e.target.leadEdit.checked,
+      workOrderAccess: e.target.workOrderAccess.checked,
+      workOrderViewAll: e.target.workOrderViewAll.checked,
+      workOrderCreate: e.target.workOrderCreate.checked,
+      workOrderDelete: e.target.workOrderDelete.checked,
+      workOrderEdit: e.target.workOrderEdit.checked
 
     };
 
@@ -217,7 +232,12 @@ const RoleModel = () => {
         leadViewAll: role.leadViewAll,
         leadCreate: role.leadCreate,
         leadDelete: role.leadDelete,
-        leadEdit: role.leadEdit
+        leadEdit: role.leadEdit,
+        workOrderAccess: role.workOrderAccess,
+        workOrderViewAll: role.workOrderViewAll,
+        workOrderCreate: role.workOrderCreate,
+        workOrderDelete: role.workOrderDelete,
+        workOrderEdit: role.workOrderEdit
       });
       handleShowRoleModel(true);
 
@@ -556,7 +576,7 @@ const RoleModel = () => {
                     </div>
 
                   </div>
-                    <div>
+                  <div>
                     <hr></hr>
                     <h4>Lead</h4>
                     <div>
@@ -608,6 +628,66 @@ const RoleModel = () => {
                           name="leadEdit"
                           value="true"
                           defaultChecked={selectedRole.leadEdit}
+                        />
+                        <label className="form-check-label">Edit</label>
+                      </div>
+
+
+                    </div>
+
+                  </div>
+                   <div>
+                    <hr></hr>
+                    <h4>Work Order</h4>
+                    <div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderAccess"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderAccess}
+                        />
+                        <label className="form-check-label">WorkOrder Access</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderViewAll"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderViewAll}
+                        />
+                        <label className="form-check-label">View All</label>
+                      </div>
+
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderCreate"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderCreate}
+                        />
+                        <label className="form-check-label">Create</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderDelete"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderDelete}
+                        />
+                        <label className="form-check-label">Delete</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderEdit"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderEdit}
                         />
                         <label className="form-check-label">Edit</label>
                       </div>
