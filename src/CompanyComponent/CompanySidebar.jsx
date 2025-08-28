@@ -69,7 +69,7 @@ const CompanySidebar = ({ isCollapsed }) => {
             {!isCollapsed && <span>Employee</span>}
           </Link>
         </li>
-        <li className={location.pathname === "/department" ? "active" : ""}>
+        {/* <li className={location.pathname === "/department" ? "active" : ""}>
           <Link to="/department">
             <FaBuilding />
             {!isCollapsed && <span>Department</span>}
@@ -80,7 +80,7 @@ const CompanySidebar = ({ isCollapsed }) => {
             <FaUserTag />
             {!isCollapsed && <span>Role</span>}
           </Link>
-        </li>
+        </li> */}
         <li className={location.pathname === "/Projectlist" ? "active" : ""}>
           <Link to="/Projectlist">
             <FaRandom />

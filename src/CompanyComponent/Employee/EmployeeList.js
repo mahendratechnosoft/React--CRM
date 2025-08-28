@@ -17,7 +17,7 @@ const EmployeeList = () => {
   const [error, setError] = useState("");
   const [employees, setEmployees] = useState([]);
 
-  const [emailError, setEmailError] = useState("");
+
 
   const [page, setPage] = useState(0); // ✅ must match JSX
   const [size, setSize] = useState(10); // ✅ must match JSX
@@ -43,6 +43,7 @@ const EmployeeList = () => {
   const [showPassword, setShowPassword] = useState(false);
 
 
+  const [emailError, setEmailError] = useState("");
 
   const defaultFormData = {
     name: "",

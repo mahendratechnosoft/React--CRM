@@ -209,6 +209,68 @@ const Companyinfo = () => {
     return new File([u8arr], filename, { type: mime });
   };
 
+
+// ==================EMAIL & PASS CODE===============
+
+ const [credentials, setCredentials] = useState({
+   username: "",
+   password: "",
+ });
+
+ const [emailError, setEmailError] = useState("");
+
+ const handleInputChange = async (e) => {
+   const { name, value } = e.target;
+
+   if (name === "username") {
+     setCredentials((prev) => ({ ...prev, username: value }));
+
+     if (value.trim() !== "") {
+       try {
+         const response = await axiosInstance.get(
+           `/company/checkDuplicateEmail/${encodeURIComponent(value)}`
+         );
+         const isUnique = response.data;
+         if (!isUnique) {
+           setEmailError("Email already exists.");
+         } else {
+           setEmailError("");
+         }
+       } catch (err) {
+         console.error("Error checking email:", err);
+         setEmailError("Error checking email.");
+       }
+     } else {
+       setEmailError("");
+     }
+   } else if (name === "password") {
+     setCredentials((prev) => ({ ...prev, password: value }));
+   }
+ };
+
+ const handleCredentialsSubmit = async (e) => {
+   e.preventDefault();
+
+   if (!credentials.username || !credentials.password) {
+     toast.error("Please enter both email and password.");
+     return;
+   }
+
+   if (emailError) {
+     toast.error(emailError);
+     return;
+   }
+
+   try {
+     await axiosInstance.put("/company/updateCompanyCredentials", credentials);
+     toast.success("Email & password saved successfully");
+   } catch (error) {
+     toast.error("Failed to save email & password");
+     console.error("Error saving credentials:", error);
+   }
+ };
+
+
   return (
     <>
       <div className="Setting-slidebar-main-div-right-section">
@@ -408,6 +470,53 @@ const Companyinfo = () => {
                   </Button>
                 </div>
               </form>
+
+              {/*   THIS IS WORKING CODE DONT REMOVE IT*/}
+              {/* <form onSubmit={handleCredentialsSubmit} className="bg-white p-4">
+                <label className="form-label fw-bold">
+                  Account Email & Password
+                </label>
+                <div className="mb-3">
+                  <label htmlFor="username" className="form-label">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="username"
+                    name="username"
+                    className="form-control"
+                    value={credentials.username}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {emailError && (
+                    <small className="text-danger">{emailError}</small>
+                  )}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="form-control"
+                    value={credentials.password}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="d-flex justify-content-end">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={!!emailError}
+                  >
+                    Save Email & Password
+                  </Button>
+                </div>
+              </form> */}
             </>
           )}
         </div>
