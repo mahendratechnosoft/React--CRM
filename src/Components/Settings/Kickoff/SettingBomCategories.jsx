@@ -76,7 +76,7 @@ const SettingBomCategories = () => {
     <div>
       <div className="Setting-slidebar-main-div-right-section">
         <div className="Checklist-sheet-list-container">
-          <div className="Companalist-main-card">
+          <div className="Settting-Companalist-main-card">
             <div className="row m-0 p-0 w-100 d-flex justify-content-between mb-2">
               <div className="col-md-3">
                 <h4 className="mx-2">BOM Categories</h4>

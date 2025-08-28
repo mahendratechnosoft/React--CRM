@@ -12,6 +12,13 @@ import CompnayBankinfo from "./General/CompnayBankinfo";
 
 import SettingBomCategories from "./Kickoff/SettingBomCategories";
 import SettingCheckListItem from "./Kickoff/SettingCheckListItem";
+
+import AddProcess from "./DataManager/AddProcess";
+import AddProcessSuggestion from "./DataManager/AddProcessSuggestion";
+import AddParts from "./DataManager/AddParts";
+import AddThickness from "./DataManager/AddThickness";
+import AddMaterial from "./DataManager/AddMaterial";
+
 function SettingParent() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -95,6 +102,51 @@ function SettingParent() {
                   </li>
                 </ul>
               </div>
+
+              <div className="settings-group">
+                <div className="settings-group-heading">Data Manager</div>
+                <ul>
+                  <li
+                    className={selectedSection === "AddProcess" ? "active" : ""}
+                    onClick={() => setSelectedSection("AddProcess")}
+                  >
+                     Process
+                  </li>
+                  <li
+                    className={
+                      selectedSection === "AddProcessSuggestion" ? "active" : ""
+                    }
+                    onClick={() => setSelectedSection("AddProcessSuggestion")}
+                  >
+                     Process Suggestion
+                  </li>
+
+                  <li
+                    className={selectedSection === "AddParts" ? "active" : ""}
+                    onClick={() => setSelectedSection("AddParts")}
+                  >
+                     Parts
+                  </li>
+
+                  <li
+                    className={
+                      selectedSection === "AddMaterial" ? "active" : ""
+                    }
+                    onClick={() => setSelectedSection("AddMaterial")}
+                  >
+                   Material
+                  </li>
+
+                  <li
+                    className={
+                      selectedSection === "AddThickness" ? "active" : ""
+                    }
+                    onClick={() => setSelectedSection("AddThickness")}
+                  >
+                   Thickness
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div className="setttings-main-div-right-col">
@@ -102,9 +154,15 @@ function SettingParent() {
               {selectedSection === "BankDetails" && <CompnayBankinfo />}
               {selectedSection === "Role" && <SettingRole />}
               {selectedSection === "Department" && <SettingDep />}
-
               {selectedSection === "CheckListItem" && <SettingBomCategories />}
               {selectedSection === "BomCategories" && <SettingCheckListItem />}
+              {selectedSection === "AddProcess" && <AddProcess />}
+              {selectedSection === "AddProcessSuggestion" && (
+                <AddProcessSuggestion />
+              )}
+              {selectedSection === "AddParts" && <AddParts />}
+              {selectedSection === "AddMaterial" && <AddMaterial />}
+              {selectedSection === "AddThickness" && <AddThickness />}
             </div>
           </div>
         </div>

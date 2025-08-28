@@ -212,7 +212,7 @@ const Companyinfo = () => {
   return (
     <>
       <div className="Setting-slidebar-main-div-right-section">
-        <div className="Companalist-main-card mb-4">
+        <div className="Settting-Companalist-main-card mb-4">
           <h4 className="mx-2">Company Settings</h4>
 
           {isLoading ? (

@@ -93,7 +93,7 @@ const SettingDep = () => {
   return (
     <div>
       <div className="Setting-slidebar-main-div-right-section">
-        <div className="Companalist-main-card">
+        <div className="Settting-Companalist-main-card">
           <div className="row m-0 p-0 w-100  d-flex justify-content-between">
             <div className="col-md-3 d-flex">
               <h4 className="mx-2">Department</h4>
