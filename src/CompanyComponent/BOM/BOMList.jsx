@@ -78,6 +78,7 @@ const BOMList = () => {
                                         <th>Customer </th>
                                         <th>Project</th>
                                         <th>WO No</th>
+                                        <th>Rev No</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -88,29 +89,20 @@ const BOMList = () => {
                                                 <td>{BOM.customerName}</td>
                                                 <td>{BOM.projectName}</td>
                                                 <td>{BOM.workOrderNo}</td>
-
-
-                                                <td className="text-end">
+                                                <td>{BOM.revisionNumber}</td>
+                                                <td>
                                                     <button
                                                         className="btn btn-outline-primary btn-sm"
-                                                        onClick={() => {
-                                                            editBOM(BOM.bomId);
-
-                                                        }}
+                                                        onClick={() => { editBOM(BOM.bomId); }}
                                                     >
                                                         <i className="bi bi-pencil-square"></i>
                                                     </button>
-                                                    <div>
-                                                        <button
-                                                            className="btn btn-outline-primary btn-sm"
-                                                            onClick={() => {
-                                                                setSelectedBomId(BOM.bomId);
-                                                                setShowPdf(true);
-                                                            }}
-                                                        >
-                                                            <i className="bi bi-eye"></i> Preview PDF
-                                                        </button>
-                                                    </div>
+                                                    <button
+                                                        className="btn btn-outline-primary btn-sm ms-2"
+                                                        onClick={() => { setSelectedBomId(BOM.bomId); setShowPdf(true); }}
+                                                    >
+                                                        <i className="bi bi-file-pdf"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         ))

@@ -365,7 +365,7 @@ const BOMCreatePage = () => {
                                         <div className="col-md-6">
                                             <Form.Group className="mb-3" controlId="formRevisionNumber">
                                                 <Form.Label>Revision Number</Form.Label>
-                                                <Form.Control type="text" required placeholder="Enter Revision Number" name="revisionNumber" />
+                                                <Form.Control type="text" defaultValue={0} required placeholder="Enter Revision Number" name="revisionNumber" readOnly />
                                             </Form.Group>
                                         </div>
                                     </div>
