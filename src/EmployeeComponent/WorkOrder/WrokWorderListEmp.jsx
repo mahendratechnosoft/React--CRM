@@ -2,7 +2,7 @@ import EmployeeTopbar from "../EmployeeTopbar";
 import EmployeeSidebar from "../EmployeeSidebar";
 import { useState } from "react";
 import WorkOrderList from "../../Components/WorkOrder/WorkOrderList";
-const TimeSheetEmp=()=>{
+const WorkOrderListEmp=()=>{
     const [isCollapsed, setIsCollapsed] = useState(false); // for toggle
    
     const handleToggle = () => {
@@ -29,4 +29,4 @@ const TimeSheetEmp=()=>{
     )
 }
 
-export default TimeSheetEmp;
+export default WorkOrderListEmp;
