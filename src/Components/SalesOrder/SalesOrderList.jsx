@@ -5,6 +5,7 @@ import axiosInstance from "../../BaseComponet/axiosInstance";
 import PaginationComponent from "../../Pagination/PaginationComponent";
 import CreateSalesOrder from "./CreateSalesOrder";
 import EditSalesOrder from "./EditSalesOrder";
+import SalesOrderPDFModel from "./SalesOrderPDFModel";
 
 const SalesOrderList = () => {
     const [salesOrders, setSalesOrders] = useState([]);
@@ -15,6 +16,8 @@ const SalesOrderList = () => {
     const [view, setView] = useState('list');
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [showPdfModal, setShowPdfModal] = useState(false);
+    const [salesOrderForPdf, setSalesOrderForPdf] = useState(null);
 
     const fetchSalesOrders = async () => {
         setLoading(true);
@@ -64,8 +67,8 @@ const SalesOrderList = () => {
     }
 
     const handlePreviewClick = (id) => {
-        console.log("Preview for:", id);
-        // setShowPdfModal(true);
+        setSalesOrderForPdf(id);
+        setShowPdfModal(true);
     };
 
     // Helper function to format dates
@@ -164,10 +167,10 @@ const SalesOrderList = () => {
                                                             <i className="bi bi-pencil-square me-1"></i>
                                                         </button>
                                                         <button
-                                                            className="btn btn-sm btn-danger text-black"
+                                                            className="btn btn-outline-primary btn-sm ms-2"
                                                             onClick={() => handlePreviewClick(order.saleOrderId)}
                                                         >
-                                                            <i class="fa-solid fa-file-pdf"></i>
+                                                            <i className="bi bi-file-pdf"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -201,6 +204,13 @@ const SalesOrderList = () => {
     return (
         <div className="slidebar-main-div-right-section">
             {renderView()}
+            {showPdfModal && (
+                <SalesOrderPDFModel
+                    show={showPdfModal}
+                    onClose={() => setShowPdfModal(false)}
+                    salesOrderId={salesOrderForPdf}
+                />
+            )}
         </div>
     );
 }
