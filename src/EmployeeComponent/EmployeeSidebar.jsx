@@ -79,6 +79,18 @@ const fetchAccess = async () => {
           </Link>
         </li>
       )}
+
+      {accessPermission?.workOrderAccess &&   (
+        <li
+          className={`sidebar-employee__nav-item ${location.pathname === "/employee/workOrder" ? "active" : ""
+            }`}
+        >
+          <Link to="/employee/workOrder">
+            <FaHome />
+            {!isCollapsed && <span>WrokOrder</span>}
+          </Link>
+        </li>
+      )}
      
       
       </ul>

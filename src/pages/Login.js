@@ -40,6 +40,8 @@ const Login = () => {
       } else if (role === "ROLE_COMPANY") {
         navigate("/compDash");
       } else if (role === "ROLE_EMP") {
+        const response = await axiosInstance.get(`/company/getModuleAccessInfo`);
+        localStorage.setItem("access", JSON.stringify(response.data));
         navigate("/empDash");
       } else {
         navigate("/adminDashboard");

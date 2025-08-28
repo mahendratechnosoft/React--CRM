@@ -37,6 +37,8 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
     const [processesSuggestionsLoading, setProcessesSuggestionsLoading] = useState();
     const [itemsToDelete, setItemsToDelete] = useState([]);
     const [imagesToDelete, setImagesToDelete] = useState([]);
+    const [access,setAccess]=useState({})
+    const [role,setRole]=useState("");
 
     const [formData, setFormData] = useState({
         partName: '',
@@ -55,6 +57,9 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
     const [disabledProcessValues, setDisabledProcessValues] = useState([]);
 
     useEffect(() => {
+         const access = JSON.parse(localStorage.getItem("access"));
+        setAccess(access)
+        setRole(localStorage.getItem("role"))
         const loadInitialData = async () => {
             const fetchedProcessOpts = await fetchProcesses();
             await fetchProcessesSuggestions();
@@ -76,6 +81,7 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
             setItemsToDelete([]);
             setImagesToDelete([]);
         };
+       
     }, [workOrderId, show]);
 
     useEffect(() => {
@@ -816,6 +822,7 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
             <Modal.Header closeButton>
                 <Modal.Title>Edit Work Order</Modal.Title>
             </Modal.Header>
+            <fieldset disabled={!access?.workOrderEdit && role==="ROLE_EMP"}>
             <Modal.Body>
                 <Form>
                     <div className="mb-4">
@@ -1183,6 +1190,7 @@ const EditWorkOrder = ({ show, onClose, workOrderId, onUpdate }) => {
                 <Button variant="outline-secondary" onClick={onClose}>Close</Button>
                 <Button variant="primary" onClick={handleUpdate}>Update</Button>
             </Modal.Footer>
+            </fieldset>
         </Modal>
     );
 };

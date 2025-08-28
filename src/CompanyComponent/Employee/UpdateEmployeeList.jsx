@@ -35,7 +35,12 @@ const UpdateEmployeeList = () => {
     leadViewAll: false,
     leadCreate: false,
     leadDelete: false,
-    leadEdit: false
+    leadEdit: false,
+    workOrderAccess: false,
+    workOrderViewAll: false,
+    workOrderCreate: false,
+    workOrderDelete: false,
+    workOrderEdit: false
   });
   const [isEditing, setIsEditing] = useState(false);
   const [initialemp, setInitialEmp] = useState(null);
@@ -74,7 +79,12 @@ const UpdateEmployeeList = () => {
           leadViewAll: res.data.moduleAccess.leadViewAll,
           leadCreate: res.data.moduleAccess.leadCreate,
           leadDelete: res.data.moduleAccess.leadDelete,
-          leadEdit: res.data.moduleAccess.leadEdit
+          leadEdit: res.data.moduleAccess.leadEdit,
+          workOrderAccess: res.data.moduleAccess.workOrderAccess,
+          workOrderViewAll: res.data.moduleAccess.workOrderViewAll,
+          workOrderCreate: res.data.moduleAccess.workOrderCreate,
+          workOrderDelete: res.data.moduleAccess.workOrderDelete,
+          workOrderEdit: res.data.moduleAccess.workOrderEdit
 
         });
 
@@ -166,7 +176,12 @@ const UpdateEmployeeList = () => {
         leadViewAll: data.leadViewAll,
         leadCreate: data.leadCreate,
         leadDelete: data.leadDelete,
-        leadEdit: data.leadEdit
+        leadEdit: data.leadEdit,
+        workOrderAccess: data.workOrderAccess,
+        workOrderViewAll: data.workOrderViewAll,
+        workOrderCreate: data.workOrderCreate,
+        workOrderDelete: data.workOrderDelete,
+        workOrderEdit: data.workOrderEdit
       });
     } catch (err) {
       toast.error("Failed to load role access");
@@ -259,35 +274,41 @@ const UpdateEmployeeList = () => {
 
   const handleSaveAccess = () => {
     const payload = {
-     employeeId: emp.employeeId,   // required for lookup
-    companyId: emp.companyId,     // if you store companyId in ModuleAccess
-    leadAccess: access.leadAccess,
-    template: access.template,
-    email: access.email,
+      employeeId: emp.employeeId,   // required for lookup
+      companyId: emp.companyId,     // if you store companyId in ModuleAccess
+      leadAccess: access.leadAccess,
+      template: access.template,
+      email: access.email,
 
-    customerViewAll: access.customerViewAll,
-    customerOwnView: access.customerOwnView,
-    customerCreate: access.customerCreate,
-    customerDelete: access.customerDelete,
-    customerEdit: access.customerEdit,
+      customerViewAll: access.customerViewAll,
+      customerOwnView: access.customerOwnView,
+      customerCreate: access.customerCreate,
+      customerDelete: access.customerDelete,
+      customerEdit: access.customerEdit,
 
-    projectViewAll: access.projectViewAll,
-    projectOwnView: access.projectOwnView,
-    projectCreate: access.projectCreate,
-    projectDelete: access.projectDelete,
-    projectEdit: access.projectEdit,
+      projectViewAll: access.projectViewAll,
+      projectOwnView: access.projectOwnView,
+      projectCreate: access.projectCreate,
+      projectDelete: access.projectDelete,
+      projectEdit: access.projectEdit,
 
-    timeSheetAccess: access.timeSheetAccess,
-    timeSheetViewAll: access.timeSheetViewAll,
-    timeSheetCreate: access.timeSheetCreate,
-    timeSheetDelete: access.timeSheetDelete,
-    timeSheetEdit: access.timeSheetEdit,
+      timeSheetAccess: access.timeSheetAccess,
+      timeSheetViewAll: access.timeSheetViewAll,
+      timeSheetCreate: access.timeSheetCreate,
+      timeSheetDelete: access.timeSheetDelete,
+      timeSheetEdit: access.timeSheetEdit,
 
-    leadModuleAccess: access.leadModuleAccess,
-    leadViewAll: access.leadViewAll,
-    leadCreate: access.leadCreate,
-    leadDelete: access.leadDelete,
-    leadEdit: access.leadEdit,
+      leadModuleAccess: access.leadModuleAccess,
+      leadViewAll: access.leadViewAll,
+      leadCreate: access.leadCreate,
+      leadDelete: access.leadDelete,
+      leadEdit: access.leadEdit,
+
+      workOrderAccess: access.workOrderAccess,
+      workOrderViewAll: access.workOrderViewAll,
+      workOrderCreate: access.workOrderCreate,
+      workOrderDelete: access.workOrderDelete,
+      workOrderEdit: access.workOrderEdit
 
     };
 
@@ -463,7 +484,7 @@ const UpdateEmployeeList = () => {
                   View All
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -476,7 +497,7 @@ const UpdateEmployeeList = () => {
                   View Own
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -489,7 +510,7 @@ const UpdateEmployeeList = () => {
                   Create
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -502,7 +523,7 @@ const UpdateEmployeeList = () => {
                   Delete
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -530,7 +551,7 @@ const UpdateEmployeeList = () => {
                   View All
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -543,7 +564,7 @@ const UpdateEmployeeList = () => {
                   View Own
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -556,7 +577,7 @@ const UpdateEmployeeList = () => {
                   Create
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -569,7 +590,7 @@ const UpdateEmployeeList = () => {
                   Delete
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -597,7 +618,7 @@ const UpdateEmployeeList = () => {
                   Module Access
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -610,7 +631,7 @@ const UpdateEmployeeList = () => {
                   View All
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -623,7 +644,7 @@ const UpdateEmployeeList = () => {
                   Create
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -636,7 +657,7 @@ const UpdateEmployeeList = () => {
                   Delete
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -649,7 +670,7 @@ const UpdateEmployeeList = () => {
                   Edit
                 </label>
               </div>
-               <hr></hr>
+              <hr></hr>
               <h4>Lead</h4>
               <div className="form-check form-switch mb-3">
                 <input
@@ -664,7 +685,7 @@ const UpdateEmployeeList = () => {
                   Module Access
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -677,7 +698,7 @@ const UpdateEmployeeList = () => {
                   View All
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -690,7 +711,7 @@ const UpdateEmployeeList = () => {
                   Create
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -703,7 +724,7 @@ const UpdateEmployeeList = () => {
                   Delete
                 </label>
               </div>
-               <div className="form-check form-switch mb-3">
+              <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -713,6 +734,74 @@ const UpdateEmployeeList = () => {
                   onChange={handleAccessChange}
                 />
                 <label className="form-check-label" htmlFor="leadEdit">
+                  Edit
+                </label>
+              </div>
+
+              <hr></hr>
+              <h4>Work Order</h4>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="workOrderAccess"
+                  id="workOrderAccess"
+                  checked={access.workOrderAccess}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="workOrderAccess">
+                  Module Access
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="workOrderViewAll"
+                  id="workOrderViewAll"
+                  checked={access.workOrderViewAll}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="workOrderViewAll">
+                  View All
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="workOrderCreate"
+                  id="workOrderCreate"
+                  checked={access.workOrderCreate}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="workOrderCreate">
+                  Create
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="workOrderDelete"
+                  id="workOrderDelete"
+                  checked={access.workOrderDelete}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="workOrderDelete">
+                  Delete
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="workOrderEdit"
+                  id="workOrderEdit"
+                  checked={access.workOrderEdit}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="workOrderEdit">
                   Edit
                 </label>
               </div>

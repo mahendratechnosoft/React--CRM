@@ -50,7 +50,7 @@ import CustomerListEmp from "./EmployeeComponent/Customer/CustomerListEmp";
 import ProjectListEmp from "./EmployeeComponent/Project/ProjectListEmp";
 import TimeSheetEmp from "./EmployeeComponent/TimeSheet/TimeSheetEmp";
 import LeadListEmp from "./EmployeeComponent/Lead/LeadListEmp"; 
-
+import WorkOrderListEmp from "./EmployeeComponent/WorkOrder/WrokWorderListEmp";
 
 
 import SettingParent from "./Components/Settings/SettingParent";
@@ -364,6 +364,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <SalesOrder />
+            </ProtectedRoute>
+          }
+        />
+
+         <Route
+          path="/employee/workOrder"
+          element={
+            <ProtectedRoute>
+              <WorkOrderListEmp/>
             </ProtectedRoute>
           }
         />
