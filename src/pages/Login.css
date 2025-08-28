@@ -9,9 +9,7 @@
 .crm-login-left {
     flex: 1;
     /* background: linear-gradient(135deg, #6e00ff, #a600ff); */
- background: 
-    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), /* black overlay */
-    url('/src/Assets/crm-login-left-bg1.jpg');  
+background:  url('/src/Assets/crm-login-left-bg1.jpg');  
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -20,7 +18,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    animation: fadeInUp 1s ease-in-out;
+
 }
 
 
