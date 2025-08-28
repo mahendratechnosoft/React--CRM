@@ -81,7 +81,18 @@ const EmployeeList = () => {
     workOrderViewAll: false,
     workOrderCreate: false,
     workOrderDelete: false,
-    workOrderEdit: false
+    workOrderEdit: false,
+    kickOffAccess: false,
+    kickOffViewAll: false,
+    kickOffCreate: false,
+    kickOffDelete: false,
+    kickOffEdit: false,
+    checkSheetAccess: false,
+    checkSheetViewAll: false,
+    checkSheetCreate: false,
+    checkSheetDelete: false,
+    checkSheetEdit: false,
+
   };
 
   const [formData, setFormData] = useState(defaultFormData);
@@ -202,7 +213,17 @@ const EmployeeList = () => {
         workOrderViewAll: data.workOrderViewAll,
         workOrderCreate: data.workOrderCreate,
         workOrderDelete: data.workOrderDelete,
-        workOrderEdit: data.workOrderEdit
+        workOrderEdit: data.workOrderEdit,
+        kickOffAccess: data.kickOffAccess,
+        kickOffViewAll: data.kickOffViewAll,
+        kickOffCreate: data.kickOffCreate,
+        kickOffDelete: data.kickOffDelete,
+        kickOffEdit: data.kickOffEdit,
+        checkSheetAccess: data.checkSheetAccess,
+        checkSheetViewAll: data.checkSheetViewAll,
+        checkSheetCreate: data.checkSheetCreate,
+        checkSheetDelete: data.checkSheetDelete,
+        checkSheetEdit: data.checkSheetEdit
 
       }));
     } catch (err) {
@@ -907,7 +928,7 @@ const EmployeeList = () => {
                           </label>
                         </div>
 
-                         <hr></hr>
+                        <hr></hr>
                         <h4>WorkOrder</h4>
                         <div className="col-md-4 form-check ms-2 mb-3">
                           <input
@@ -990,6 +1011,175 @@ const EmployeeList = () => {
                             Edit
                           </label>
                         </div>
+
+                        <hr></hr>
+                        <h4>Kick Off</h4>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="workOrderAccess"
+                            checked={formData.kickOffAccess}
+                            onChange={handleInputChange}
+                            id="kickOffAccess"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="kickOffAccess"
+                          >
+                            Module Access
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickOffViewAll"
+                            checked={formData.kickOffViewAll}
+                            onChange={handleInputChange}
+                            id="kickOffViewAll"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="kickOffViewAll"
+                          >
+                            View All
+                          </label>
+                        </div>
+
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickOffCreate"
+                            checked={formData.kickOffCreate}
+                            onChange={handleInputChange}
+                            id="kickOffCreate"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="kickOffCreate"
+                          >
+                            Create
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickOffDelete"
+                            checked={formData.kickOffDelete}
+                            onChange={handleInputChange}
+                            id="kickOffDelete"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="kickOffDelete"
+                          >
+                            Delete
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickOffEdit"
+                            checked={formData.kickOffEdit}
+                            onChange={handleInputChange}
+                            id="kickOffEdit"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="kickOffEdit"
+                          >
+                            Edit
+                          </label>
+                        </div>
+
+                        <hr></hr>
+                        <h4>Check Sheet</h4>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="checkSheetAccess"
+                            checked={formData.checkSheetAccess}
+                            onChange={handleInputChange}
+                            id="checkSheetAccess"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="checkSheetAccess"
+                          >
+                            Module Access
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="checkSheetViewAll"
+                            checked={formData.checkSheetViewAll}
+                            onChange={handleInputChange}
+                            id="checkSheetViewAll"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="checkSheetViewAll"
+                          >
+                            View All
+                          </label>
+                        </div>
+
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="checkSheetCreate"
+                            checked={formData.checkSheetCreate}
+                            onChange={handleInputChange}
+                            id="checkSheetCreate"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="checkSheetCreate"
+                          >
+                            Create
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="checkSheetDelete"
+                            checked={formData.checkSheetDelete}
+                            onChange={handleInputChange}
+                            id="checkSheetDelete"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="checkSheetDelete"
+                          >
+                            Delete
+                          </label>
+                        </div>
+                        <div className="col-md-4 form-check ms-2 mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="checkSheetEdit"
+                            checked={formData.checkSheetEdit}
+                            onChange={handleInputChange}
+                            id="checkSheetEdit"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="checkSheetEdit"
+                          >
+                            Edit
+                          </label>
+                        </div>
+
 
 
 

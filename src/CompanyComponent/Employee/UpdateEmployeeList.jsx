@@ -40,7 +40,17 @@ const UpdateEmployeeList = () => {
     workOrderViewAll: false,
     workOrderCreate: false,
     workOrderDelete: false,
-    workOrderEdit: false
+    workOrderEdit: false,
+    kickOffAccess: false,
+    kickOffViewAll: false,
+    kickOffCreate: false,
+    kickOffDelete: false,
+    kickOffEdit: false,
+    checkSheetAccess: false,
+    checkSheetViewAll: false,
+    checkSheetCreate: false,
+    checkSheetDelete: false,
+    checkSheetEdit: false,
   });
   const [isEditing, setIsEditing] = useState(false);
   const [initialemp, setInitialEmp] = useState(null);
@@ -84,7 +94,17 @@ const UpdateEmployeeList = () => {
           workOrderViewAll: res.data.moduleAccess.workOrderViewAll,
           workOrderCreate: res.data.moduleAccess.workOrderCreate,
           workOrderDelete: res.data.moduleAccess.workOrderDelete,
-          workOrderEdit: res.data.moduleAccess.workOrderEdit
+          workOrderEdit: res.data.moduleAccess.workOrderEdit,
+          kickOffAccess: res.data.moduleAccess.kickOffAccess,
+          kickOffViewAll: res.data.moduleAccess.kickOffViewAll,
+          kickOffCreate: res.data.moduleAccess.kickOffCreate,
+          kickOffDelete: res.data.moduleAccess.kickOffDelete,
+          kickOffEdit: res.data.moduleAccess.kickOffEdit,
+          checkSheetAccess: res.data.moduleAccess.checkSheetAccess,
+          checkSheetViewAll: res.data.moduleAccess.checkSheetViewAll,
+          checkSheetCreate: res.data.moduleAccess.checkSheetCreate,
+          checkSheetDelete: res.data.moduleAccess.checkSheetDelete,
+          checkSheetEdit: res.data.moduleAccess.checkSheetEdit
 
         });
 
@@ -181,7 +201,18 @@ const UpdateEmployeeList = () => {
         workOrderViewAll: data.workOrderViewAll,
         workOrderCreate: data.workOrderCreate,
         workOrderDelete: data.workOrderDelete,
-        workOrderEdit: data.workOrderEdit
+        workOrderEdit: data.workOrderEdit,
+        kickOffAccess: data.kickOffAccess,
+        kickOffViewAll: data.kickOffViewAll,
+        kickOffCreate: data.kickOffCreate,
+        kickOffDelete: data.kickOffDelete,
+        kickOffEdit: data.kickOffEdit,
+        checkSheetAccess: data.checkSheetAccess,
+        checkSheetViewAll: data.checkSheetViewAll,
+        checkSheetCreate: data.checkSheetCreate,
+        checkSheetDelete: data.checkSheetDelete,
+        checkSheetEdit: data.checkSheetEdit
+
       });
     } catch (err) {
       toast.error("Failed to load role access");
@@ -308,7 +339,19 @@ const UpdateEmployeeList = () => {
       workOrderViewAll: access.workOrderViewAll,
       workOrderCreate: access.workOrderCreate,
       workOrderDelete: access.workOrderDelete,
-      workOrderEdit: access.workOrderEdit
+      workOrderEdit: access.workOrderEdit,
+
+      kickOffAccess: access.kickOffAccess,
+      kickOffViewAll: access.kickOffViewAll,
+      kickOffCreate: access.kickOffCreate,
+      kickOffDelete: access.kickOffDelete,
+      kickOffEdit: access.kickOffEdit,
+
+       checkSheetAccess: access.checkSheetAccess,
+      checkSheetViewAll: access.checkSheetViewAll,
+      checkSheetCreate: access.checkSheetCreate,
+      checkSheetDelete: access.checkSheetDelete,
+      checkSheetEdit: access.checkSheetEdit
 
     };
 
@@ -805,6 +848,145 @@ const UpdateEmployeeList = () => {
                   Edit
                 </label>
               </div>
+
+              <hr></hr>
+              <h4>Kick Off</h4>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="kickOffAccess"
+                  id="kickOffAccess"
+                  checked={access.kickOffAccess}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="kickOffAccess">
+                  Module Access
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="kickOffViewAll"
+                  id="kickOffViewAll"
+                  checked={access.kickOffViewAll}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="kickOffViewAll">
+                  View All
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="kickOffCreate"
+                  id="kickOffCreate"
+                  checked={access.kickOffCreate}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="kickOffCreate">
+                  Create
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="kickOffDelete"
+                  id="kickOffDelete"
+                  checked={access.kickOffDelete}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="kickOffDelete">
+                  Delete
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="kickOffEdit"
+                  id="kickOffEdit"
+                  checked={access.kickOffEdit}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="kickOffEdit">
+                  Edit
+                </label>
+              </div>
+
+               <hr></hr>
+              <h4>Check Sheet </h4>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="checkSheetAccess"
+                  id="checkSheetAccess"
+                  checked={access.checkSheetAccess}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="checkSheetAccess">
+                  Module Access
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="checkSheetViewAll"
+                  id="checkSheetViewAll"
+                  checked={access.checkSheetViewAll}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="checkSheetViewAll">
+                  View All
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="checkSheetCreate"
+                  id="checkSheetCreate"
+                  checked={access.checkSheetCreate}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="checkSheetCreate">
+                  Create
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="checkSheetDelete"
+                  id="checkSheetDelete"
+                  checked={access.checkSheetDelete}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="checkSheetDelete">
+                  Delete
+                </label>
+              </div>
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="checkSheetEdit"
+                  id="checkSheetEdit"
+                  checked={access.checkSheetEdit}
+                  onChange={handleAccessChange}
+                />
+                <label className="form-check-label" htmlFor="checkSheetEdit">
+                  Edit
+                </label>
+              </div>
+
+
+
 
 
               <div className="d-flex justify-content-end">
