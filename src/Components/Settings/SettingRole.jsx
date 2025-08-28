@@ -50,6 +50,16 @@ const SettingRole = () => {
     leadCreate: false,
     leadDelete: false,
     leadEdit: false,
+    workOrderAccess: false,
+    workOrderViewAll: false,
+    workOrderCreate: false,
+    workOrderDelete: false,
+    workOrderEdit: false,
+    kickOffAccess: false,
+    kickOffViewAll: false,
+    kickOffCreate: false,
+    kickOffDelete: false,
+    kickOffEdit: false
   });
 
   useEffect(() => {
@@ -94,6 +104,21 @@ const SettingRole = () => {
         leadCreate: false,
         leadDelete: false,
         leadEdit: false,
+        workOrderAccess: false,
+        workOrderViewAll: false,
+        workOrderCreate: false,
+        workOrderDelete: false,
+        workOrderEdit: false,
+        kickOffAccess: false,
+        kickOffViewAll: false,
+        kickOffCreate: false,
+        kickOffDelete: false,
+        kickOffEdit: false,
+        checkSheetAccess: false,
+        checkSheetViewAll: false,
+        checkSheetCreate: false,
+        checkSheetDelete: false,
+        checkSheetEdit: false,
       });
     }
   };
@@ -155,6 +180,22 @@ const SettingRole = () => {
       leadCreate: e.target.leadCreate.checked,
       leadDelete: e.target.leadDelete.checked,
       leadEdit: e.target.leadEdit.checked,
+      workOrderAccess: e.target.workOrderAccess.checked,
+      workOrderViewAll: e.target.workOrderViewAll.checked,
+      workOrderCreate: e.target.workOrderCreate.checked,
+      workOrderDelete: e.target.workOrderDelete.checked,
+      workOrderEdit: e.target.workOrderEdit.checked,
+      kickOffAccess: e.target.kickOffAccess.checked,
+      kickOffViewAll: e.target.kickOffViewAll.checked,
+      kickOffCreate: e.target.kickOffCreate.checked,
+      kickOffDelete: e.target.kickOffDelete.checked,
+      kickOffEdit: e.target.kickOffEdit.checked,
+      checkSheetAccess: e.target.checkSheetAccess.checked,
+      checkSheetViewAll: e.target.checkSheetViewAll.checked,
+      checkSheetCreate: e.target.checkSheetCreate.checked,
+      checkSheetDelete: e.target.checkSheetDelete.checked,
+      checkSheetEdit: e.target.checkSheetEdit.checked,
+   
     };
 
     try {
@@ -206,6 +247,24 @@ const SettingRole = () => {
         leadCreate: role.leadCreate,
         leadDelete: role.leadDelete,
         leadEdit: role.leadEdit,
+        workOrderAccess: role.workOrderAccess,
+        workOrderViewAll: role.workOrderViewAll,
+        workOrderCreate: role.workOrderCreate,
+        workOrderDelete: role.workOrderDelete,
+        workOrderEdit: role.workOrderEdit,
+        kickOffAccess: role.kickOffAccess,
+        kickOffViewAll: role.kickOffViewAll,
+        kickOffCreate: role.kickOffCreate,
+        kickOffDelete: role.kickOffDelete,
+        kickOffEdit: role.kickOffEdit,
+        checkSheetAccess: role.checkSheetAccess,
+        checkSheetViewAll: role.checkSheetViewAll,
+        checkSheetCreate: role.checkSheetCreate,
+        checkSheetDelete: role.checkSheetDelete,
+        checkSheetEdit: role.checkSheetEdit,
+        
+        
+        
       });
       handleShowRoleModel(true);
 
@@ -596,8 +655,179 @@ const SettingRole = () => {
                       <label className="form-check-label">Edit</label>
                     </div>
                   </div>
+                  <div>
+                    <hr></hr>
+                    <h4>Work Order</h4>
+                    <div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderAccess"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderAccess}
+                        />
+                        <label className="form-check-label">WorkOrder Access</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderViewAll"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderViewAll}
+                        />
+                        <label className="form-check-label">View All</label>
+                      </div>
+
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderCreate"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderCreate}
+                        />
+                        <label className="form-check-label">Create</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderDelete"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderDelete}
+                        />
+                        <label className="form-check-label">Delete</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="workOrderEdit"
+                          value="true"
+                          defaultChecked={selectedRole.workOrderEdit}
+                        />
+                        <label className="form-check-label">Edit</label>
+                      </div>
+                    </div>
+                    </div>
+                    <div>
+                    <hr></hr>
+                    <h4>KickOff </h4>
+                    <div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="kickOffAccess"
+                          value="true"
+                          defaultChecked={selectedRole.kickOffAccess}
+                        />
+                        <label className="form-check-label">KickOff Access</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="kickOffViewAll"
+                          value="true"
+                          defaultChecked={selectedRole.kickOffViewAll}
+                        />
+                        <label className="form-check-label">View All</label>
+                      </div>
+
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="kickOffCreate"
+                          value="true"
+                          defaultChecked={selectedRole.kickOffCreate}
+                        />
+                        <label className="form-check-label">Create</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="kickOffDelete"
+                          value="true"
+                          defaultChecked={selectedRole.kickOffDelete}
+                        />
+                        <label className="form-check-label">Delete</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="kickOffEdit"
+                          value="true"
+                          defaultChecked={selectedRole.kickOffEdit}
+                        />
+                        <label className="form-check-label">Edit</label>
+                      </div>
+                    </div>
+                      <hr></hr>
+                    <h4>Check Sheet </h4>
+                    <div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="checkSheetAccess"
+                          value="true"
+                          defaultChecked={selectedRole.checkSheetAccess}
+                        />
+                        <label className="form-check-label">KickOff Access</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="checkSheetViewAll"
+                          value="true"
+                          defaultChecked={selectedRole.checkSheetViewAll}
+                        />
+                        <label className="form-check-label">View All</label>
+                      </div>
+
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="checkSheetCreate"
+                          value="true"
+                          defaultChecked={selectedRole.checkSheetCreate}
+                        />
+                        <label className="form-check-label">Create</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="checkSheetDelete"
+                          value="true"
+                          defaultChecked={selectedRole.checkSheetDelete}
+                        />
+                        <label className="form-check-label">Delete</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="checkSheetEdit"
+                          value="true"
+                          defaultChecked={selectedRole.checkSheetEdit}
+                        />
+                        <label className="form-check-label">Edit</label>
+                      </div>
+                    </div>
+
+                    </div>
+                  </div>
                 </div>
-              </div>
+              
 
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleCloseRoleModel}>

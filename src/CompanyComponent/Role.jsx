@@ -56,7 +56,12 @@ const RoleModel = () => {
     workOrderViewAll: false,
     workOrderCreate: false,
     workOrderDelete: false,
-    workOrderEdit: false
+    workOrderEdit: false,
+    kickOffAccess: false,
+    kickOffViewAll: false,
+    kickOffCreate: false,
+    kickOffDelete: false,
+    kickOffEdit: false
 
 
 
@@ -108,7 +113,12 @@ const RoleModel = () => {
         workOrderViewAll: false,
         workOrderCreate: false,
         workOrderDelete: false,
-        workOrderEdit: false
+        workOrderEdit: false,
+        kickOffAccess: false,
+        kickOffViewAll: false,
+        kickOffCreate: false,
+        kickOffDelete: false,
+        kickOffEdit: false
       });
     }
   };
@@ -175,7 +185,12 @@ const RoleModel = () => {
       workOrderViewAll: e.target.workOrderViewAll.checked,
       workOrderCreate: e.target.workOrderCreate.checked,
       workOrderDelete: e.target.workOrderDelete.checked,
-      workOrderEdit: e.target.workOrderEdit.checked
+      workOrderEdit: e.target.workOrderEdit.checked,
+      kickOffAccess: e.target.kickOffAccess.checked,
+      kickOffViewAll: e.target.kickOffViewAll.checked,
+      kickOffCreate: e.target.kickOffCreate.checked,
+      kickOffDelete: e.target.kickOffDelete.checked,
+      kickOffEdit: e.target.kickOffEdit.checked
 
     };
 
@@ -237,7 +252,12 @@ const RoleModel = () => {
         workOrderViewAll: role.workOrderViewAll,
         workOrderCreate: role.workOrderCreate,
         workOrderDelete: role.workOrderDelete,
-        workOrderEdit: role.workOrderEdit
+        workOrderEdit: role.workOrderEdit,
+        kickOffAccess: role.kickOffAccess,
+        kickOffViewAll: role.kickOffViewAll,
+        kickOffCreate: role.kickOffCreate,
+        kickOffDelete: role.kickOffDelete,
+        kickOffEdit: role.kickOffEdit
       });
       handleShowRoleModel(true);
 
@@ -636,7 +656,7 @@ const RoleModel = () => {
                     </div>
 
                   </div>
-                   <div>
+                  <div>
                     <hr></hr>
                     <h4>Work Order</h4>
                     <div>
@@ -694,6 +714,64 @@ const RoleModel = () => {
 
 
                     </div>
+                    <div>
+                      <hr></hr>
+                      <h4>Kickoff</h4>
+                      <div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickOffAccess"
+                            value="true"
+                            defaultChecked={selectedRole.kickOffAccess}
+                          />
+                          <label className="form-check-label">Kickoff Access</label>
+                        </div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickoffViewAll"
+                            value="true"
+                            defaultChecked={selectedRole.kickOffViewAll}
+                          />
+                          <label className="form-check-label">View All</label>
+                        </div>
+
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickoffCreate"
+                            value="true"
+                            defaultChecked={selectedRole.kickOffCreate}
+                          />
+                          <label className="form-check-label">Create</label>
+                        </div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickoffDelete"
+                            value="true"
+                            defaultChecked={selectedRole.kickOffDelete}
+                          />
+                          <label className="form-check-label">Delete</label>
+                        </div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="kickoffEdit"
+                            value="true"
+                            defaultChecked={selectedRole.kickOffEdit}
+                          />
+                          <label className="form-check-label">Edit</label>
+                        </div>
+                      </div>
+                    </div>
+
 
                   </div>
                 </div>
