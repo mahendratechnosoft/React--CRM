@@ -42,7 +42,7 @@ const ProjectList = () => {
   };
 
   return (
-    <div>
+    <>
    
 
         <div className="slidebar-main-div-right-section">
@@ -140,7 +140,7 @@ const ProjectList = () => {
           onProjectUpdated={fetchProjects}
         />
       )}
-    </div>
+    </>
   );
 };
 

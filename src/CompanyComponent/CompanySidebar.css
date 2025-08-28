@@ -10,6 +10,19 @@
   padding: 0 10px;
   display: flex;
   flex-direction: column;
+
+
+   /* 👇 Only scroll vertically, don’t clip horizontal */
+  overflow-y: auto;
+  overflow-x: visible;
+
+  max-height: 94vh;
+  
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+
+  /* Hide scrollbar for IE, Edge, and Chrome */
+  -ms-overflow-style: none;
 }
 
 .company-sidebar__brand {
@@ -39,8 +52,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 15px;
-  padding: 12px 12px;
+font-size: 0.9rem;
+  padding: 8px 12px;
 }
 
 .company-sidebar__nav-links li:hover,
@@ -116,13 +129,13 @@
 
 
 .company-sidebar__dropdown-menu {
-  position: absolute;
-  top: 0;
+  position: static;
+  top: 100%;
   left: 100%;
   background-color: white;
   border: 1px solid #ddd;
   min-width: 180px;
-  z-index: 999;
+  z-index: 2000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 

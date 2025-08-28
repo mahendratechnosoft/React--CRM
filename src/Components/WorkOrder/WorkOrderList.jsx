@@ -94,7 +94,7 @@ const WorkOrderList = () => {
 
 
     return (
-        <div>
+        <>
            
           
                 <div className="slidebar-main-div-right-section">
@@ -267,7 +267,7 @@ const WorkOrderList = () => {
                 onClose={()=>setAddProcessModal(false)}
             />
 
-        </div>
+        </>
         
     );
 }

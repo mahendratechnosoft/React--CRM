@@ -67,16 +67,16 @@ function SettingParent() {
                 <div className="settings-group-heading">Role & Department</div>
                 <ul>
                   <li
-                    className={selectedSection === "Role" ? "active" : ""}
-                    onClick={() => setSelectedSection("Role")}
-                  >
-                    Role
-                  </li>
-                  <li
                     className={selectedSection === "Department" ? "active" : ""}
                     onClick={() => setSelectedSection("Department")}
                   >
                     Department
+                  </li>
+                  <li
+                    className={selectedSection === "Role" ? "active" : ""}
+                    onClick={() => setSelectedSection("Role")}
+                  >
+                    Role
                   </li>
                 </ul>
               </div>
@@ -110,7 +110,7 @@ function SettingParent() {
                     className={selectedSection === "AddProcess" ? "active" : ""}
                     onClick={() => setSelectedSection("AddProcess")}
                   >
-                     Process
+                    Process
                   </li>
                   <li
                     className={
@@ -118,14 +118,14 @@ function SettingParent() {
                     }
                     onClick={() => setSelectedSection("AddProcessSuggestion")}
                   >
-                     Process Suggestion
+                    Process Suggestion
                   </li>
 
                   <li
                     className={selectedSection === "AddParts" ? "active" : ""}
                     onClick={() => setSelectedSection("AddParts")}
                   >
-                     Parts
+                    Parts
                   </li>
 
                   <li
@@ -134,7 +134,7 @@ function SettingParent() {
                     }
                     onClick={() => setSelectedSection("AddMaterial")}
                   >
-                   Material
+                    Material
                   </li>
 
                   <li
@@ -143,7 +143,7 @@ function SettingParent() {
                     }
                     onClick={() => setSelectedSection("AddThickness")}
                   >
-                   Thickness
+                    Thickness
                   </li>
                 </ul>
               </div>
@@ -154,8 +154,8 @@ function SettingParent() {
               {selectedSection === "BankDetails" && <CompnayBankinfo />}
               {selectedSection === "Role" && <SettingRole />}
               {selectedSection === "Department" && <SettingDep />}
-              {selectedSection === "CheckListItem" && <SettingBomCategories />}
-              {selectedSection === "BomCategories" && <SettingCheckListItem />}
+              {selectedSection === "CheckListItem" && <SettingCheckListItem />}
+              {selectedSection === "BomCategories" && <SettingBomCategories />}
               {selectedSection === "AddProcess" && <AddProcess />}
               {selectedSection === "AddProcessSuggestion" && (
                 <AddProcessSuggestion />

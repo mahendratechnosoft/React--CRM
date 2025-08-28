@@ -162,7 +162,7 @@ const LeadsList = () => {
 
 
     return (
-        <div>
+        <>
 
 
             <div className="slidebar-main-div-right-section">
@@ -426,7 +426,7 @@ const LeadsList = () => {
                     setShowEditModal(true);
                 }}
             />
-        </div>
+        </>
     );
 };
 

@@ -1,17 +1,32 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
-  FaTachometerAlt,
-  FaUsers,
+  FaTachometerAlt, // Dashboard
+  FaBullhorn, // Lead
+  FaUsers, // Customers
+  FaFileInvoice, // Work Order
+  FaUserFriends, // Employees
+  FaProjectDiagram, // Projects
+  FaClock, // Timesheet
+  FaRocket, // Kickoff
+  FaListAlt, // Checklist
+  FaCogs, // BOM (Settings/Config like gears)
+  FaRegStickyNote, // MOM (Notes)
+  FaFileAlt, // Quotation
+  FaShoppingCart, // Sales Order
+  FaCog, // Settings
+  FaSignOutAlt, // Logout (if added)
+} from "react-icons/fa";
+
+import {
+
+
   FaBuilding,
   FaUserTag,
-  FaCog,
-  FaSignOutAlt,
   FaUserTie,
   FaRandom,
   FaTimes,
   FaTimesCircle,
-  FaRocket,
   FaChevronRight,
   FaChevronDown,
 } from "react-icons/fa";
@@ -34,6 +49,13 @@ const CompanySidebar = ({ isCollapsed }) => {
   const toggleKickoff = () => {
     setKickoffOpen(!kickoffOpen);
   };
+
+  const isKickoffActive = [
+    "/KickOffList",
+    "/ChecklistSheet",
+    "/BOMList",
+    "/MomList",
+  ].includes(location.pathname);
   return (
     <div className={`company-sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="company-sidebar__brand">{!isCollapsed && "CRM-Tech"}</div>
@@ -47,25 +69,25 @@ const CompanySidebar = ({ isCollapsed }) => {
         </li>
         <li className={location.pathname === "/Leadlist" ? "active" : ""}>
           <Link to="/Leadlist">
-            <FaUserTie />
+            <FaBullhorn />
             {!isCollapsed && <span>Lead</span>}
           </Link>
         </li>
         <li className={location.pathname === "/Customer" ? "active" : ""}>
           <Link to="/Customer">
-            <FaUserTie />
+            <FaUsers />
             {!isCollapsed && <span>Customers</span>}
           </Link>
         </li>
         <li className={location.pathname === "/WorkOrder" ? "active" : ""}>
           <Link to="/WorkOrder">
-            <FaUserTie />
+            <FaFileInvoice />
             {!isCollapsed && <span>Work Order</span>}
           </Link>
         </li>
         <li className={location.pathname === "/EmployeeList" ? "active" : ""}>
           <Link to="/EmployeeList">
-            <FaUsers />
+            <FaUserFriends />
             {!isCollapsed && <span>Employee</span>}
           </Link>
         </li>
@@ -83,7 +105,7 @@ const CompanySidebar = ({ isCollapsed }) => {
         </li> */}
         <li className={location.pathname === "/Projectlist" ? "active" : ""}>
           <Link to="/Projectlist">
-            <FaRandom />
+            <FaProjectDiagram />
             {!isCollapsed && <span>Project</span>}
           </Link>
         </li>
@@ -99,7 +121,7 @@ const CompanySidebar = ({ isCollapsed }) => {
           }
         >
           <Link to="/CompanyTimeSheetList">
-            <FaTimesCircle />
+            <FaClock />
             {!isCollapsed && <span>TimeSheetList</span>}
           </Link>
         </li>
@@ -107,7 +129,7 @@ const CompanySidebar = ({ isCollapsed }) => {
         <li
           className={`company-sidebar__settings-dropdown ${
             kickoffOpen ? "open" : ""
-          }`}
+          } ${isKickoffActive ? "active" : ""}`} // add active if any child selected
         >
           <button
             type="button"
@@ -164,14 +186,14 @@ const CompanySidebar = ({ isCollapsed }) => {
 
         <li className={location.pathname === "/QuotationList" ? "active" : ""}>
           <Link to="/QuotationList">
-            <FaTimesCircle />
+            <FaFileAlt />
             {!isCollapsed && <span>Quotation</span>}
           </Link>
         </li>
 
         <li className={location.pathname === "/SalesOrder" ? "active" : ""}>
           <Link to="/SalesOrder">
-            <FaTimesCircle />
+            <FaShoppingCart />
             {!isCollapsed && <span>Sales Order</span>}
           </Link>
         </li>
@@ -240,7 +262,7 @@ const CompanySidebar = ({ isCollapsed }) => {
 
         <li className={location.pathname === "/SettingParent" ? "active" : ""}>
           <Link to="/SettingParent">
-            <FaTimesCircle />
+            <FaCog />
             {!isCollapsed && <span>Settings</span>}
           </Link>
         </li>

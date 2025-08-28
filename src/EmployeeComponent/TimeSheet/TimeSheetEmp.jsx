@@ -19,11 +19,11 @@ const TimeSheetEmp=()=>{
             <div className="slidebar-main-div">
                 {/* sidebar */}
                 <EmployeeSidebar isCollapsed={isCollapsed} onAccessFetched={handleAccessFetched} />
-                <div className="slidebar-main-div-right-section">
+              
 
                    <TimeSheetList/>
 
-                </div>
+             
             </div>
         </>
     )

@@ -103,7 +103,7 @@ const handleToggleStatus = async (customerId, newStatus) => {
 
 
     return (
-      <div>
+      <>
         
 
           <div className="slidebar-main-div-right-section">
@@ -226,7 +226,7 @@ const handleToggleStatus = async (customerId, newStatus) => {
           onSave={handleCloseEditModal}
           onClose={handleCloseEditModal}
         />
-      </div>
+      </>
     );
 
 }

@@ -21,11 +21,11 @@ const ProjectListEmp = () => {
             <div className="slidebar-main-div">
                 {/* sidebar */}
                 <EmployeeSidebar isCollapsed={isCollapsed} onAccessFetched={handleAccessFetched} />
-                <div className="slidebar-main-div-right-section">
+          
 
                     <ProjectList />
 
-                </div>
+               
             </div>
         </>
     )

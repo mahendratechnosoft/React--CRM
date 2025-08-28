@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaHome, FaLink, FaListAlt, FaSignOutAlt } from "react-icons/fa";
+
+import {
+  FaUsers, // 👥 Customers
+  FaProjectDiagram, // 📂 Projects
+  FaClock, // ⏱ Timesheet
+  FaBullhorn, // 📢 Leads
+  FaFileInvoice, // 📑 Work Order
+  FaSignOutAlt, // 🚪 Logout
+} from "react-icons/fa";
 import "./EmployeeSidebar.css";
 import axiosInstance from "../BaseComponet/axiosInstance";
 const EmployeeSidebar = ({ isCollapsed, onAccessFetched  }) => {
@@ -35,71 +43,74 @@ const fetchAccess = async () => {
       </div>
 
       <ul className="sidebar-employee__nav-links">
-      {accessPermission?.customerOwnView &&   (
-        <li
-          className={`sidebar-employee__nav-item ${location.pathname === "/employee/cutomerList" ? "active" : ""
+        {accessPermission?.customerOwnView && (
+          <li
+            className={`sidebar-employee__nav-item ${
+              location.pathname === "/employee/cutomerList" ? "active" : ""
             }`}
-        >
-          <Link to="/employee/cutomerList">
-            <FaHome />
-            {!isCollapsed && <span>Customer</span>}
-          </Link>
-        </li>
-      )}
-      {accessPermission?.projectOwnView &&   (
-        <li
-          className={`sidebar-employee__nav-item ${location.pathname === "/employee/cutomerList" ? "active" : ""
+          >
+            <Link to="/employee/cutomerList">
+              <FaUsers />
+              {!isCollapsed && <span>Customer</span>}
+            </Link>
+          </li>
+        )}
+        {accessPermission?.projectOwnView && (
+          <li
+            className={`sidebar-employee__nav-item ${
+              location.pathname === "/employee/projectList" ? "active" : ""
             }`}
-        >
-          <Link to="/employee/projectList">
-            <FaHome />
-            {!isCollapsed && <span>Projects</span>}
-          </Link>
-        </li>
-      )}
-       {accessPermission?.timeSheetAccess &&   (
-        <li
-          className={`sidebar-employee__nav-item ${location.pathname === "/employee/timeSheet" ? "active" : ""
+          >
+            <Link to="/employee/projectList">
+              <FaProjectDiagram />
+              {!isCollapsed && <span>Projects</span>}
+            </Link>
+          </li>
+        )}
+        {accessPermission?.timeSheetAccess && (
+          <li
+            className={`sidebar-employee__nav-item ${
+              location.pathname === "/employee/timeSheet" ? "active" : ""
             }`}
-        >
-          <Link to="/employee/timeSheet">
-            <FaHome />
-            {!isCollapsed && <span>TimeSheet</span>}
-          </Link>
-        </li>
-      )}
-      {accessPermission?.leadModuleAccess &&   (
-        <li
-          className={`sidebar-employee__nav-item ${location.pathname === "/employee/Lead" ? "active" : ""
+          >
+            <Link to="/employee/timeSheet">
+              <FaClock />
+              {!isCollapsed && <span>TimeSheet</span>}
+            </Link>
+          </li>
+        )}
+        {accessPermission?.leadModuleAccess && (
+          <li
+            className={`sidebar-employee__nav-item ${
+              location.pathname === "/employee/Lead" ? "active" : ""
             }`}
-        >
-          <Link to="/employee/lead">
-            <FaHome />
-            {!isCollapsed && <span>Leads</span>}
-          </Link>
-        </li>
-      )}
+          >
+            <Link to="/employee/lead">
+              <FaBullhorn />
+              {!isCollapsed && <span>Leads</span>}
+            </Link>
+          </li>
+        )}
 
-      {accessPermission?.workOrderAccess &&   (
-        <li
-          className={`sidebar-employee__nav-item ${location.pathname === "/employee/workOrder" ? "active" : ""
+        {accessPermission?.workOrderAccess && (
+          <li
+            className={`sidebar-employee__nav-item ${
+              location.pathname === "/employee/workOrder" ? "active" : ""
             }`}
-        >
-          <Link to="/employee/workOrder">
-            <FaHome />
-            {!isCollapsed && <span>WrokOrder</span>}
-          </Link>
-        </li>
-      )}
-     
-      
+          >
+            <Link to="/employee/workOrder">
+              <FaFileInvoice />
+              {!isCollapsed && <span>WrokOrder</span>}
+            </Link>
+          </li>
+        )}
       </ul>
-      <div className="sidebar-employee__logout">
+      {/* <div className="sidebar-employee__logout">
         <button onClick={handleLogout}>
           <FaSignOutAlt />
           {!isCollapsed && <span>Logout</span>}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

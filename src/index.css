@@ -47,6 +47,7 @@ code {
 .slidebar-main-div {
   display: flex;
   min-height: 94vh;
+      max-height: 94vh;
 }
 
 .pagination-main-crd {
@@ -107,4 +108,22 @@ max-width: 95vw;
 .Setting-slidebar-main-div-right-section{
 
   
+}
+
+
+
+/* ==========EMPLOYEE SliderBar =========== */
+.sidebar-employee.collapsed ~ .slidebar-main-div-right-section,
+.sidebar-employee.collapsed + .slidebar-main-div-right-section {
+  width: 96%;
+}
+
+.sidebar-employee.collapsed ~ .slidebar-main-div-right-section .Companalist-main-card ,
+.sidebar-employee.collapsed + .slidebar-main-div-right-section .Companalist-main-card {
+max-width: 95vw;
+
+}
+.sidebar-employee.collapsed ~ .slidebar-main-div-right-section .Companalist-main-card .table-main-div,
+.sidebar-employee.collapsed + .slidebar-main-div-right-section .Companalist-main-card .table-main-div{
+max-width: 95vw;
 }
