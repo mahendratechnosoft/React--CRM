@@ -23,6 +23,23 @@ const BOMCreatePage = () => {
     const [BOMInfo, setBOMInfo] = useState([])
     const [dieDetails, setDieDetails] = useState("")
     const navigate = useNavigate();
+    const fieldOrder = [
+        "ITEM NO",
+        "ITEM DESCRIPTION",
+        "MATL",
+        "FINISH SIZE",
+        "RAW SIZE",
+        "QTY",
+        "REMARKS",
+        "MODEL WT",
+        "ORDERING REMARKS",
+        "BOUGHT OUT ITEMS",
+        "BOUGHT OUT QTY",
+        "SPECIFICATION",
+        "SEC."
+
+    ];
+
 
     const handleToggle = () => {
         setIsCollapsed(!isCollapsed);
@@ -146,15 +163,15 @@ const BOMCreatePage = () => {
 
     const onHandleChageWorkOrder = async (e) => {
 
-        try{
-        const workOrderNo = e.target.value;
-        const response = await axiosInstance.get(`/kickoff/getItemProcessByWorkOrderNumber/${workOrderNo}`);
+        try {
+            const workOrderNo = e.target.value;
+            const response = await axiosInstance.get(`/kickoff/getItemProcessByWorkOrderNumber/${workOrderNo}`);
 
-         const itemProcess=response.data.body;
-          
-            setDieDetails("OP "+itemProcess.operationNumber+"_"+partName+"_"+itemProcess.process)
+            const itemProcess = response.data.body;
 
-        }catch(error){
+            setDieDetails("OP " + itemProcess.operationNumber + "_" + partName + "_" + itemProcess.process)
+
+        } catch (error) {
             console.error("Error fetching projects:", error);
         }
 
@@ -374,7 +391,7 @@ const BOMCreatePage = () => {
                                         <div className="col-md-6">
                                             <Form.Group className="mb-3" controlId="formDieDetails">
                                                 <Form.Label>Die Details</Form.Label>
-                                                <Form.Control type="text" required placeholder="Enter Die Details" name="dieDetails" value={dieDetails}   onChange={(e) => setDieDetails(e.target.value)}/>
+                                                <Form.Control type="text" required placeholder="Enter Die Details" name="dieDetails" value={dieDetails} onChange={(e) => setDieDetails(e.target.value)} />
                                             </Form.Group>
                                         </div>
                                     </div>
@@ -402,7 +419,7 @@ const BOMCreatePage = () => {
                                                         <div className="card-body">
                                                             {(formRows[title] || []).map((_, rowIdx) => (
                                                                 <div className="row" key={`${title}-${rowIdx}`}>
-                                                                    {items.map((item, idx) => (
+                                                                   {fieldOrder.filter(field => items.includes(field)).map((item, idx) => (
                                                                         <div
                                                                             className="col-md-6 col-lg-4 mb-3"
                                                                             key={`${title}-${rowIdx}-${idx}`}

@@ -32,6 +32,22 @@ const BOMUpdatePage = () => {
     const [dieDetails, setDieDetails] = useState("")
     const [partName, setPartName] = useState("")
     const navigate = useNavigate();
+    const fieldOrder = [
+        "ITEM NO",
+        "ITEM DESCRIPTION",
+        "MATL",
+        "FINISH SIZE",
+        "RAW SIZE",
+        "QTY",
+        "REMARKS",
+        "MODEL WT",
+        "ORDERING REMARKS",
+        "BOUGHT OUT ITEMS",
+        "BOUGHT OUT QTY",
+        "SPECIFICATION",
+        "SEC."
+
+    ];
 
     const [BOMInfoCategory, setBOMInfoCategory] = useState([])
     // Fetch customers on bomId change
@@ -644,7 +660,7 @@ const BOMUpdatePage = () => {
                                                     <div className="row" key={`${title}-${rowIdx}`}>
 
 
-                                                        {items.map((item, idx) => (
+                                                        {fieldOrder.filter(field => items.includes(field)).map((item, idx) => (
                                                             <div
                                                                 className="col-md-6 col-lg-4 mb-3"
                                                                 key={`${title}-${rowIdx}-${idx}`}
