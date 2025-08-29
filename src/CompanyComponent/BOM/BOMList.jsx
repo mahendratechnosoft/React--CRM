@@ -6,6 +6,7 @@ import axiosInstance from "../../BaseComponet/axiosInstance";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import BOMPDFModal from "./BOMPDFModal";
+import { FaRegFileExcel } from "react-icons/fa";
 const BOMList = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
@@ -46,6 +47,25 @@ const BOMList = () => {
         navigate("/EditBOM", { state: { bomId } });
     };
 
+    const downloadBOMExcel = async (bomId) => {
+  try {
+    const response = await axiosInstance.post(`/kickoff/createBOMExcelSheet/${bomId}`, {}, {
+      responseType: "blob", // important for binary files
+    });
+
+    // Create a Blob link to download
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "BOM.xlsx");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Error downloading Excel:", error);
+  }
+};
+
     return (
         <>
             <CompanyTopbar onToggle={handleToggle} />
@@ -66,6 +86,7 @@ const BOMList = () => {
                                 >
                                     Create BOM
                                 </Button>
+                               
                             </div>
                         </div>
 
@@ -102,6 +123,12 @@ const BOMList = () => {
                                                         onClick={() => { setSelectedBomId(BOM.bomId); setShowPdf(true); }}
                                                     >
                                                         <i className="bi bi-file-pdf"></i>
+                                                    </button>
+                                                      <button
+                                                        className="btn btn-outline-primary btn-sm  ms-2"
+                                                        onClick={() => { downloadBOMExcel(BOM.bomId); }}
+                                                    >
+                                                       <FaRegFileExcel />
                                                     </button>
                                                 </td>
                                             </tr>
