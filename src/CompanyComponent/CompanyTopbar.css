@@ -7,10 +7,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  top: 0;
-  right: 0;
-  left: 230px;
-  z-index: 999;
+
+    /* right: 0; */
+    /* left: 230px; */
+    z-index: 9999;
+    position: fixed;
+    width: 100%;
 }
 
 .company-topbar__search {

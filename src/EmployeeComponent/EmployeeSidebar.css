@@ -2,7 +2,6 @@
 .sidebar-employee {
   top: 0;
   left: 0;
-  /* width: 230px; */
   width: 15%;
   background: #f4f4f5;
   color: black;
@@ -10,9 +9,16 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid rgba(17, 24, 39, 0.2);
-  padding: 0 10px 1% 10px;
-      overflow-y: auto;
-    scrollbar-width: thin;
+  padding: 0 10px;
+  padding-top: 70px;
+  /* Only scroll vertically, don’t clip horizontal */
+  overflow-y: auto;
+  overflow-x: visible;
+  max-height: 100vh;
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for IE, Edge, and Chrome */
+  -ms-overflow-style: none;
 }
 
 /* Brand */
@@ -25,7 +31,7 @@
   border-bottom: 1px solid rgba(17, 24, 39, 0.2);
 }
 
-/* Nav Links */
+/* Navigation Links */
 .sidebar-employee__nav-links {
   list-style: none;
   padding: 0;
@@ -57,11 +63,11 @@
   cursor: pointer;
 }
 
-/* Logout Section: stick to bottom */
+/* Logout Section */
 .sidebar-employee__logout {
   padding: 20px;
   border-top: 1px solid rgba(17, 24, 39, 0.2);
-  margin-top: auto; /* ensures it's at bottom */
+  margin-top: auto; /* stick at bottom */
 }
 
 .sidebar-employee__logout button {
@@ -121,7 +127,7 @@
 
 /* Dropdown Menu */
 .sidebar-employee__dropdown-menu {
-  position: absolute;
+  position: static;
   top: 0;
   left: 100%;
   background-color: white;
@@ -145,14 +151,17 @@
 
 /* Collapsed State */
 .sidebar-employee.collapsed {
-  width: 4%;
+  width: 70px; /* Adjusted to match company sidebar style */
   transition: width 0.3s ease;
-  padding: 0 0px 10px 10px;
+  padding: 0 0 10px 10px;
 }
 
-.sidebar-employee.collapsed .slidebar-main-div-right-section{
-  width: 96% !important; 
+/* Assuming slidebar-main-div-right-section is outside this sidebar component,
+   this style is preserved but outside sidebar-employee context */
+.sidebar-employee.collapsed ~ .slidebar-main-div-right-section {
+  width: 96% !important;
 }
+
 .sidebar-employee__nav-item a span,
 .sidebar-employee__logout button span,
 .sidebar-employee__brand {

@@ -11,12 +11,12 @@
   display: flex;
   flex-direction: column;
 
-
+    padding-top: 70px;
    /* 👇 Only scroll vertically, don’t clip horizontal */
   overflow-y: auto;
   overflow-x: visible;
 
-  max-height: 94vh;
+  max-height: 100vh;
   
   /* Hide scrollbar for Firefox */
   scrollbar-width: none;

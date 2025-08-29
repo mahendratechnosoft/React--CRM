@@ -19,13 +19,13 @@ const SettingCheckListItem = () => {
         {/* --- Tab Navigation --- */}
         <div className="checklist-tabs">
           <button
-            className={`tab-btn ${activeTab === "categories" ? "active" : ""}`}
+            className={`tab-btn ${activeTab === "categories" ? "active" : ""} h6`}
             onClick={() => setActiveTab("categories")}
           >
             CHECKLIST CATEGORIES
           </button>
           <button
-            className={`tab-btn ${activeTab === "items" ? "active" : ""}`}
+            className={`tab-btn ${activeTab === "items" ? "active" : ""} h6`}
             onClick={() => setActiveTab("items")}
           >
             CHECKLIST ITEMS

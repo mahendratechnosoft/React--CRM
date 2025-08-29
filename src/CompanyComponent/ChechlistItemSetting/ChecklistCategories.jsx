@@ -87,10 +87,10 @@ const ChecklistCategories = () => {
     <>
       <div className="Companalist-main-card">
         <div className="row m-0 p-0 w-100 d-flex justify-content-between mb-2">
-          <div className="col-md-3">
-            <h4>Checklist Categories</h4>
+          <div className="col-md-4">
+            <h4 className=''>Checklist Categories</h4>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-4">
             <div className="input-group">
               <span className="input-group-text bg-white border-end-0">
                 <i className="bi bi-search"></i>
@@ -103,9 +103,9 @@ const ChecklistCategories = () => {
               />
             </div>
           </div>
-          <div className="col-md-6 d-flex justify-content-end">
+          <div className="col-md-4 d-flex justify-content-end">
             <button
-              className="btn btn-dark me-1"
+              className="btn btn-sm btn-dark me-1"
               onClick={() => setCreateCategoriesModal(true)}
             >
               + New Checklist Category
@@ -163,9 +163,15 @@ const ChecklistCategories = () => {
                         style={{
                           border: "none",
                           background: "transparent",
-                          color: idx === categories.length - 1 ? "#adb5bd" : "#0d6efd",
+                          color:
+                            idx === categories.length - 1
+                              ? "#adb5bd"
+                              : "#0d6efd",
                           fontSize: 16,
-                          cursor: idx === categories.length - 1 ? "not-allowed" : "pointer",
+                          cursor:
+                            idx === categories.length - 1
+                              ? "not-allowed"
+                              : "pointer",
                           padding: 0,
                           marginTop: 2,
                           lineHeight: 1,

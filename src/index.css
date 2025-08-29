@@ -38,16 +38,26 @@ code {
 .slidebar-main-div-right-section {
   /* margin-left: 230px; */
   margin-left: 0px;
-  padding: 20px 20px 20px 20px;
+  padding: 4% 20px 10px 20px;
   width: 85%;
   /* height: 100%; */
   /* background: #f4f4f5;  */
+
+    overflow-y: auto;
+    max-height: 100vh;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
+
+
 
 .slidebar-main-div {
   display: flex;
-  min-height: 94vh;
-      max-height: 94vh;
+  /* min-height: 94vh;
+      max-height: 94vh; */
+          min-height: 100vh;
+    max-height: 100vh;
+
 }
 
 .pagination-main-crd {
@@ -127,3 +137,24 @@ max-width: 95vw;
 .sidebar-employee.collapsed + .slidebar-main-div-right-section .Companalist-main-card .table-main-div{
 max-width: 95vw;
 }
+
+
+.Toastify__toast-container--top-right {
+  top: 10% !important; /* moves it 5% down from top */
+  right: 1rem; 
+  /* keep small gap from right */
+}
+
+/* ===================KICKOFF SUBDIV CSS============== */
+
+
+
+.slidebar-main-div-right-section-subKickoff{
+  overflow-y: auto;
+    max-height: 90vh;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+
+

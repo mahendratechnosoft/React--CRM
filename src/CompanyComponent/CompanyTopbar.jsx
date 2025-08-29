@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import "./CompanyTopbar.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-
+import PlanetoLogo from "../Assets/CRm-Planeto-Logo.png";
 const CompanyTopbar = ({ onToggle }) => {
   const navigate = useNavigate();
    const handleLogout = () => {
@@ -27,8 +27,9 @@ const CompanyTopbar = ({ onToggle }) => {
     <div className="company-topbar">
       <div className="company-topbar__toggle" onClick={onToggle}>
         <FaBars className="company-topbar__icon" />
+        <img src={PlanetoLogo} alt="Planeto Logo" className="mx-5" style={{ width: "100px" }} />
       </div>
-      <div className="company-topbar__search">LOGO</div>
+
       <div className="company-topbar__icons">
         <FaBell className="company-topbar__icon" />
         <FaUser className="company-topbar__icon" />

@@ -37,7 +37,7 @@ function SettingParent() {
         <CompanySidebar isCollapsed={isCollapsed} />
 
         <div className="slidebar-main-div-right-section">
-          <p className="h3">Settings</p>
+
 
           <div className="setttings-main-div">
             <div className="setttings-main-div-left-col">

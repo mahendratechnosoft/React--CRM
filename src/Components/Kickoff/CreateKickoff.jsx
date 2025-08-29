@@ -3,14 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Accordion, Button, Form } from "react-bootstrap";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { toast } from "react-toastify";
-import CompanySidebar from "../CompanySidebar";
-import CompanyTopbar from "../CompanyTopbar";
+import EmployeeTopbar from "../../EmployeeComponent/EmployeeTopbar";
+import EmployeeSidebar from "../../EmployeeComponent/EmployeeSidebar";
 
-import CompanyKickoffsheetCustomerData from "../KickOff/CompanyKickoffsheetCustomerData";
-import CompanyKickOffCustomerRequirements from "../KickOff/CompanyKickOffCustomerRequirements";
-import ProjectRegistrationKickoffSheet from "../KickOff/ProjectRegistrationKickoffSheet";
-import CompanyKickOffSignature from "../KickOff/CompanyKickOffSignature";
-
+import CreateKickoffChild1 from "../Kickoff/CreateKickoffChild1";
+import CreateKickoffChild2 from "../Kickoff/CreateKickoffChild2";
+import CreateKickoffChild3 from "../Kickoff/CreateKickoffChild3";
+import CreateKickoffChild4 from "../Kickoff/CreateKickoffChild4";
 import axiosInstance from "../../BaseComponet/axiosInstance";
 
 const CustomToggle = ({ children, eventKey, activeKey, onClick }) => (
@@ -49,7 +48,7 @@ const fileToBase64 = (file) => {
   });
 };
 
-const CompanyCreateKickoffSheet = () => {
+const CreateKickoff = () => {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeKeys, setActiveKeys] = useState(["0", "1", "2", "3"]); // all open initially
@@ -316,16 +315,17 @@ const CompanyCreateKickoffSheet = () => {
         console.error("Failed to fetch employee list:", err);
       });
   }, []);
+
   return (
     <>
-      <CompanyTopbar onToggle={() => setIsCollapsed(!isCollapsed)} />
+      <EmployeeTopbar onToggle={() => setIsCollapsed(!isCollapsed)} />
       <div className="slidebar-main-div">
-        <CompanySidebar isCollapsed={isCollapsed} />
+        <EmployeeSidebar isCollapsed={isCollapsed} />
         <div className="slidebar-main-div-right-section">
           <div className="slidebar-main-div-right-section-subKickoff">
             <Form>
               <Accordion activeKey={activeKeys} alwaysOpen>
-                <CompanyKickoffsheetCustomerData
+                <CreateKickoffChild1
                   eventKey="0"
                   activeKey={activeKeys}
                   CustomToggle={CustomToggle}
@@ -334,7 +334,7 @@ const CompanyCreateKickoffSheet = () => {
                   setCustomerName={setCustomerName}
                   onCustomerDataChange={setCustomerData}
                 />
-                <ProjectRegistrationKickoffSheet
+                <CreateKickoffChild2
                   eventKey="1"
                   activeKey={activeKeys}
                   CustomToggle={CustomToggle}
@@ -345,7 +345,7 @@ const CompanyCreateKickoffSheet = () => {
                   onPartsChange={setPartsData}
                   onProcessesChange={setProcessesData}
                 />
-                <CompanyKickOffCustomerRequirements
+                <CreateKickoffChild3
                   eventKey="2"
                   activeKey={activeKeys}
                   CustomToggle={CustomToggle}
@@ -354,7 +354,7 @@ const CompanyCreateKickoffSheet = () => {
                   companyId={customerId || ""} // Pass correct company/customer ID here
                   employeeId={loggedInEmployeeId || ""} // Pass employee ID here
                 />
-                <CompanyKickOffSignature
+                <CreateKickoffChild4
                   eventKey="3"
                   activeKey={activeKeys}
                   CustomToggle={CustomToggle}
@@ -387,4 +387,4 @@ const CompanyCreateKickoffSheet = () => {
   );
 };
 
-export default CompanyCreateKickoffSheet;
+export default CreateKickoff;

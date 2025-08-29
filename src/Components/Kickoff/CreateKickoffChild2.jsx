@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../BaseComponet/axiosInstance";
 import Select from "react-select";
@@ -16,7 +17,7 @@ import {
 import { FaTrash, FaPlusCircle, FaSave } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-const ProjectRegistrationKickoffSheet = ({
+const CreateKickoffChild2 = ({
   eventKey,
   activeKey,
   CustomToggle,
@@ -1481,4 +1482,4 @@ const fetchProcesses = async () => {
   );
 };
 
-export default ProjectRegistrationKickoffSheet;
+export default CreateKickoffChild2;

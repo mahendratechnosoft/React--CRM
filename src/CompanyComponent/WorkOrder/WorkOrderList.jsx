@@ -116,7 +116,7 @@ const WorkOrderList = () => {
                                 </div>
                             </div>
                             <div className="col-md-6 d-flex justify-content-end">
-                                <button
+                                {/* <button
                                     className="btn btn-dark me-1"
                                     onClick={() =>setWorkOrderProcessModal(true)}
                                 >
@@ -145,7 +145,7 @@ const WorkOrderList = () => {
                                     onClick={() =>setAddThikenessModal(true)}
                                 >
                                     + Add Thickness
-                                </button>
+                                </button> */}
                                 <button
                                     className="btn btn-dark"
                                     onClick={() => setShowModal(true)}

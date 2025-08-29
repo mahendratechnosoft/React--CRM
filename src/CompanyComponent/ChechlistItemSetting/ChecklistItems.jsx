@@ -97,10 +97,10 @@ const ChecklistItems = () => {
   return (
     <div className="Companalist-main-card">
       <div className="row m-0 p-0 w-100 d-flex justify-content-between mb-2">
-        <div className="col-md-3">
+        <div className="col-md-4">
           <h4>Checklist Items</h4>
         </div>
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="input-group">
             <span className="input-group-text bg-white border-end-0">
               <i className="bi bi-search"></i>
@@ -113,9 +113,9 @@ const ChecklistItems = () => {
             />
           </div>
         </div>
-        <div className="col-md-6 d-flex justify-content-end">
+        <div className="col-md-4 d-flex justify-content-end">
           <button
-            className="btn btn-dark me-1"
+            className="btn btn-sm btn-dark me-1"
             onClick={() => {
               setEditItem(null);
               setCreateItemModal(true);
@@ -179,7 +179,8 @@ const ChecklistItems = () => {
                         background: "transparent",
                         color: idx === items.length - 1 ? "#adb5bd" : "#0d6efd",
                         fontSize: 16,
-                        cursor: idx === items.length - 1 ? "not-allowed" : "pointer",
+                        cursor:
+                          idx === items.length - 1 ? "not-allowed" : "pointer",
                         padding: 0,
                         marginTop: 2,
                         lineHeight: 1,
@@ -225,8 +226,12 @@ const ChecklistItems = () => {
         onCreate={() => fetchItems()}
         editItem={editItem}
         onUpdate={() => {
-          fetchItems()
-          toast.success(editItem ? "Item updated successfully!" : "Item created successfully!");
+          fetchItems();
+          toast.success(
+            editItem
+              ? "Item updated successfully!"
+              : "Item created successfully!"
+          );
         }}
         usedOrders={usedOrders}
       />

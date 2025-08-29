@@ -157,7 +157,7 @@ const CompanySidebar = ({ isCollapsed }) => {
                   location.pathname === "/KickOffList" ? "active" : ""
                 }`}
               >
-                <Link to="/KickOffList">KickOffList</Link>
+                <Link to="/KickOffList">KickOff</Link>
               </li>
               <li
                 className={`p-0 ${

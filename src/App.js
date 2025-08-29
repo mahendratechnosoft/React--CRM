@@ -63,6 +63,9 @@ import SettingParent from "./Components/Settings/SettingParent";
 import Quotation from "./CompanyComponent/Quotation/Quotation";
 import SalesOrder from "./CompanyComponent/SalesOrder/SalesOrder";
 
+import Empkickofflist from "./EmployeeComponent/Kickoff/KickoffListEmp";
+
+import CreateKickoff from "./Components/Kickoff/CreateKickoff";
 const App = () => {
   const role = localStorage.getItem("role"); // ✅ Get user role from localStorage
 
@@ -376,11 +379,29 @@ const App = () => {
           }
         />
 
-         <Route
+        <Route
           path="/employee/workOrder"
           element={
             <ProtectedRoute>
-              <WorkOrderListEmp/>
+              <WorkOrderListEmp />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/employee/kickofflist"
+          element={
+            <ProtectedRoute>
+              <Empkickofflist />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/employee/CreateKickoff"
+          element={
+            <ProtectedRoute>
+              <CreateKickoff />
             </ProtectedRoute>
           }
         />

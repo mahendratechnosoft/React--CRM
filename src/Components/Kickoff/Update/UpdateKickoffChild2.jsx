@@ -14,7 +14,7 @@ import axiosInstance from "../../../BaseComponet/axiosInstance";
 import { toast } from "react-toastify";
 import CreatableSelect from "react-select/creatable";
 
-const CompanyUpdateProjectRegistrationKickoffSheet = ({
+const UpdateKickoffChild2 = ({
   eventKey,
   activeKey,
   CustomToggle,
@@ -1867,4 +1867,4 @@ const addChildProcess = (parentWoNo) => {
   );
 };
 
-export default CompanyUpdateProjectRegistrationKickoffSheet;
+export default UpdateKickoffChild2;
