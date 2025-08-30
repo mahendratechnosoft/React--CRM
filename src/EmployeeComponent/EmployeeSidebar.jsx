@@ -151,8 +151,9 @@ const EmployeeSidebar = ({ isCollapsed, onAccessFetched }) => {
             [
               "/employee/kickofflist",
               "/ChecklistSheet",
-              "/BOMList",
-              "/MomList",
+              "/employee/Bomlist",
+              "/employee/MomListCompo",
+              "/employee/CheckList",
             ].includes(location.pathname)
               ? "active"
               : ""
@@ -198,13 +199,13 @@ const EmployeeSidebar = ({ isCollapsed, onAccessFetched }) => {
                   <Link to="/ChecklistSheet">Checklist-Sheet</Link>
                 </li>
               )}
-              {accessPermission?.kickOffAccess && (
+              {accessPermission?.bomAccess && (
                 <li
                   className={` ${
-                    location.pathname === "/BOMList" ? "active" : ""
+                    location.pathname === "/employee/Bomlist" ? "active" : ""
                   }`}
                 >
-                  <Link to="/BOMList">BOM</Link>
+                  <Link to="/employee/Bomlist">BOM</Link>
                 </li>
               )}
               {accessPermission?.momAccess && (
@@ -216,6 +217,16 @@ const EmployeeSidebar = ({ isCollapsed, onAccessFetched }) => {
                   }`}
                 >
                   <Link to="/employee/MomListCompo">MOM</Link>
+                </li>
+              )}
+
+              {accessPermission?.momAccess && (
+                <li
+                  className={` ${
+                    location.pathname === "/employee/CheckList" ? "active" : ""
+                  }`}
+                >
+                  <Link to="/employee/CheckList">Check List</Link>
                 </li>
               )}
             </ul>

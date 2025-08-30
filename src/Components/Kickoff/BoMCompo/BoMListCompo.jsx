@@ -1,0 +1,188 @@
+
+
+import React, { useEffect, useState } from "react";
+
+import PaginationComponent from "../../../Pagination/PaginationComponent";
+import axiosInstance from "../../../BaseComponet/axiosInstance";
+import Button from "react-bootstrap/Button";
+import { useNavigate } from "react-router-dom";
+import BOMPDFModal from "../../../CompanyComponent/BOM/BOMPDFModal";
+import { FaRegFileExcel } from "react-icons/fa";
+const BoMListCompo = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [pageCount, setPageCount] = useState(0);
+  const [BOMListDetails, setBOMListDetails] = useState([]);
+  const [showPdf, setShowPdf] = useState(false);
+  const [selectedBomId, setSelectedBomId] = useState("");
+    const [access, setAccess] = useState({});
+
+  const navigate = useNavigate(); // ✅ useNavigate hook
+  const handleToggle = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  useEffect(() => {
+    fetchBOMList();
+  }, [currentPage, pageSize]);
+
+  const fetchBOMList = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/kickoff/getAllBOMs/${currentPage}/${pageSize}`
+      );
+      const data = response.data;
+
+      setBOMListDetails(data.BOMInfoList || []);
+      setPageCount(data.totalPages || 1);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+
+  const navigateToCreteBOM = () => {
+    navigate("/employee/CreateBoM"); // ✅ navigate on button click
+  };
+
+  const editBOM = (bomId) => {
+    navigate("/employee/EditBoM", { state: { bomId } });
+  };
+
+  const downloadBOMExcel = async (bomId) => {
+    try {
+      const response = await axiosInstance.post(
+        `/kickoff/createBOMExcelSheet/${bomId}`,
+        {},
+        {
+          responseType: "blob", // important for binary files
+        }
+      );
+
+      // Create a Blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "BOM.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error downloading Excel:", error);
+    }
+  };
+
+    useEffect(() => {
+      const access = JSON.parse(localStorage.getItem("access"));
+      setAccess(access);
+    }, []);
+
+  return (
+    <>
+      <div className="slidebar-main-div-right-section">
+        <div className="Companalist-main-card">
+          <div className="row m-0 p-0 w-100 d-flex justify-content-between mb-3">
+            <div className="col-md-6">
+              <h4>BOM List</h4>
+            </div>
+            <div className="col-md-3 d-flex justify-content-end">
+              {access.bomCreate && (
+                <Button
+                  className="btn btn-dark"
+                  onClick={() => navigateToCreteBOM()}
+                >
+                  Create BOM
+                </Button>
+              )}
+            </div>
+          </div>
+
+          <div className="table-main-div">
+            <table className="table table-hover align-middle">
+              <thead className="table-light">
+                <tr>
+                  <th>Customer </th>
+                  <th>Project</th>
+                  <th>WO No</th>
+                  <th>Rev No</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {BOMListDetails.length > 0 ? (
+                  BOMListDetails.map((BOM) => (
+                    <tr key={BOM.bomId}>
+                      <td>{BOM.customerName}</td>
+                      <td>{BOM.projectName}</td>
+                      <td>{BOM.workOrderNo}</td>
+                      <td>{BOM.revisionNumber}</td>
+                      <td>
+                        {access.bomEdit && (
+                          <button
+                            className="btn btn-outline-primary btn-sm"
+                            onClick={() => {
+                              editBOM(BOM.bomId);
+                            }}
+                          >
+                            <i className="bi bi-pencil-square"></i>
+                          </button>
+                        )}
+                        <button
+                          className="btn btn-outline-primary btn-sm ms-2"
+                          onClick={() => {
+                            setSelectedBomId(BOM.bomId);
+                            setShowPdf(true);
+                          }}
+                        >
+                          <i className="bi bi-file-pdf"></i>
+                        </button>
+                        <button
+                          className="btn btn-outline-primary btn-sm  ms-2"
+                          onClick={() => {
+                            downloadBOMExcel(BOM.bomId);
+                          }}
+                        >
+                          <FaRegFileExcel />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center">
+                      No BOM found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="pagination-main-crd">
+          <PaginationComponent
+            currentPage={currentPage}
+            pageSize={pageSize}
+            pageCount={pageCount}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(size) => {
+              setCurrentPage(0);
+              setPageSize(size);
+            }}
+          />
+        </div>
+
+        {/* Render the modal just once */}
+        {showPdf && (
+          <BOMPDFModal
+            show={showPdf}
+            onClose={() => setShowPdf(false)}
+            bomId={selectedBomId}
+          />
+        )}
+      </div>
+    </>
+  );
+};
+
+export default BoMListCompo;

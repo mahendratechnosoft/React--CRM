@@ -58,6 +58,13 @@ const UpdateEmployeeList = () => {
     momDelete: false,
     momCreate: false,
 
+    bomAccess:false,
+    bomViewAll: false,
+    bomEdit: false,
+    bomCreate: false,
+    bomDelete: false,
+
+
 
 
   });
@@ -126,7 +133,12 @@ const UpdateEmployeeList = () => {
           momDelete: res.data.moduleAccess.momDelete,
           momCreate: res.data.moduleAccess.momCreate,
 
-    
+          bomAccess: res.data.moduleAccess.bomAccess,
+          bomViewAll: res.data.moduleAccess.bomViewAll,
+          bomEdit: res.data.moduleAccess.bomEdit,
+          bomDelete: res.data.moduleAccess.bomDelete,
+          bomCreate: res.data.moduleAccess.bomCreate,
+
         });
 
         // Fetch roles for the employee's current department
@@ -238,6 +250,12 @@ const UpdateEmployeeList = () => {
         momEdit: data.moduleAccess.momEdit,
         momDelete: data.moduleAccess.momDelete,
         momCreate: data.moduleAccess.momCreate,
+
+        bomAccess: data.moduleAccess.bomAccess,
+        bomViewAll: data.moduleAccess.bomViewAll,
+        bomEdit: data.moduleAccess.bomEdit,
+        bomDelete: data.moduleAccess.bomDelete,
+        bomCreate: data.moduleAccess.bomCreate,
       });
     } catch (err) {
       toast.error("Failed to load role access");
@@ -383,6 +401,13 @@ const UpdateEmployeeList = () => {
       momEdit: access.momEdit,
       momDelete: access.momDelete,
       momCreate: access.momCreate,
+
+      bomAccess: access.bomAccess,
+      bomViewAll: access.bomViewAll,
+      bomEdit: access.bomEdit,
+      bomDelete: access.bomDelete,
+      bomCreate: access.bomCreate,
+
     };
 
     axiosInstance
@@ -504,7 +529,6 @@ const UpdateEmployeeList = () => {
             {/* Access Permissions */}
             <div className="card mt-4 p-4 shadow-sm">
               <h5 className="mb-3">🔐 Access Permissions</h5>
-
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
                   <div className="form-check form-switch mb-3">
@@ -554,10 +578,8 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>Customer</h4>
-
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
                   {" "}
@@ -651,7 +673,6 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>Project</h4>
               <div className="row m-0 p-0 w-100">
@@ -742,7 +763,6 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>TimeSheet</h4>
               <div className="row m-0 p-0 w-100">
@@ -838,10 +858,8 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>Lead</h4>
-
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
                   {" "}
@@ -926,10 +944,8 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>Work Order</h4>
-
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
                   {" "}
@@ -1023,10 +1039,8 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>Kick Off</h4>
-
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
                   {" "}
@@ -1111,10 +1125,8 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>Check Sheet </h4>
-
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
                   {" "}
@@ -1213,9 +1225,89 @@ const UpdateEmployeeList = () => {
               </div>
 
               <hr></hr>
+              <h4>BOM </h4>
+
+              <div className="row m-0 p-0 w-100">
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="bomAccess"
+                      id="bomAccess"
+                      checked={access.bomAccess}
+                      onChange={handleAccessChange}
+                    />
+                    <label className="form-check-label" htmlFor="bomAccess">
+                      Module Access
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="bomViewAll"
+                      id="bomViewAll"
+                      checked={access.bomViewAll}
+                      onChange={handleAccessChange}
+                    />
+                    <label className="form-check-label" htmlFor="bomViewAll">
+                      View All
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="bomCreate"
+                      id="bomCreate"
+                      checked={access.bomCreate}
+                      onChange={handleAccessChange}
+                    />
+                    <label className="form-check-label" htmlFor="bomCreate">
+                      Create
+                    </label>
+                  </div>
+                </div>
+
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="bomDelete"
+                      id="bomDelete"
+                      checked={access.bomDelete}
+                      onChange={handleAccessChange}
+                    />
+                    <label className="form-check-label" htmlFor="bomDelete">
+                      Delete
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="bomEdit"
+                      id="bomEdit"
+                      checked={access.bomEdit}
+                      onChange={handleAccessChange}
+                    />
+                    <label className="form-check-label" htmlFor="bomEdit">
+                      Edit
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <hr></hr>
               <h4>MOM </h4>
-
-
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
                   <div className="form-check form-switch mb-3">
@@ -1289,6 +1381,104 @@ const UpdateEmployeeList = () => {
                       onChange={handleAccessChange}
                     />
                     <label className="form-check-label" htmlFor="momEdit">
+                      Edit
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <hr></hr>
+              <h4>Check Sheet </h4>
+              <div className="row m-0 p-0 w-100">
+                <div className="col-md-4">
+                  {" "}
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="checkSheetAccess"
+                      id="checkSheetAccess"
+                      checked={access.checkSheetAccess}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="checkSheetAccess"
+                    >
+                      Module Access
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  {" "}
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="checkSheetViewAll"
+                      id="checkSheetViewAll"
+                      checked={access.checkSheetViewAll}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="checkSheetViewAll"
+                    >
+                      View All
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  {" "}
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="checkSheetCreate"
+                      id="checkSheetCreate"
+                      checked={access.checkSheetCreate}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="checkSheetCreate"
+                    >
+                      Create
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="checkSheetDelete"
+                      id="checkSheetDelete"
+                      checked={access.checkSheetDelete}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="checkSheetDelete"
+                    >
+                      Delete
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  {" "}
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="checkSheetEdit"
+                      id="checkSheetEdit"
+                      checked={access.checkSheetEdit}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="checkSheetEdit"
+                    >
                       Edit
                     </label>
                   </div>

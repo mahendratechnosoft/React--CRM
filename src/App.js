@@ -68,6 +68,15 @@ import Empkickofflist from "./EmployeeComponent/Kickoff/KickoffListEmp";
 import CreateKickoff from "./Components/Kickoff/CreateKickoff";
 
 import MomlistEMp from "./EmployeeComponent/Kickoff/MomEmp/Momlist";
+import CreateMoM from "./Components/Kickoff/MomCompo/CreateMoM";
+import EditMoM from "./Components/Kickoff/MomCompo/EditMoM";
+
+import Bomlist from "./EmployeeComponent/Kickoff/BomEmp/Bomlist";
+import CreateBoM from "./Components/Kickoff/BoMCompo/CreateBoM";
+import EditBoM from "./Components/Kickoff/BoMCompo/EditBoM";
+
+import CheckList from "./EmployeeComponent/Kickoff/CheckList/CheckList";
+
 const App = () => {
   const role = localStorage.getItem("role"); // ✅ Get user role from localStorage
 
@@ -411,6 +420,40 @@ const App = () => {
           }
         />
 
+        <Route
+          path="/employee/Bomlist"
+          element={
+            <ProtectedRoute>
+              <Bomlist />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/employee/CreateBoM"
+          element={
+            <ProtectedRoute>
+              <CreateBoM />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee/EditBoM"
+          element={
+            <ProtectedRoute>
+              <EditBoM />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/employee/CheckList"
+          element={
+            <ProtectedRoute>
+              <CheckList />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
