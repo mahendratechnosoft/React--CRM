@@ -66,6 +66,8 @@ import SalesOrder from "./CompanyComponent/SalesOrder/SalesOrder";
 import Empkickofflist from "./EmployeeComponent/Kickoff/KickoffListEmp";
 
 import CreateKickoff from "./Components/Kickoff/CreateKickoff";
+
+import MomlistEMp from "./EmployeeComponent/Kickoff/MomEmp/Momlist";
 const App = () => {
   const role = localStorage.getItem("role"); // ✅ Get user role from localStorage
 
@@ -75,7 +77,6 @@ const App = () => {
       <Routes>
         {/* Default redirect to login when hitting "/" */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -369,7 +370,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/SalesOrder"
           element={
@@ -378,7 +378,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/employee/workOrder"
           element={
@@ -387,7 +386,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/employee/kickofflist"
           element={
@@ -396,12 +394,19 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/employee/CreateKickoff"
           element={
             <ProtectedRoute>
               <CreateKickoff />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee/MomListCompo"
+          element={
+            <ProtectedRoute>
+              <MomlistEMp />
             </ProtectedRoute>
           }
         />

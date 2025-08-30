@@ -52,6 +52,14 @@ const UpdateEmployeeList = () => {
     checkSheetDelete: false,
     checkSheetEdit: false,
 
+    momAccess:false,
+    momViewAll: false,
+    momEdit: false,
+    momDelete: false,
+    momCreate: false,
+
+
+
   });
   const [isEditing, setIsEditing] = useState(false);
   const [initialemp, setInitialEmp] = useState(null);
@@ -111,6 +119,14 @@ const UpdateEmployeeList = () => {
           kickOffCreate: res.data.moduleAccess.kickOffCreate,
           kickOffDelete: res.data.moduleAccess.kickOffDelete,
           kickOffEdit: res.data.moduleAccess.kickOffEdit,
+
+          momAccess: res.data.moduleAccess.momAccess,
+          momViewAll: res.data.moduleAccess.momViewAll,
+          momEdit: res.data.moduleAccess.momEdit,
+          momDelete: res.data.moduleAccess.momDelete,
+          momCreate: res.data.moduleAccess.momCreate,
+
+    
         });
 
         // Fetch roles for the employee's current department
@@ -216,6 +232,12 @@ const UpdateEmployeeList = () => {
         checkSheetCreate: data.checkSheetCreate,
         checkSheetDelete: data.checkSheetDelete,
         checkSheetEdit: data.checkSheetEdit,
+
+        momAccess: data.moduleAccess.momAccess,
+        momViewAll: data.moduleAccess.momViewAll,
+        momEdit: data.moduleAccess.momEdit,
+        momDelete: data.moduleAccess.momDelete,
+        momCreate: data.moduleAccess.momCreate,
       });
     } catch (err) {
       toast.error("Failed to load role access");
@@ -355,7 +377,12 @@ const UpdateEmployeeList = () => {
       checkSheetCreate: access.checkSheetCreate,
       checkSheetDelete: access.checkSheetDelete,
       checkSheetEdit: access.checkSheetEdit,
-      
+
+      momAccess: access.momAccess,
+      momViewAll: access.momViewAll,
+      momEdit: access.momEdit,
+      momDelete: access.momDelete,
+      momCreate: access.momCreate,
     };
 
     axiosInstance
@@ -1185,8 +1212,9 @@ const UpdateEmployeeList = () => {
                 </div>
               </div>
 
-              {/* <hr></hr>
+              <hr></hr>
               <h4>MOM </h4>
+
 
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
@@ -1194,12 +1222,12 @@ const UpdateEmployeeList = () => {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="kickOffAccess"
-                      id="kickOffAccess"
-                      checked={access.kickOffAccess}
+                      name="momAccess"
+                      id="momAccess"
+                      checked={access.momAccess}
                       onChange={handleAccessChange}
                     />
-                    <label className="form-check-label" htmlFor="kickOffAccess">
+                    <label className="form-check-label" htmlFor="momAccess">
                       Module Access
                     </label>
                   </div>
@@ -1209,15 +1237,12 @@ const UpdateEmployeeList = () => {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="kickOffViewAll"
-                      id="kickOffViewAll"
-                      checked={access.kickOffViewAll}
+                      name="momViewAll"
+                      id="momViewAll"
+                      checked={access.momViewAll}
                       onChange={handleAccessChange}
                     />
-                    <label
-                      className="form-check-label"
-                      htmlFor="kickOffViewAll"
-                    >
+                    <label className="form-check-label" htmlFor="momViewAll">
                       View All
                     </label>
                   </div>
@@ -1227,12 +1252,12 @@ const UpdateEmployeeList = () => {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="kickOffCreate"
-                      id="kickOffCreate"
-                      checked={access.kickOffCreate}
+                      name="momCreate"
+                      id="momCreate"
+                      checked={access.momCreate}
                       onChange={handleAccessChange}
                     />
-                    <label className="form-check-label" htmlFor="kickOffCreate">
+                    <label className="form-check-label" htmlFor="momCreate">
                       Create
                     </label>
                   </div>
@@ -1243,12 +1268,12 @@ const UpdateEmployeeList = () => {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="kickOffDelete"
-                      id="kickOffDelete"
-                      checked={access.kickOffDelete}
+                      name="momDelete"
+                      id="momDelete"
+                      checked={access.momDelete}
                       onChange={handleAccessChange}
                     />
-                    <label className="form-check-label" htmlFor="kickOffDelete">
+                    <label className="form-check-label" htmlFor="momDelete">
                       Delete
                     </label>
                   </div>
@@ -1258,17 +1283,17 @@ const UpdateEmployeeList = () => {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="kickOffEdit"
-                      id="kickOffEdit"
-                      checked={access.kickOffEdit}
+                      name="momEdit"
+                      id="momEdit"
+                      checked={access.momEdit}
                       onChange={handleAccessChange}
                     />
-                    <label className="form-check-label" htmlFor="kickOffEdit">
+                    <label className="form-check-label" htmlFor="momEdit">
                       Edit
                     </label>
                   </div>
                 </div>
-              </div> */}
+              </div>
 
               <div className="d-flex justify-content-end">
                 <button className="btn btn-dark" onClick={handleSaveAccess}>

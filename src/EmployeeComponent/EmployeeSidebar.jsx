@@ -207,13 +207,15 @@ const EmployeeSidebar = ({ isCollapsed, onAccessFetched }) => {
                   <Link to="/BOMList">BOM</Link>
                 </li>
               )}
-              {accessPermission?.kickOffAccess && (
+              {accessPermission?.momAccess && (
                 <li
                   className={` ${
-                    location.pathname === "/MomList" ? "active" : ""
+                    location.pathname === "/employee/MomListCompo"
+                      ? "active"
+                      : ""
                   }`}
                 >
-                  <Link to="/MomList">MOM</Link>
+                  <Link to="/employee/MomListCompo">MOM</Link>
                 </li>
               )}
             </ul>
