@@ -76,7 +76,9 @@ import CreateBoM from "./Components/Kickoff/BoMCompo/CreateBoM";
 import EditBoM from "./Components/Kickoff/BoMCompo/EditBoM";
 
 import CheckList from "./EmployeeComponent/Kickoff/CheckList/CheckList";
+import SalesOrderListEmp from "./EmployeeComponent/SalesOrderEMP/SalesOrderListEmp";
 
+import QuotationListEmp from "./EmployeeComponent/QuotationEmp/QuotationListEmp";
 const App = () => {
   const role = localStorage.getItem("role"); // ✅ Get user role from localStorage
 
@@ -454,6 +456,25 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/employee/SalesOrderListEmp"
+          element={
+            <ProtectedRoute>
+              <SalesOrderListEmp />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/employee/QuotationListEmp"
+          element={
+            <ProtectedRoute>
+              <QuotationListEmp />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

@@ -52,21 +52,29 @@ const UpdateEmployeeList = () => {
     checkSheetDelete: false,
     checkSheetEdit: false,
 
-    momAccess:false,
+    momAccess: false,
     momViewAll: false,
     momEdit: false,
     momDelete: false,
     momCreate: false,
 
-    bomAccess:false,
+    bomAccess: false,
     bomViewAll: false,
     bomEdit: false,
     bomCreate: false,
     bomDelete: false,
 
+    salesOrderAccess: false,
+    salesOrderViewAll: false,
+    salesOrderEdit: false,
+    salesOrderCreate: false,
+    salesOrderDelete: false,
 
-
-
+    quotationAccess: false,
+    quotationViewAll: false,
+    quotationEdit: false,
+    quotationCreate: false,
+    quotationDelete: false,
   });
   const [isEditing, setIsEditing] = useState(false);
   const [initialemp, setInitialEmp] = useState(null);
@@ -139,6 +147,17 @@ const UpdateEmployeeList = () => {
           bomDelete: res.data.moduleAccess.bomDelete,
           bomCreate: res.data.moduleAccess.bomCreate,
 
+          salesOrderAccess: res.data.moduleAccess.salesOrderAccess,
+          salesOrderViewAll: res.data.moduleAccess.salesOrderViewAll,
+          salesOrderEdit: res.data.moduleAccess.salesOrderEdit,
+          salesOrderDelete: res.data.moduleAccess.salesOrderDelete,
+          salesOrderCreate: res.data.moduleAccess.salesOrderCreate,
+
+          quotationAccess: res.data.moduleAccess.quotationAccess,
+          quotationViewAll: res.data.moduleAccess.quotationViewAll,
+          quotationEdit: res.data.moduleAccess.quotationEdit,
+          quotationCreate: res.data.moduleAccess.quotationCreate,
+          quotationDelete: res.data.moduleAccess.quotationDelete,
         });
 
         // Fetch roles for the employee's current department
@@ -256,6 +275,18 @@ const UpdateEmployeeList = () => {
         bomEdit: data.moduleAccess.bomEdit,
         bomDelete: data.moduleAccess.bomDelete,
         bomCreate: data.moduleAccess.bomCreate,
+
+        salesOrderAccess: data.moduleAccess.salesOrderAccess,
+        salesOrderViewAll: data.moduleAccess.salesOrderViewAll,
+        salesOrderEdit: data.moduleAccess.salesOrderEdit,
+        salesOrderDelete: data.moduleAccess.salesOrderDelete,
+        salesOrderCreate: data.moduleAccess.salesOrderCreate,
+
+        quotationAccess: data.moduleAccess.quotationAccess,
+        quotationViewAll: data.moduleAccess.quotationViewAll,
+        quotationEdit: data.moduleAccess.quotationEdit,
+        quotationCreate: data.moduleAccess.quotationCreate,
+        quotationDelete: data.moduleAccess.quotationDelete,
       });
     } catch (err) {
       toast.error("Failed to load role access");
@@ -408,6 +439,17 @@ const UpdateEmployeeList = () => {
       bomDelete: access.bomDelete,
       bomCreate: access.bomCreate,
 
+      salesOrderAccess: access.salesOrderAccess,
+      salesOrderViewAll: access.salesOrderViewAll,
+      salesOrderEdit: access.salesOrderEdit,
+      salesOrderDelete: access.salesOrderDelete,
+      salesOrderCreate: access.salesOrderCreate,
+
+      quotationAccess: access.quotationAccess,
+      quotationViewAll: access.quotationViewAll,
+      quotationEdit: access.quotationEdit,
+      quotationCreate: access.quotationCreate,
+      quotationDelete: access.quotationDelete,
     };
 
     axiosInstance
@@ -1223,10 +1265,8 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>BOM </h4>
-
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
                   <div className="form-check form-switch mb-3">
@@ -1305,7 +1345,6 @@ const UpdateEmployeeList = () => {
                   </div>
                 </div>
               </div>
-
               <hr></hr>
               <h4>MOM </h4>
               <div className="row m-0 p-0 w-100">
@@ -1387,104 +1426,194 @@ const UpdateEmployeeList = () => {
                 </div>
               </div>
               <hr></hr>
-              <h4>Check Sheet </h4>
+              <h4>Sales Order </h4>
               <div className="row m-0 p-0 w-100">
                 <div className="col-md-4">
-                  {" "}
                   <div className="form-check form-switch mb-3">
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="checkSheetAccess"
-                      id="checkSheetAccess"
-                      checked={access.checkSheetAccess}
+                      name="salesOrderAccess"
+                      id="salesOrderAccess"
+                      checked={access.salesOrderAccess}
                       onChange={handleAccessChange}
                     />
                     <label
                       className="form-check-label"
-                      htmlFor="checkSheetAccess"
+                      htmlFor="salesOrderAccess"
                     >
                       Module Access
                     </label>
                   </div>
                 </div>
                 <div className="col-md-4">
-                  {" "}
                   <div className="form-check form-switch mb-3">
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="checkSheetViewAll"
-                      id="checkSheetViewAll"
-                      checked={access.checkSheetViewAll}
+                      name="salesOrderViewAll"
+                      id="salesOrderViewAll"
+                      checked={access.salesOrderViewAll}
                       onChange={handleAccessChange}
                     />
                     <label
                       className="form-check-label"
-                      htmlFor="checkSheetViewAll"
+                      htmlFor="salesOrderViewAll"
                     >
                       View All
                     </label>
                   </div>
                 </div>
                 <div className="col-md-4">
-                  {" "}
                   <div className="form-check form-switch mb-3">
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="checkSheetCreate"
-                      id="checkSheetCreate"
-                      checked={access.checkSheetCreate}
+                      name="salesOrderCreate"
+                      id="salesOrderCreate"
+                      checked={access.salesOrderCreate}
                       onChange={handleAccessChange}
                     />
                     <label
                       className="form-check-label"
-                      htmlFor="checkSheetCreate"
+                      htmlFor="salesOrderCreate"
                     >
                       Create
                     </label>
                   </div>
                 </div>
+
                 <div className="col-md-4">
                   <div className="form-check form-switch mb-3">
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="checkSheetDelete"
-                      id="checkSheetDelete"
-                      checked={access.checkSheetDelete}
+                      name="salesOrderDelete"
+                      id="salesOrderDelete"
+                      checked={access.salesOrderDelete}
                       onChange={handleAccessChange}
                     />
                     <label
                       className="form-check-label"
-                      htmlFor="checkSheetDelete"
+                      htmlFor="salesOrderDelete"
                     >
                       Delete
                     </label>
                   </div>
                 </div>
                 <div className="col-md-4">
-                  {" "}
                   <div className="form-check form-switch mb-3">
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      name="checkSheetEdit"
-                      id="checkSheetEdit"
-                      checked={access.checkSheetEdit}
+                      name="salesOrderEdit"
+                      id="salesOrderEdit"
+                      checked={access.salesOrderEdit}
                       onChange={handleAccessChange}
                     />
                     <label
                       className="form-check-label"
-                      htmlFor="checkSheetEdit"
+                      htmlFor="salesOrderEdit"
                     >
                       Edit
                     </label>
                   </div>
                 </div>
               </div>
+              <hr></hr>
+     
+              <h4>Quotation </h4>
+              <div className="row m-0 p-0 w-100">
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="quotationAccess"
+                      id="quotationAccess"
+                      checked={access.quotationAccess}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="quotationAccess"
+                    >
+                      Module Access
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="quotationViewAll"
+                      id="quotationViewAll"
+                      checked={access.quotationViewAll}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="quotationViewAll"
+                    >
+                      View All
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="quotationCreate"
+                      id="quotationCreate"
+                      checked={access.quotationCreate}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="quotationCreate"
+                    >
+                      Create
+                    </label>
+                  </div>
+                </div>
 
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="quotationDelete"
+                      id="quotationDelete"
+                      checked={access.quotationDelete}
+                      onChange={handleAccessChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="quotationDelete"
+                    >
+                      Delete
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-check form-switch mb-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="quotationEdit"
+                      id="quotationEdit"
+                      checked={access.quotationEdit}
+                      onChange={handleAccessChange}
+                    />
+                    <label className="form-check-label" htmlFor="quotationEdit">
+                      Edit
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <hr></hr>
               <div className="d-flex justify-content-end">
                 <button className="btn btn-dark" onClick={handleSaveAccess}>
                   💾 Save Access

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-
 import {
   FaTachometerAlt, // Dashboard
   FaBullhorn, // Lead
@@ -34,7 +33,7 @@ const EmployeeSidebar = ({ isCollapsed, onAccessFetched }) => {
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [kickoffOpen, setKickoffOpen] = useState(false);
-
+  const [salesOpen, setSalesOpen] = useState(false);
 
   const toggleSettings = () => {
     setSettingsOpen(!settingsOpen);
@@ -44,19 +43,16 @@ const EmployeeSidebar = ({ isCollapsed, onAccessFetched }) => {
     setKickoffOpen(!kickoffOpen);
   };
 
+  const toggleSales = () => {
+    setSalesOpen(!salesOpen);
+  };
+
   const isKickoffActive = [
     "/employee/kickofflist",
     "/ChecklistSheet",
     "/BOMList",
     "/MomList",
   ].includes(location.pathname);
-
-
-
-
-
-
-
 
   useEffect(() => {
     fetchAccess();
@@ -190,15 +186,7 @@ const EmployeeSidebar = ({ isCollapsed, onAccessFetched }) => {
                   <Link to="/employee/kickofflist">KickOff</Link>
                 </li>
               )}
-              {accessPermission?.checklistAccess && (
-                <li
-                  className={` ${
-                    location.pathname === "/ChecklistSheet" ? "active" : ""
-                  }`}
-                >
-                  <Link to="/ChecklistSheet">Checklist-Sheet</Link>
-                </li>
-              )}
+
               {accessPermission?.bomAccess && (
                 <li
                   className={` ${
@@ -220,13 +208,72 @@ const EmployeeSidebar = ({ isCollapsed, onAccessFetched }) => {
                 </li>
               )}
 
-              {accessPermission?.momAccess && (
+              {accessPermission?.checkSheetAccess && (
                 <li
                   className={` ${
                     location.pathname === "/employee/CheckList" ? "active" : ""
                   }`}
                 >
                   <Link to="/employee/CheckList">Check List</Link>
+                </li>
+              )}
+            </ul>
+          )}
+        </li>
+
+        <li
+          className={`sidebar-employee__settings-dropdown ${
+            salesOpen ? "open" : ""
+          } ${
+            [
+              "/employee/SalesOrderListEmp",
+              "/employee/QuotationListEmp",
+            ].includes(location.pathname)
+              ? "active"
+              : ""
+          }`}
+        >
+          <button
+            type="button"
+            onClick={toggleSales}
+            className="sidebar-employee__settings-toggle"
+          >
+            <FaRocket />
+            {!isCollapsed && (
+              <>
+                <span className="flex-grow mx-2">Sales</span>
+                {salesOpen ? (
+                  <FaChevronDown className="sidebar-employee__dropdown-arrow" />
+                ) : (
+                  <FaChevronRight className="sidebar-employee__dropdown-arrow" />
+                )}
+              </>
+            )}
+          </button>
+
+          {salesOpen && (
+            <ul className="sidebar-employee__dropdown-menu">
+              {accessPermission?.salesOrderAccess && (
+                <li
+                  className={` ${
+                    location.pathname === "/employee/SalesOrderListEmp"
+                      ? "active"
+                      : ""
+                  }`}
+                >
+                  <Link to="/employee/SalesOrderListEmp">Sales Order</Link>
+                </li>
+              )}
+
+              {accessPermission?.quotationAccess && (
+                <li
+                  className={` ${
+                    location.pathname === "/employee/QuotationListEmp"
+                      ? "active"
+                      : ""
+                  }`}
+                >
+                  <Link to="/employee/QuotationListEmp">Quotation</Link>
                 </li>
               )}
             </ul>
